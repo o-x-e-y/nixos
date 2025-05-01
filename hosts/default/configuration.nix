@@ -126,6 +126,7 @@
     zed-editor
     nixd
     nil
+    gnumake
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
