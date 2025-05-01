@@ -5,7 +5,7 @@ in
 {
   options.main-user = {
     enable = lib.mkEnableOption "enable user module";
-    userName = lib.mkOption {
+    username = lib.mkOption {
       default = "oxey";
       description = ''
         oxey
@@ -14,7 +14,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    users.users.${cfg.userName} = {
+    users.users.${cfg.username} = {
       isNormalUser = true;
       initialPassword = "waddahell";
       description = "oxey";

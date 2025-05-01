@@ -12,7 +12,7 @@
   ];
 
   main-user.enable = true;
-  main-user.userName = "oxey";
+  main-user.username = "oxey";
   kanata.enable = true;
 
   # Bootloader.
