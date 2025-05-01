@@ -2,13 +2,12 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 
 {
   imports = [
     ./hardware-configuration.nix
     ./main-user.nix
-    ./../../modules/default.nix
   ];
 
   main-user.enable = true;
@@ -103,12 +102,13 @@
   };
 
   home-manager = {
-    # extraSpecialArgs = { inherit inputs; };
+    extraSpecialArgs = { inherit inputs; };
     useGlobalPkgs = true;
     useUserPackages = true;
     backupFileExtension = "backup";
     users = {
       "oxey" = import ./home.nix;
+      # "oxey" = import ./../../modules/zed-editor.nix;
     };
   };
 
