@@ -63,7 +63,7 @@
         size = 24;
       };
       # lookAndFeel = "org.kde.breezedark.desktop";
-      iconTheme = "Gruvbox";
+      iconTheme = "Fluent-purple-dark";
       wallpaper = ../../public/wallpaper.png;
       soundTheme = "ocean";
       splashScreen = {
