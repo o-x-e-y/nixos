@@ -14,7 +14,7 @@
         };
         # lookAndFeel = "org.kde.breezedark.desktop";
         iconTheme = "Fluent-purple-dark";
-        wallpaper = ../../public/wallpaper.png;
+        wallpaper = ./../public/wallpaper.png;
         soundTheme = "ocean";
         splashScreen = {
           theme = "Breeze";
