@@ -8,7 +8,7 @@ in
     username = lib.mkOption {
       default = "oxey";
       description = ''
-        oxey
+        main user
       '';
     };
   };
@@ -17,7 +17,6 @@ in
     users.users.${cfg.username} = {
       isNormalUser = true;
       initialPassword = "waddahell";
-      description = "oxey";
       shell = pkgs.bash;
     };
   };
