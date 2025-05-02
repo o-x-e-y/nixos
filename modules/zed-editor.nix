@@ -68,7 +68,25 @@
     programs.zed-editor-extensions = {
       enable = true;
       packages = with pkgs.zed-extensions; [
+        awk
+        bqn
+        csharp
+        dbml
+        dockerfile
+        env
+        html
+        http
+        kconfig
+        latex
+        make
         nix
+        python-requirements
+        rainbow-csv
+        scss
+        sql
+        toml
+        typst
+        # xml
       ];
     };
   };
