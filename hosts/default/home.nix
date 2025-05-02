@@ -34,6 +34,7 @@
     # (pkgs.writeShellScriptBin "my-hello" ''
     #   echo "Hello, ${config.home.username}!"
     # '')
+    (pkgs.writeShellScriptBin "cc" "${pkgs.gcc}/bin/gcc")
   ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
@@ -69,6 +70,7 @@
   #
   home.sessionVariables = {
     # EDITOR = "emacs";
+    LD_LIBRARY_PATH = "${pkgs.gcc}/lib";
   };
 
   # Let Home Manager install and manage itself.
