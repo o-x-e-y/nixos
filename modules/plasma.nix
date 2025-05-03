@@ -40,13 +40,38 @@
         };
 
         mice = [
-          # {
-          # enable = true;
-          # leftHanded = false;
-          # middleButtonEmulation = false;
-          # acceleration = "0.20";
-          # accelerationProfile = "none";
-          # }
+          {
+            enable = true;
+            name = "Logitech PRO X Wireless";
+            vendorId = "046d";
+            productId = "c094";
+            acceleration = 0.20;
+            accelerationProfile = "none";
+          }
+          {
+            enable = true;
+            name = "Logitech USB Receiver";
+            vendorId = "046d";
+            productId = "c547";
+            acceleration = 0.2;
+            accelerationProfile = "none";
+          }
+        ];
+
+        touchpads = [
+          {
+            enable = true;
+            name = "ELAN0676:00 04F3:3195 Touchpad";
+            vendorId = "04f3";
+            productId = "3195";
+            accelerationProfile = "default";
+            disableWhileTyping = true;
+            leftHanded = false;
+            middleButtonEmulation = false;
+            naturalScroll = false;
+            pointerSpeed = 0;
+            tapToClick = true;
+          }
         ];
       };
 
