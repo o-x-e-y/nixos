@@ -127,6 +127,8 @@
     nil
     gnumake
     gcc
+    clang-tools
+    nixfmt-rfc-style
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
