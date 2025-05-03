@@ -3,7 +3,10 @@
   home-manager.users.${config.main-user.username} = {
     programs.zed-editor = {
       enable = true;
-      extraPackages = with pkgs; [ nixd nil ];
+      extraPackages = with pkgs; [
+        nixd
+        nil
+      ];
       userSettings = {
         show_edit_predictions = true;
         features = {
@@ -16,21 +19,24 @@
         ui_font_family = "Noto Sans";
         buffer_font_family = "Noto Sans Mono";
         theme = {
-            mode = "system";
-            light = "One Light";
-            dark = "Gruvbox Dark Hard";
+          mode = "system";
+          light = "One Light";
+          dark = "Gruvbox Dark Hard";
         };
         autosave = {
           after_delay = {
             milliseconds = 1000;
           };
         };
-        wrap_guides = [100];
+        wrap_guides = [ 100 ];
         preferred_line_length = 100;
         soft_wrap = "preferred_line_length";
         file_types = {
-          c = ["c" "h"];
-          Assembly = ["*.casm"];
+          c = [
+            "c"
+            "h"
+          ];
+          Assembly = [ "*.casm" ];
         };
         languages = {
           Assembly = {
@@ -64,7 +70,7 @@
         }
       ];
     };
-    
+
     programs.zed-editor-extensions = {
       enable = true;
       packages = with pkgs.zed-extensions; [

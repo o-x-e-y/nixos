@@ -9,20 +9,20 @@ in
 
   config = lib.mkIf cfg.enable {
     boot.kernelModules = [ "uinput" ];
-    
+
     services.udev.extraRules = ''
       KERNEL=="uinput", MODE="0660", GROUP="uinput", OPTIONS+="static_node=uinput"
     '';
-    
-    users.groups.uinput = {};
-    
+
+    users.groups.uinput = { };
+
     systemd.services.kanata-internalKeyboard.serviceConfig = {
       SupplementaryGroups = [
         "input"
         "uinput"
       ];
     };
-    
+
     services.kanata = {
       enable = true;
       keyboards = {
@@ -34,7 +34,7 @@ in
             "/dev/input/by-path/pci-0000:64:00.3-usb-0:1:1.1-event-kbd"
           ];
           extraDefCfg = "process-unmapped-keys yes";
-          config = ''          
+          config = ''
             (defsrc
                 grv       1    2    3    4    5    6    7    8    9    0    -    =    bspc
                 tab       q    w    e    r    t    y    u    i    o    p    [    ]    ret
@@ -42,7 +42,7 @@ in
                 lsft 102d z    x    c    v    b    n    m    ,    .    /    rsft
                 lctl lmet lalt           spc                 ralt rmet rctl
             )
-            
+
             (deflayer dvorak
                 `         1    2    3    4    5    6    7    8    9    0    [    ]    bspc
                 tab       '    ,    .    p    y    f    g    c    r    l    /    =    ret
@@ -50,7 +50,7 @@ in
                 lsft \    ;    q    j    k    x    b    m    w    v    z    rsft
                 lctl lmet lalt                spc            @grg rmet rctl
             )
-            
+
             (deflayer george
                 `    1    2    3    4    5         6    7    8    9    0    [    ]    bspc
                 tab  @:;  u    o    f    j         @quk k    l    r    v    /    =    ret
@@ -58,7 +58,7 @@ in
                 @osl .    ,    .    p    g    '    b    m    w    x    z    @osr
                 @ocl lmet lalt                spc            @qwt rmet @ocr
             )
-            
+
             (deflayer qwerty
                 grv       1    2    3    4    5    6    7    8    9    0    -    =    bspc
                 tab       q    w    e    r    t    y    u    i    o    p    [    ]    ret
@@ -66,7 +66,7 @@ in
                 lsft \    z    x    c    v    b    n    m    ,    .    /    rsft
                 lctl lmet lalt           spc                 @dvk rmet rctl
             )
-            
+
             (defalias
                 dvk (layer-switch dvorak)
                 grg (layer-switch george)
@@ -87,7 +87,7 @@ in
                 ocl (one-shot 500 lctl)
                 ocr (one-shot 500 rctl)
             )
-            
+
             ;; (deflayer sturdy
             ;;   `    1    2    3    4    5         6    7    8    9    0    [    ]    bspc
             ;;   tab  v    m    l    c    p         x    f    o    u    j    /    =    ret
@@ -95,7 +95,7 @@ in
             ;;   @osl z    k    @quk g    w    @b   b    h    '    ;    ,    @osr
             ;;   @ocl lmet lalt                spc            @stn rmet @ocr
             ;; )
-            
+
             ;; (deflayer stronk
             ;;   `    1    2    3    4    5         6    7    8    9    0    [    ]    bspc
             ;;   tab  f    d    l    b    v         j    g    o    u    ,    /    =    ret

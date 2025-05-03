@@ -3,7 +3,7 @@
   home-manager.users.${config.main-user.username} = {
     programs.plasma = {
       enable = true;
-      
+
       workspace = {
         enableMiddleClickPaste = false;
         theme = "breeze-dark";
@@ -24,29 +24,32 @@
           theme = "__aurorae__svg__Utterly-Round-Dark-Solid";
         };
       };
-      
+
       input = {
         keyboard = {
           layouts = [
             { layout = "us"; }
-            { layout = "us"; variant = "dvorak"; }
+            {
+              layout = "us";
+              variant = "dvorak";
+            }
           ];
           options = [
             "caps:backspace"
           ];
         };
-        
+
         mice = [
           # {
-            # enable = true;
-            # leftHanded = false;
-            # middleButtonEmulation = false;
-            # acceleration = "0.20";
-            # accelerationProfile = "none";
+          # enable = true;
+          # leftHanded = false;
+          # middleButtonEmulation = false;
+          # acceleration = "0.20";
+          # accelerationProfile = "none";
           # }
         ];
       };
-      
+
       # configFile."kglobalshortcutsrc"."KDE Keyboard Layout Switcher" = {
       #     "Next keyboard layout" = "Switch to Next Keyboard Layout=Meta+Space,Meta+Alt+K,Switch to Next Keyboard Layout";
       # };
