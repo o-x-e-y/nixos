@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ pkgs, config, ... }@inputs:
+{ pkgs, config, inputs, ... }:
 
 {
   imports = [
@@ -135,6 +135,7 @@
     gcc
     clang-tools
     nixfmt-rfc-style
+    python314
   ];
   
   nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];

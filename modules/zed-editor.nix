@@ -5,7 +5,7 @@
       enable = true;
       extraPackages = with pkgs; [
         nixd
-        nil
+        python314
       ];
       userSettings = {
         show_edit_predictions = true;
@@ -86,6 +86,8 @@
         latex
         make
         nix
+        pylsp
+        python-refactoring
         python-requirements
         rainbow-csv
         scss
