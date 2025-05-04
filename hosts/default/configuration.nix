@@ -12,7 +12,6 @@
 
   main-user.enable = true;
   main-user.username = "oxey";
-  main-user.profile-picture = ./../../public/${config.main-user.username}-pfp.jpg;
   kanata.enable = true;
 
   # Bootloader.

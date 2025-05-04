@@ -73,6 +73,8 @@
     # EDITOR = "emacs";
     LD_LIBRARY_PATH = "${pkgs.gcc}/lib";
   };
+  
+  home.file.".face.icon".source = ./../../public/oxey-pfp.png;
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
