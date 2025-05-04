@@ -23,6 +23,7 @@
           light = "One Light";
           dark = "Gruvbox Dark Hard";
         };
+        icon_theme = "JetBrains Icons Dark";
         autosave = {
           after_delay = {
             milliseconds = 1000;
@@ -82,6 +83,7 @@
         env
         html
         http
+        jetbrains-icons
         kconfig
         latex
         make
@@ -94,7 +96,6 @@
         sql
         toml
         typst
-        # xml
       ];
     };
   };
