@@ -16,6 +16,14 @@ in
         main user
       '';
     };
+    profile-picture = lib.mkOption {
+      default = none;
+      example = ./path/to/profile-picture.jpg;
+      type = lib.types.path;
+      description = ''
+        Path to the user's profile picture.
+      '';
+    }
   };
 
   config = lib.mkIf cfg.enable {
