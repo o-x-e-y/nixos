@@ -17,13 +17,13 @@ in
       '';
     };
     profile-picture = lib.mkOption {
-      default = none;
+      default = null;
       example = ./path/to/profile-picture.jpg;
       type = lib.types.path;
       description = ''
         Path to the user's profile picture.
       '';
-    }
+    };
   };
 
   config = lib.mkIf cfg.enable {
