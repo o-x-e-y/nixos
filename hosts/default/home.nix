@@ -1,9 +1,12 @@
 { pkgs, config, ... }:
-
+let
+  username = "oxey";
+  email = "lucoerlemans37@gmail.com";
+in
 {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
-  home.username = "oxey";
+  home.username = username;
   home.homeDirectory = "/home/${config.home.username}";
 
   # This value determines the Home Manager release that your configuration is
@@ -37,26 +40,26 @@
     # '')
     # (pkgs.writeShellScriptBin "cc" "${pkgs.gcc}/bin/gcc")
   ];
-  
+
   home.file.".gitconfig".text = ''
     [user]
-      name = oxey
-      email = lucoerlemans37@gmail.com
+      name = ${config.home.username}
+      email = ${email}
   '';
-  
+
   home.file.".bashrc".text = ''
     #
     # ~/.bashrc
     #
-    
+
     # If not running interactively, don't do anything
     [[ $- != *i* ]] && return
-    
+
     alias ls='ls --color=auto'
     alias grep='grep --color=auto'
     alias zed='${pkgs.zed-editor}/bin/zeditor'
   '';
-  
+
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
   home.file = {
@@ -92,7 +95,7 @@
     # EDITOR = "emacs";
     LD_LIBRARY_PATH = "${pkgs.gcc}/lib";
   };
-  
+
   home.file.".face.icon".source = ./../../public/oxey-pfp.png;
 
   # Let Home Manager install and manage itself.
