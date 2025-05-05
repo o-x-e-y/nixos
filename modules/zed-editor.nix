@@ -5,7 +5,7 @@
       enable = true;
       extraPackages = with pkgs; [
         nixd
-        nixfmt
+        nixfmt-rfc-style
         python314
       ];
       userSettings = {
