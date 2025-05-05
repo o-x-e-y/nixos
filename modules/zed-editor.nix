@@ -32,6 +32,9 @@
         wrap_guides = [ 100 ];
         preferred_line_length = 100;
         soft_wrap = "preferred_line_length";
+        journal = {
+          hour_format = "hour24";
+        };
         file_types = {
           c = [
             "c"
