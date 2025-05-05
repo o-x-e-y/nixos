@@ -5,6 +5,7 @@
       enable = true;
       extraPackages = with pkgs; [
         nixd
+        nixfmt
         python314
       ];
       userSettings = {
@@ -48,6 +49,15 @@
           };
           Markdown = {
             tab_size = 4;
+          };
+          Nix = {
+            tab_size = 2;
+            formatter = {
+              external = {
+                command = "nixfmt";
+                args = [ "{buffer_path}" ];
+              };
+            }
           };
         };
       };
