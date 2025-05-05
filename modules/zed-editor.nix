@@ -57,7 +57,7 @@
                 command = "nixfmt";
                 args = [ "{buffer_path}" ];
               };
-            }
+            };
           };
         };
       };
