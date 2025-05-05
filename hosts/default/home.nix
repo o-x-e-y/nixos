@@ -44,6 +44,19 @@
       email = lucoerlemans37@gmail.com
   '';
   
+  home.file.".bashrc".text = ''
+    #
+    # ~/.bashrc
+    #
+    
+    # If not running interactively, don't do anything
+    [[ $- != *i* ]] && return
+    
+    alias ls='ls --color=auto'
+    alias grep='grep --color=auto'
+    alias zed='${pkgs.zed-editor}/bin/zeditor'
+  '';
+  
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
   home.file = {
