@@ -39,11 +39,19 @@
         ];
         userSettings = {
           "git.autofetch" = true;
+          "editor.fontSize" = 16;
+          "debug.console.fontSize" = 16;
+          "terminal.integrated.fontSize" = 16;
+          "workbench.colorTheme" = "Vim Dark Hard";
+          "workbench.iconTheme" = "gruvbox-material-icon-theme";
+          "window.zoomLevel" = 0.2;
+          "window.zoomPerWindow" = false;
           "files.autoSave" = "afterDelay";
-          "editor.fontSize" = 14;
-          "debug.console.fontSize" = 14;
-          "terminal.integrated.fontSize" = 14;
-          "window.zoomLevel" = 1;
+          "files.autoSaveDelay" = 1000;
+          "files.encoding" = "utf8";
+          "files.insertFinalNewline" = true;
+          "files.trimFinalNewlines" = true;
+          "files.trimTrailingWhitespace" = true;
           "[nix]"."editor.tabSize" = 2;
         };
       };
