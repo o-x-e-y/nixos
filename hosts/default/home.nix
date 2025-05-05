@@ -35,9 +35,15 @@
     # (pkgs.writeShellScriptBin "my-hello" ''
     #   echo "Hello, ${config.home.username}!"
     # '')
-    (pkgs.writeShellScriptBin "cc" "${pkgs.gcc}/bin/gcc")
+    # (pkgs.writeShellScriptBin "cc" "${pkgs.gcc}/bin/gcc")
   ];
-
+  
+  home.file.".gitconfig".text = ''
+    [user]
+      name = oxey
+      email = lucoerlemans37@gmail.com
+  '';
+  
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
   home.file = {
