@@ -24,6 +24,7 @@ in
     discord
     spotify
     vscode
+    teams-for-linux
     btop
     typst
     typstyle
