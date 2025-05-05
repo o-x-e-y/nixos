@@ -136,6 +136,7 @@
     clang-tools
     nixfmt-rfc-style
     python314
+    fd
   ];
   
   nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
