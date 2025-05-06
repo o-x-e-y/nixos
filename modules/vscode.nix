@@ -55,7 +55,9 @@
           "files.insertFinalNewline" = true;
           "files.trimFinalNewlines" = true;
           "files.trimTrailingWhitespace" = true;
+          "explorer.confirmDelete" = false;
           "explorer.confirmDragAndDrop" = false;
+          "explorer.confirmPasteNative" = false;
           "[nix]"."editor.tabSize" = 2;
         };
       };
