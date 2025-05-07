@@ -3,6 +3,7 @@
   imports = [
     ./bash.nix
     ./btop.nix
+    ./fastfetch.nix
     ./kanata.nix
     ./plasma.nix
     ./vscode.nix
