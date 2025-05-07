@@ -140,7 +140,6 @@
     gcc
     clang-tools
     nixfmt-rfc-style
-    python314
     python313
     fd
   ];
