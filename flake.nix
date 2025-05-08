@@ -33,7 +33,6 @@
         specialArgs = { inherit inputs; };
 
         modules = [
-          ./programs
           ./hosts/default/configuration.nix
           {
             nixpkgs.overlays = [

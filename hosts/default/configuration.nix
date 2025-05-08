@@ -13,6 +13,7 @@
   imports = [
     ./hardware-configuration.nix
     ./main-user.nix
+    ./kanata.nix
   ];
 
   main-user.enable = true;
