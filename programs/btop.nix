@@ -1,15 +1,13 @@
 { config, ... }:
 {
-  home-manager.users.${config.main-user.username} = {
-    programs.btop = {
-      enable = true;
-      settings = {
-        color_theme = "gruvbox_dark";
-        theme_background = true;
-        truecolor = true;
-        rounded_corners = true;
-        graph_symbol = "block";
-      };
+  programs.btop = {
+    enable = true;
+    settings = {
+      color_theme = "gruvbox_dark";
+      theme_background = true;
+      truecolor = true;
+      rounded_corners = true;
+      graph_symbol = "block";
     };
   };
 }

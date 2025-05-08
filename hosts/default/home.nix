@@ -7,7 +7,7 @@ in
   imports = [
     ./../../programs
   ];
-  
+
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = username;
@@ -52,7 +52,7 @@ in
     # '')
     # (pkgs.writeShellScriptBin "cc" "${pkgs.gcc}/bin/gcc")
   ];
-  
+
   programs = {
     alacritty.enable = true;
   };
