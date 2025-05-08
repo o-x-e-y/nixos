@@ -1,18 +1,29 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
+let
+  cfg = config.apps.alacritty;
+in
 {
-  programs.alacritty = {
-    enable = true;
-    theme = "gruvbox_material_hard_dark";
-    settings = {
-      window = {
-        decorations = "None";
-        startup_mode = "Maximized";
-      };
-      font = {
-        size = 13.0;
-      };
-      selection = {
-        save_to_clipboard = true;
+  options.apps.alacritty = {
+    enable = lib.mkEnableOption "Enable alacritty terminal emulator";
+  };
+
+  config = lib.mkIf cfg.enable {
+    home.packages = [ pkgs.alacritty ];
+    
+    programs.alacritty = {
+      enable = true;
+      theme = "gruvbox_material_hard_dark";
+      settings = {
+        window = {
+            decorations = "None";
+            startup_mode = "Maximized";
+        };
+        font = {
+            size = 13.0;
+        };
+        selection = {
+            save_to_clipboard = true;
+        };
       };
     };
   };

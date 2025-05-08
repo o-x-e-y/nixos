@@ -7,6 +7,10 @@ in
   imports = [
     ./../../programs
   ];
+  
+  apps = {
+    alacritty.enable = false;
+  };
 
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
@@ -36,7 +40,6 @@ in
     gimp3
     fastfetch
     ungoogled-chromium
-    alacritty
 
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
