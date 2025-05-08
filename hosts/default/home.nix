@@ -48,6 +48,10 @@ in
     # '')
     # (pkgs.writeShellScriptBin "cc" "${pkgs.gcc}/bin/gcc")
   ];
+  
+  programs = {
+    alacritty.enable = true;
+  };
 
   home.file.".gitconfig".text = ''
     [user]
