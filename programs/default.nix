@@ -1,7 +1,7 @@
 { ... }:
 {
   imports = [
-    ./alacritty
+    ./alacritty.nix
     ./bash.nix
     ./btop.nix
     ./fastfetch.nix
