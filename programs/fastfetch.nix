@@ -7,104 +7,75 @@
         logo = {
           source = ./../public/fastfetch-dofsmie.ans;
         };
+        display = {
+          separator = ": ";
+          color = "green";
+        };
+        general = {
+          thread = true;
+        };
         modules = [
-          "title"
-          "separator"
+          {
+            type = "title";
+            format = "{#red}[{#}{6}{7}{8} {#magenta}{3}{#red}]{#}";
+            color = {
+              user = "yellow";
+              at = "cyan";
+              host = "blue";
+            };
+          }
+          {
+            type = "separator";
+            string = "-";
+            length = 30;
+          }
           "os"
           "host"
-          "bios"
-          "bootmgr"
-          "board"
-          "chassis"
           "kernel"
-          "initsystem"
           "uptime"
-          "loadavg"
-          "processes"
           "packages"
-          "shell"
-          "editor"
-          "display"
-          "brightness"
-          "monitor"
-          "lm"
+          "shell"          
           "de"
           "wm"
           "wmtheme"
           "theme"
-          "icons"
-          "font"
-          "cursor"
-          "wallpaper"
-          "terminal"
-          "terminalfont"
-          "terminalsize"
-          "terminaltheme"
+          
+          "break"
           {
-            "type" = "cpu";
-            "showPeCoreCount" = true;
-            "temp" = true;
-          }
-          "cpucache"
-          "cpuusage"
-          {
-            "type" = "gpu";
-            "driverSpecific" = true;
-            "temp" = true;
-          }
-          "memory"
-          "physicalmemory"
-          "swap"
-          "disk"
-          "btrfs"
-          "zpool"
-          {
-            "type" = "battery";
-            "temp" = true;
-          }
-          "poweradapter"
-          "player"
-          "media"
-          {
-            "type" = "publicip";
-            "timeout" = 1000;
+            type = "cpu";
+            showPeCoreCount = true;
+            temp = true;
           }
           {
-            "type" = "localip";
-            "showIpv6" = true;
-            "showMac" = true;
-            "showSpeed" = true;
-            "showMtu" = true;
-            "showLoop" = true;
-            "showFlags" = true;
-            "showAllIps" = true;
+            type = "gpu";
+            driverSpecific = true;
+            temp = true;
           }
-          "dns"
-          "wifi"
-          "datetime"
-          "locale"
-          "vulkan"
-          "opengl"
-          "opencl"
-          "users"
-          "bluetooth"
-          "bluetoothradio"
-          "sound"
-          "camera"
-          "gamepad"
-          "mouse"
-          "keyboard"
           {
-            "type" = "weather";
-            "timeout" = 1000;
+            type = "memory";
+            format = "{} / {}";
           }
-          "netio"
-          "diskio"
           {
-            "type" = "physicaldisk";
-            "temp" = true;
+            type = "physicaldisk";
+            key = "Disk";
           }
-          "tpm"
+          {
+            type = "display";
+            format = "{width}x{height} @ {preferred-refresh-rate} in {inch}\" [{type}]";
+          }
+          {
+            type = "battery";
+            temp = true;
+            format = "{4} - [{5}]";
+          }
+          
+          "break"
+          {
+            type = "weather";
+            timeout = 1000;
+          }
+          
+          "break"
           "version"
           "break"
           "colors"
