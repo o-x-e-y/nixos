@@ -26,7 +26,7 @@ in
 
           dpi-aware = false;
           pad = "12x12";
-          initial-window-mode = "fullscreen";
+          initial-window-mode = "maximized";
         };
         cursor = {
           style = "beam";
