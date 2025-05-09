@@ -1,4 +1,3 @@
-{ config, ... }:
 {
   programs.plasma = {
     enable = true;
@@ -73,9 +72,5 @@
         }
       ];
     };
-
-    # configFile."kglobalshortcutsrc"."KDE Keyboard Layout Switcher" = {
-    #     "Next keyboard layout" = "Switch to Next Keyboard Layout=Meta+Space,Meta+Alt+K,Switch to Next Keyboard Layout";
-    # };
   };
 }

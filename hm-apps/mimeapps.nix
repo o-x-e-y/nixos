@@ -1,4 +1,3 @@
-{ ... }:
 let
   firefox = "firefox.desktop";
   zed = "dev.zed.Zed.desktop";
