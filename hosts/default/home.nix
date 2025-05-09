@@ -7,7 +7,7 @@ in
   imports = [
     ./../../hm-apps
   ];
-  
+
   apps = {
     alacritty.enable = false;
     foot.enable = true;
