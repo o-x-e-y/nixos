@@ -3,7 +3,7 @@
     enable = true;
     settings = {
       logo = {
-        source = ./../public/fastfetch-dofsmie.ans;
+        source = ./../../../public/fastfetch-dofsmie.ans;
       };
       display = {
         separator = ": ";
