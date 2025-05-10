@@ -5,7 +5,7 @@ let
 in
 {
   imports = [
-    ./../../hm-apps
+    ./../../home/programs
   ];
 
   apps = {
