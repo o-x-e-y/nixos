@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   programs.zed-editor = {
     enable = true;
@@ -56,6 +56,20 @@
               command = "nixfmt";
               args = [ "{buffer_path}" ];
             };
+          };
+        };
+      };
+      lsp = {
+        rust-analyzer = {
+          binary = {
+            path = lib.getExe pkgs.rust-analyzer;
+            path_lookup = true;
+          };
+        };
+        package-version-server = {
+          binary = {
+            path = lib.getExe pkgs.package-version-server;
+            path_lookup = true;
           };
         };
       };

@@ -41,6 +41,8 @@ in
     gimp3
     fastfetch
     ungoogled-chromium
+    rust-analyzer
+    package-version-server
 
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
