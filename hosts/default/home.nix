@@ -11,6 +11,7 @@ in
   apps = {
     alacritty.enable = false;
     foot.enable = true;
+    zed-editor.enable = true;
   };
 
   # Home Manager needs a bit of information about you and the paths it should
