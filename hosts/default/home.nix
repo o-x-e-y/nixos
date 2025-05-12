@@ -10,6 +10,7 @@ in
 
   apps = {
     alacritty.enable = false;
+    bash.enable = true;
     foot.enable = true;
     zed-editor.enable = true;
   };
