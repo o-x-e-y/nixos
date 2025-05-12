@@ -8,7 +8,7 @@ let
   cfg = config.apps.zed-editor;
 in
 {
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf (cfg.enable && cfg.useSettings) {
     programs.zed-editor = {
       enable = true;
       userSettings = {

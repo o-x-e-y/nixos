@@ -10,12 +10,6 @@ in
 
   apps = {
     alacritty.enable = false;
-    bash.enable = true;
-    btop.enable = true;
-    fastfetch.enable = true;
-    foot.enable = true;
-    vscode.enable = true;
-    zed-editor.enable = true;
   };
 
   # Home Manager needs a bit of information about you and the paths it should

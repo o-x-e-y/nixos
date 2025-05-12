@@ -8,7 +8,7 @@ let
   cfg = config.apps.vscode;
 in
 {
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf (cfg.enable && cfg.useExtensions) {
     programs.vscode = {
       profiles.default = {
         extensions =

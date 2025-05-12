@@ -7,7 +7,7 @@ let
   cfg = config.apps.zed-editor;
 in
 {
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf (cfg.enable && cfg.useKeymaps) {
     programs.zed-editor = {
       userKeymaps = [
         {
