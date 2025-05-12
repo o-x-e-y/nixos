@@ -134,7 +134,6 @@
   environment.systemPackages = with pkgs; [
     git
     kanata
-    zed-editor
     nixd
     nil
     gnumake

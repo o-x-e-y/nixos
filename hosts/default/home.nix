@@ -11,7 +11,10 @@ in
   apps = {
     alacritty.enable = false;
     bash.enable = true;
+    btop.enable = true;
+    fastfetch.enable = true;
     foot.enable = true;
+    vscode.enable = true;
     zed-editor.enable = true;
   };
 
@@ -34,14 +37,11 @@ in
   home.packages = with pkgs; [
     discord
     spotify
-    vscode
     teams-for-linux
-    btop
     typst
     typstyle
     tinymist
     gimp3
-    fastfetch
     ungoogled-chromium
     rust-analyzer
     package-version-server
@@ -60,10 +60,6 @@ in
     # '')
     # (pkgs.writeShellScriptBin "cc" "${pkgs.gcc}/bin/gcc")
   ];
-
-  programs = {
-    alacritty.enable = true;
-  };
 
   home.file.".gitconfig".text = ''
     [user]
