@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 let
@@ -13,8 +12,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = [ pkgs.alacritty ];
-
     programs.alacritty = {
       enable = true;
       theme = "gruvbox_material_hard_dark";

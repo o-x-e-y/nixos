@@ -13,8 +13,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = [ pkgs.bash ];
-    
     programs.bash = {
       enable = true;
       historyControl = [ "ignoreboth" ]; # ignore both duplicates and space in history
