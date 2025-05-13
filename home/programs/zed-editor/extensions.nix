@@ -13,7 +13,7 @@ in
       extraPackages = with pkgs; [
         nixd
         nixfmt-rfc-style
-        python314
+        python313
         rust-analyzer
         package-version-server
       ];
