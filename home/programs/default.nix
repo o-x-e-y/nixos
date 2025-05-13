@@ -8,6 +8,7 @@
     ./foot
     ./mimeapps
     ./plasma
+    ./spotify-player
     ./vscode
     ./zed-editor
   ];
@@ -18,6 +19,7 @@
     btop.enable = lib.mkDefault true;
     fastfetch.enable = lib.mkDefault true;
     foot.enable = lib.mkDefault true;
+    spotify-player.enable = lib.mkDefault true;
     vscode = {
       enable = lib.mkDefault true;
       useSettings = lib.mkDefault true;
