@@ -6,6 +6,7 @@
     ./btop
     ./fastfetch
     ./foot
+    ./git
     ./mimeapps
     ./plasma
     ./spotify-player
@@ -19,6 +20,7 @@
     btop.enable = lib.mkDefault true;
     fastfetch.enable = lib.mkDefault true;
     foot.enable = lib.mkDefault true;
+    git.enable = lib.mkDefault true;
     spotify-player.enable = lib.mkDefault true;
     vscode = {
       enable = lib.mkDefault true;
