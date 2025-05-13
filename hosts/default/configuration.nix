@@ -13,12 +13,15 @@
   imports = [
     ./hardware-configuration.nix
     ./main-user.nix
-    ./kanata.nix
+    ./../../modules
   ];
 
   main-user.enable = true;
   main-user.username = "oxey";
-  kanata.enable = true;
+  
+  modules = {
+    kanata.enable = true;
+  };
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
