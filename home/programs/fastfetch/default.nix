@@ -8,7 +8,11 @@ let
 in
 {
   options.apps.fastfetch = {
-    enable = lib.mkEnableOption "Enable fastfetch package";
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable fastfetch package";
+    };
   };
 
   config = lib.mkIf cfg.enable {

@@ -9,7 +9,11 @@ let
 in
 {
   options.apps.bash = {
-    enable = lib.mkEnableOption "Enable bash settings";
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable bash settings";
+    };
   };
 
   config = lib.mkIf cfg.enable {

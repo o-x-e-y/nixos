@@ -14,9 +14,21 @@ in
   ];
   
   options.apps.vscode = {
-    enable = lib.mkEnableOption "Enable vscode package";
-    useSettings = lib.mkEnableOption "Use Oxey vscode settings";
-    useExtensions = lib.mkEnableOption "Use Oxey extensions";
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable vscode package";
+    };
+    useSettings = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Use Oxey vscode settings";
+    };
+    useExtensions = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Use Oxey extensions";
+    };
   };
 
   config = lib.mkIf cfg.enable {

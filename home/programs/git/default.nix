@@ -8,7 +8,11 @@ let
 in
 {
   options.apps.git = {
-    enable = lib.mkEnableOption "Enable git settings";
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable git settings";
+    };
   };
   
   config = lib.mkIf cfg.enable {    

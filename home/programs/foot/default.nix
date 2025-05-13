@@ -9,7 +9,11 @@ let
 in
 {
   options.apps.foot = {
-    enable = lib.mkEnableOption "Enable foot terminal emulator";
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable foot terminal emulator";
+    };
   };
 
   config = lib.mkIf cfg.enable {

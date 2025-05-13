@@ -8,7 +8,11 @@ let
 in
 {
   options.apps.alacritty = {
-    enable = lib.mkEnableOption "Enable alacritty terminal emulator";
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable alacritty terminal emulator";
+    };
   };
 
   config = lib.mkIf cfg.enable {

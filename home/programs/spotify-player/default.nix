@@ -4,7 +4,11 @@ let
 in
 {
   options.apps.spotify-player = {
-    enable = lib.mkEnableOption "Enable spotify-player module";
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable spotify-player module";
+    };
   };
   
   config = lib.mkIf cfg.enable {

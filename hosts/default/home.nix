@@ -1,7 +1,6 @@
 { pkgs, config, ... }:
 let
   username = "oxey";
-  email = "lucoerlemans37@gmail.com";
 in
 {
   imports = [
