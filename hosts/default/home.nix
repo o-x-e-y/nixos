@@ -91,6 +91,11 @@ in
   };
 
   home.file.".face.icon".source = ./../../public/oxey-pfp.png;
+  
+  home.file.".config/nixpkgs" = {
+    source = ./../../dotfiles/nixpkgs;
+    recursive = true;
+  };
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
