@@ -145,6 +145,7 @@
     nixfmt-rfc-style
     python313
     fd
+    nix-index
   ];
 
   nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
