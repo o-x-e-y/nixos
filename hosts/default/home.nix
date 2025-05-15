@@ -38,6 +38,7 @@ in
     ungoogled-chromium
     rust-analyzer
     package-version-server
+    mesen
 
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
