@@ -22,6 +22,17 @@
         theme = "__aurorae__svg__Utterly-Round-Dark-Solid";
       };
     };
+    
+    kwin = {
+      nightLight = {
+        enable = true;
+        mode = "constant";
+        temperature = {
+          day = 5900;
+          night = 5900;
+        };
+      };
+    };
 
     input = {
       keyboard = {
