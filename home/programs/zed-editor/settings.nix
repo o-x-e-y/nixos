@@ -18,10 +18,11 @@ in
         };
         base_keymap = "VSCode";
         ui_font_size = 16;
-        buffer_font_size = 15.0;
+        buffer_font_size = 15.5;
         # buffer_font_weight = 100;
         ui_font_family = "Noto Sans";
-        buffer_font_family = "Noto Sans Mono";
+        buffer_font_family = "JetBrainsMonoNL Nerd Font Mono";
+        # buffer_font_family = "Noto Sans Mono";
         theme = {
           mode = "system";
           light = "One Light";

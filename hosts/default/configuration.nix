@@ -148,6 +148,10 @@
     nix-index
   ];
 
+  fonts.packages = with pkgs; [
+    nerd-fonts.jetbrains-mono
+  ];
+  
   nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
 
   # Some programs need SUID wrappers, can be configured further or are
