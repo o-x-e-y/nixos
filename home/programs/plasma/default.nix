@@ -1,3 +1,4 @@
+{ lib, pkgs, ... }:
 {
   programs.plasma = {
     enable = true;
@@ -84,10 +85,12 @@
       ];
     };
 
-    shortcuts = {
-      "Custom Screenshot" = {
-        trigger = "Print";
-        action = "spectacle -rbc";
+    hotkeys.commands = {
+      spectacle-rbc = {
+        name = "Screenshot Rectangle";
+        key = "Print";
+        command = "${lib.getExe pkgs.kdePackages.spectacle} -rbc";
+        comment = "Take rectangular screenshot and save to clipboard";
       };
     };
   };
