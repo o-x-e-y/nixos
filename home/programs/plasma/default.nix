@@ -83,5 +83,12 @@
         }
       ];
     };
+
+    shortcuts = {
+      "Custom Screenshot" = {
+        trigger = "Print";
+        action = "spectacle -rbc";
+      };
+    };
   };
 }
