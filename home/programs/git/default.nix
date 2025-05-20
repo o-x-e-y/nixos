@@ -14,8 +14,8 @@ in
       description = "Enable git settings";
     };
   };
-  
-  config = lib.mkIf cfg.enable {    
+
+  config = lib.mkIf cfg.enable {
     programs.git = {
       enable = true;
       userName = "oxey";

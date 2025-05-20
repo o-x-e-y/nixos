@@ -12,7 +12,7 @@ in
     ./settings.nix
     ./extensions.nix
   ];
-  
+
   options.apps.vscode = {
     enable = lib.mkOption {
       type = lib.types.bool;

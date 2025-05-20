@@ -14,8 +14,8 @@ in
       description = "Enable btop";
     };
   };
-  
-  config = lib.mkIf cfg.enable {    
+
+  config = lib.mkIf cfg.enable {
     programs.btop = {
       enable = true;
       settings = {

@@ -12,7 +12,7 @@ in
     ./keymaps.nix
     ./settings.nix
   ];
-  
+
   options.apps.zed-editor = {
     enable = lib.mkOption {
       type = lib.types.bool;

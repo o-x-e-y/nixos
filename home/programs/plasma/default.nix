@@ -22,7 +22,7 @@
         theme = "__aurorae__svg__Utterly-Round-Dark-Solid";
       };
     };
-    
+
     kwin = {
       nightLight = {
         enable = true;
