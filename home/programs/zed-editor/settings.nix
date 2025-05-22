@@ -25,7 +25,7 @@ in
         # buffer_font_family = "Noto Sans Mono";
         theme = {
           mode = "system";
-          light = "One Light";
+          light = "Gruvbox Dark Soft";
           dark = "Gruvbox Dark Hard";
         };
         icon_theme = "JetBrains Icons Dark";

@@ -16,6 +16,7 @@ in
         python313
         rust-analyzer
         package-version-server
+        zig
       ];
     };
 
@@ -43,6 +44,7 @@ in
         sql
         toml
         typst
+        zig
       ];
     };
   };
