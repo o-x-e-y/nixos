@@ -8,6 +8,10 @@ let
   cfg = config.apps.zed-editor;
 in
 {
+  imports = [
+    ./assembly
+  ];
+  
   config = lib.mkIf (cfg.enable && cfg.useExtensions) {
     programs.zed-editor = {
       extraPackages = with pkgs; [
@@ -23,6 +27,7 @@ in
     programs.zed-editor-extensions = {
       enable = true;
       packages = with pkgs.zed-extensions; [
+        assembly
         awk
         bqn
         csharp
