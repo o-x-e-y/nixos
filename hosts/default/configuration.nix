@@ -139,9 +139,7 @@
     kanata
     nixd
     nil
-    gnumake
     gcc
-    clang-tools
     nixfmt-rfc-style
     python313
     fd
