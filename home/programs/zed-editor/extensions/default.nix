@@ -6,12 +6,9 @@
 }:
 let
   cfg = config.apps.zed-editor;
+  asm = pkgs.callPackage ./assembly.nix { };
 in
-{
-  imports = [
-    ./assembly
-  ];
-  
+{  
   config = lib.mkIf (cfg.enable && cfg.useExtensions) {
     programs.zed-editor = {
       extraPackages = with pkgs; [
@@ -27,7 +24,6 @@ in
     programs.zed-editor-extensions = {
       enable = true;
       packages = with pkgs.zed-extensions; [
-        assembly
         awk
         bqn
         csharp
@@ -50,6 +46,8 @@ in
         toml
         typst
         zig
+      ] ++ [
+        asm
       ];
     };
   };

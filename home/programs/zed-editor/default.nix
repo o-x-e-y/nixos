@@ -8,7 +8,7 @@ let
 in
 {
   imports = [
-    ./extensions.nix
+    ./extensions
     ./keymaps.nix
     ./settings.nix
   ];
