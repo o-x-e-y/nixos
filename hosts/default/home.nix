@@ -40,8 +40,7 @@ in
     package-version-server
     mesen
     zig
-    arduino-ide
-    arduino
+    clang-tools
 
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
