@@ -17,7 +17,7 @@ let
   });
 in
 buildZedExtension (finalAttrs: {
-  name = "Assembly";
+  name = "zed-asm";
   version = "0.0.2";
 
   src = fetchFromGitHub {
