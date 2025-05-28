@@ -26,6 +26,7 @@ in
         "grep" = "grep --color=auto";
         ".." = "cd ..";
         "zed" = "${pkgs.zed-editor}/bin/zeditor";
+        "rebuild" = "sudo nixos-rebuild switch --flake ~/nixos#nixos";
       };
     };
   };
