@@ -93,8 +93,10 @@ in
   #  /etc/profiles/per-user/oxey/etc/profile.d/hm-session-vars.sh
   #
   home.sessionVariables = {
-    # EDITOR = "emacs";
-    LD_LIBRARY_PATH = "${pkgs.gcc}/lib";
+    BROWSER = "firefox";
+    TERMINAL = "foot";
+    EDITOR = "zeditor";
+    # LD_LIBRARY_PATH = "${pkgs.gcc}/lib";
   };
 
   home.file.".face.icon".source = ./../../public/oxey-pfp.png;
