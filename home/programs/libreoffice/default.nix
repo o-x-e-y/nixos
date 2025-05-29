@@ -5,7 +5,7 @@
   ...
 }:
 let
-  cfg = config.apps.btop;
+  cfg = config.apps.libreoffice;
 in
 {
   options.apps.libreoffice = {
@@ -14,13 +14,27 @@ in
       default = true;
       description = "Enable libreoffice";
     };
+    
+    package = lib.mkPackageOption pkgs "libreoffice-fresh" { };
+
+    extraPackages = lib.mkOption {
+      type = lib.types.listOf lib.types.package;
+      default = [ ];
+      example = lib.literalExpression ''
+        with pkgs; [
+          hunspellDicts.en_US
+          hunspellDicts.nl_NL
+        ]
+      '';
+      description = ''
+        Additional LibreOffice-related packages to install when LibreOffice is enabled.
+      '';
+    };
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = with pkgs; [
-      libreoffice-fresh
-      hunspellDicts.en_GB-ise
-      hunspellDicts.nl_NL
-    ];
+    home.packages = [
+      cfg.package
+    ] ++ cfg.extraPackages;
   };
 }

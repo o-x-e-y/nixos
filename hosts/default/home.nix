@@ -9,6 +9,10 @@ in
 
   apps = {
     alacritty.enable = false;
+    libreoffice.extraPackages = with pkgs; [
+      hunspellDicts.en_GB-ise
+      hunspellDicts.nl_NL
+    ];
   };
 
   # Home Manager needs a bit of information about you and the paths it should

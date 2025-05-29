@@ -6,6 +6,7 @@
     ./fastfetch
     ./foot
     ./git
+    ./libreoffice
     ./mimeapps
     ./plasma
     ./spotify-player
