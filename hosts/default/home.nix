@@ -8,7 +8,7 @@ in
   ];
 
   apps = {
-    alacritty.enable = true;
+    alacritty.enable = false;
     libreoffice.extraPackages = with pkgs; [
       hunspellDicts.en_GB-ise
       hunspellDicts.nl_NL
