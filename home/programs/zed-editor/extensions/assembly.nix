@@ -17,14 +17,14 @@ let
   });
 in
 buildZedExtension (finalAttrs: {
-  name = "zed-asm";
-  version = "0.0.2";
+  name = "assembly-syntax";
+  version = "18845e09eabba843a6d3a63cd46f2512e6531f06";
 
   src = fetchFromGitHub {
-    owner = "o-x-e-y";
+    owner = "DevBlocky";
     repo = "zed-asm";
-    rev = "v${finalAttrs.version}";
-    hash = "sha256-oLkYwq/yzV6YDcYNSx659cHPbecNV2L1vr3PCTeGOn0=";
+    rev = finalAttrs.version;
+    hash = "sha256-lh6uP/HFBrw09Qy0gL2c28K09IZCVju7s8c56g/zKVI=";
   };
 
   grammars = [ asm-grammar ];
