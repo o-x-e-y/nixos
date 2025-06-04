@@ -10,7 +10,6 @@ in
 {
   config = lib.mkIf (cfg.enable && cfg.useSettings) {
     programs.zed-editor = {
-      enable = true;
       userSettings = {
         show_edit_predictions = true;
         features = {
@@ -52,6 +51,15 @@ in
             show_edit_predictions = false;
           };
           Markdown = {
+            tab_size = 4;
+          };
+          JavaScript = {
+            tab_size = 4;
+          };
+          TypeScript = {
+            tab_size = 4;
+          };
+          TSX = {
             tab_size = 4;
           };
           Nix = {
