@@ -120,7 +120,7 @@
     extraSpecialArgs = { inherit inputs; };
     useGlobalPkgs = true;
     useUserPackages = true;
-    backupFileExtension = "backup";
+    backupFileExtension = "backup-6-6-2025";
     users = {
       "${config.main-user.username}" = import ./home.nix;
     };
