@@ -120,7 +120,7 @@
     extraSpecialArgs = { inherit inputs; };
     useGlobalPkgs = true;
     useUserPackages = true;
-    backupFileExtension = "backup-10-6-2025";
+    backupFileExtension = "backup-23-6-2025";
     users = {
       "${config.main-user.username}" = import ./home.nix;
     };
@@ -150,6 +150,7 @@
     noto-fonts
     nerd-fonts.jetbrains-mono
     texlivePackages.librebaskerville
+    texlivePackages.inter
   ];
 
   nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
