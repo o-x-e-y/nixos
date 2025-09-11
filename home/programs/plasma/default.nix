@@ -54,7 +54,7 @@
           name = "Logitech PRO X Wireless";
           vendorId = "046d";
           productId = "c094";
-          acceleration = 0.20;
+          acceleration = 0.15;
           accelerationProfile = "none";
         }
         {
@@ -62,7 +62,7 @@
           name = "Logitech USB Receiver";
           vendorId = "046d";
           productId = "c547";
-          acceleration = 0.2;
+          acceleration = 0.15;
           accelerationProfile = "none";
         }
       ];
