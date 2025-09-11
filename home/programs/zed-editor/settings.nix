@@ -74,10 +74,7 @@ in
         };
         lsp = {
           rust-analyzer = {
-            binary = {
-              path = lib.getExe pkgs.rust-analyzer;
-              path_lookup = true;
-            };
+            command = "rust-analyzer";
           };
           package-version-server = {
             binary = {
