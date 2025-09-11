@@ -15,7 +15,6 @@ in
         nixd
         nixfmt-rfc-style
         python313
-        rust-analyzer
         package-version-server
         zig
       ];
