@@ -40,7 +40,6 @@ in
     tinymist
     gimp3
     ungoogled-chromium
-    rust-analyzer
     package-version-server
     mesen
     zig
