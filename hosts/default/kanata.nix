@@ -43,7 +43,7 @@ in
                 lctl lmet lalt           spc                 ralt rmet rctl
             )
 
-            (deflayer george
+            (deflayer gust
                 `    1    2    3    4    5         6    7    8    9    0    [    ]    bspc
                 tab  @:;  u    o    f    j         @quk k    l    r    v    /    =    ret
                 bspc e    i    a    c    y         d    h    t    n    s    -    \
@@ -56,11 +56,11 @@ in
                 tab       q    w    e    r    t    y    u    i    o    p    [    ]    ret
                 caps      a    s    d    f    g    h    j    k    l    ;    '    \
                 lsft \    z    x    c    v    b    n    m    ,    .    /    rsft
-                lctl lmet lalt           spc                 @grg rmet rctl
+                lctl lmet lalt           spc                 @gst rmet rctl
             )
 
             (defalias
-                grg (layer-switch george)
+                gst (layer-switch gust)
                 qwt (layer-switch qwerty)
                 b   (fork S-/ 1 (lsft rsft))
                 :;  (fork S-; (unmod ;) (lsft rsft))
@@ -79,6 +79,14 @@ in
                 ocr (one-shot 500 rctl)
             )
 
+            ;; (deflayer dvorak
+            ;;     `         1    2    3    4    5    6    7    8    9    0    [    ]    bspc
+            ;;     tab       '    ,    .    p    y    f    g    c    r    l    /    =    ret
+            ;;     bspc      a    o    e    u    i    d    h    t    n    s    -    \
+            ;;     lsft \    ;    q    j    k    x    b    m    w    v    z    rsft
+            ;;     lctl lmet lalt                spc            @grg rmet rctl
+            ;; )
+            
             ;; (deflayer sturdy
             ;;   `    1    2    3    4    5         6    7    8    9    0    [    ]    bspc
             ;;   tab  v    m    l    c    p         x    f    o    u    j    /    =    ret
