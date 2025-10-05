@@ -22,6 +22,7 @@ in
       userEmail = "lucoerlemans37@gmail.com";
       extraConfig = {
         init.defaultBranch = "main";
+        credential.helper = "store";
       };
     };
   };
