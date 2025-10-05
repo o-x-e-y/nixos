@@ -44,6 +44,7 @@ in
     mesen
     zig
     clang-tools
+    mold
 
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
@@ -104,6 +105,11 @@ in
     source = ./../../dotfiles/nixpkgs;
     recursive = true;
   };
+
+  home.file.".cargo/config.toml".text = ''
+    [build]
+    rustflags = ["-C", "link-arg=-fuse-ld=mold"]
+'';
 
   fonts.fontconfig.enable = true;
 
