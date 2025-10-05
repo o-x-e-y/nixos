@@ -44,6 +44,7 @@ in
     mesen
     zig
     clang-tools
+    signal-desktop
     mold
 
     # # It is sometimes useful to fine-tune packages, for example, by applying
