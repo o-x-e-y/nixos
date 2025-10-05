@@ -46,7 +46,6 @@ in
           scss
           sql
           toml
-          tombi
           typst
           zig
         ]
