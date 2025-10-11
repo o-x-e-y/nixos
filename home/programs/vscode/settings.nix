@@ -13,6 +13,8 @@ in
         userSettings = {
           "git.autofetch" = true;
           "git.confirmSync" = false;
+          "git.enableSmartCommit" = true;
+          "git.mergeEditor" = true;
           "editor.fontSize" = 16;
           "debug.console.fontSize" = 16;
           "terminal.integrated.fontSize" = 16;
