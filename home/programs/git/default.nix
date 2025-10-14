@@ -23,6 +23,7 @@ in
       extraConfig = {
         init.defaultBranch = "main";
         credential.helper = "store";
+        core.editor = "code --wait";
       };
     };
   };
