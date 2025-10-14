@@ -43,7 +43,7 @@ in
           python-requirements
           rainbow-csv
           ruff
-          scss
+          # scss
           sql
           toml
           typst
