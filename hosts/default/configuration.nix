@@ -152,6 +152,7 @@
     nerd-fonts.jetbrains-mono
     texlivePackages.librebaskerville
     texlivePackages.inter
+    courier-prime
   ];
 
   nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
