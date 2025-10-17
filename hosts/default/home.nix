@@ -93,7 +93,7 @@
   #
   home.sessionVariables = {
     BROWSER = "firefox";
-    TERMINAL = "foot";
+    TERMINAL = "konsole";
     EDITOR = "zeditor";
     # LD_LIBRARY_PATH = "${pkgs.gcc}/lib";
   };
