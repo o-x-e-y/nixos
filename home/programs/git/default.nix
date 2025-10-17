@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  mainUser,
   ...
 }:
 let
@@ -18,7 +19,7 @@ in
   config = lib.mkIf cfg.enable {
     programs.git = {
       enable = true;
-      userName = "oxey";
+      userName = "${mainUser.username}";
       userEmail = "lucoerlemans37@gmail.com";
       extraConfig = {
         init.defaultBranch = "main";
