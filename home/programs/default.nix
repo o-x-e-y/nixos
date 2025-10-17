@@ -6,6 +6,7 @@
     ./fastfetch
     ./foot
     ./git
+    ./konsole
     ./libreoffice
     ./mimeapps
     ./plasma

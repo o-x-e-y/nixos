@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.main-user;
+  cfg = config.mainUser;
 in
 {
-  options.main-user = {
+  options.mainUser = {
     enable = lib.mkEnableOption "enable user module";
     username = lib.mkOption {
       default = "oxey";

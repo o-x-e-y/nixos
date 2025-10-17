@@ -12,12 +12,8 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ./main-user.nix
     ./../../modules
   ];
-
-  main-user.enable = true;
-  main-user.username = "oxey";
 
   modules = {
     kanata.enable = true;
@@ -103,7 +99,7 @@
   # services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.${config.main-user.username} = {
+  users.users.${config.mainUser.username} = {
     isNormalUser = true;
     description = "main user";
     extraGroups = [
@@ -117,12 +113,15 @@
   };
 
   home-manager = {
-    extraSpecialArgs = { inherit inputs; };
+    extraSpecialArgs = {
+      inherit inputs;
+      mainUser = config.mainUser;
+    };
     useGlobalPkgs = true;
     useUserPackages = true;
     backupFileExtension = "backup-11-10-2025";
     users = {
-      "${config.main-user.username}" = import ./home.nix;
+      "${config.mainUser.username}" = import ./home.nix;
     };
   };
 

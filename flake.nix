@@ -34,18 +34,25 @@
 
         modules = [
           ./hosts/default/configuration.nix
+          ./hosts/default/main-user.nix
+
           {
+            mainUser = {
+              enable = true;
+              username = "oxey";
+            };
+
             nixpkgs.overlays = [
               zed-extensions.overlays.default
             ];
-          }
-          home-manager.nixosModules.home-manager
-          {
+
             home-manager.sharedModules = [
               plasma-manager.homeModules.plasma-manager
               zed-extensions.homeManagerModules.default
             ];
           }
+
+          home-manager.nixosModules.home-manager
         ];
       };
     };

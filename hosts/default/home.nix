@@ -1,7 +1,4 @@
-{ pkgs, config, ... }:
-let
-  username = "oxey";
-in
+{ pkgs, mainUser, ... }:
 {
   imports = [
     ./../../home/programs
@@ -17,8 +14,8 @@ in
 
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
-  home.username = username;
-  home.homeDirectory = "/home/${config.home.username}";
+  home.username = "${mainUser.username}";
+  home.homeDirectory = "/home/${mainUser.username}";
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
