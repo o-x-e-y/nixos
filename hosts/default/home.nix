@@ -6,6 +6,7 @@
 
   apps = {
     alacritty.enable = false;
+    foot.enable = false;
     libreoffice.extraPackages = with pkgs; [
       hunspellDicts.en_GB-ise
       hunspellDicts.nl_NL
@@ -108,7 +109,7 @@
   home.file.".cargo/config.toml".text = ''
     [build]
     rustflags = ["-C", "link-arg=-fuse-ld=mold"]
-'';
+  '';
 
   fonts.fontconfig.enable = true;
 
