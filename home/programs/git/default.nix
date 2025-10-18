@@ -25,6 +25,7 @@ in
         init.defaultBranch = "main";
         credential.helper = "store";
         core.editor = "code --wait";
+        merge.ff = false;
       };
     };
   };
