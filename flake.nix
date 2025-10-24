@@ -55,5 +55,12 @@
           home-manager.nixosModules.home-manager
         ];
       };
+      
+      templates = {
+        rust = {
+          path = ./templates/rust;
+          description = "Rust template with flake and .envrc";
+        };
+      };
     };
 }
