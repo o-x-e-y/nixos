@@ -20,6 +20,8 @@ in
             davidanson.vscode-markdownlint
             kamikillerto.vscode-colorize
             myriad-dreamin.tinymist
+            rust-lang.rust-analyzer
+            tomoki1207.pdf
 
             # bradlc.vscode-tailwindcss
             # austenc.tailwind-docs
@@ -30,7 +32,6 @@ in
             # charliermarsh.ruff
             # ms-python.python
             # qwtel.sqlite-viewer
-            # rust-lang.rust-analyzer
           ]
           ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
             {
