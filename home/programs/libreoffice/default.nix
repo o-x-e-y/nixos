@@ -35,6 +35,7 @@ in
   config = lib.mkIf cfg.enable {
     home.packages = [
       cfg.package
-    ] ++ cfg.extraPackages;
+    ]
+    ++ cfg.extraPackages;
   };
 }

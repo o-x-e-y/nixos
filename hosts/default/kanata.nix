@@ -86,7 +86,7 @@ in
             ;;     lsft \    ;    q    j    k    x    b    m    w    v    z    rsft
             ;;     lctl lmet lalt                spc            @grg rmet rctl
             ;; )
-            
+
             ;; (deflayer sturdy
             ;;   `    1    2    3    4    5         6    7    8    9    0    [    ]    bspc
             ;;   tab  v    m    l    c    p         x    f    o    u    j    /    =    ret

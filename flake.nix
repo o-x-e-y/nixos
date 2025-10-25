@@ -55,7 +55,7 @@
           home-manager.nixosModules.home-manager
         ];
       };
-      
+
       templates = {
         rust = {
           path = ./templates/rust;
