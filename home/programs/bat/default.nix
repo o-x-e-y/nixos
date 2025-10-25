@@ -20,7 +20,8 @@ in
       enable = true;
       config = {
         theme = "ansi";
-        squeeze-blank = "true";
+        pager = "less -FR";
+        squeeze-blank = true;
       };
     };
   };
