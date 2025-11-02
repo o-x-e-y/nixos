@@ -27,6 +27,9 @@ in
         ".." = "cd ..";
         "zed" = "${pkgs.zed-editor}/bin/zeditor";
         "rebuild" = "sudo nixos-rebuild switch --flake ~/nixos#nixos";
+        "garbage-collect" =
+          "sudo nix-collect-garbage --delete-older-than 7d
+          && sudo nixos-rebuild boot --flake ~/nixos#nixos";
       };
     };
   };
