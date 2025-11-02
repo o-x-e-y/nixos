@@ -56,6 +56,9 @@ in
           JavaScript = {
             tab_size = 4;
           };
+          Rust = {
+            # language_servers = ["rust-analyzer" "tailwindcss-language-server"];
+          };
           TypeScript = {
             tab_size = 4;
           };
@@ -74,12 +77,28 @@ in
         };
         lsp = {
           rust-analyzer = {
-            command = "rust-analyzer";
+            initialization_options = {
+              check = {
+                command = "clippy";
+              };
+              cargo = {
+                allFeatures = true;
+              };
+            };
           };
           package-version-server = {
             binary = {
               path = lib.getExe pkgs.package-version-server;
-              path_lookup = true;
+            };
+          };
+          tailwindcss-language-server = {
+            settings = {
+              includeLanguages = {
+                rust = "html";
+              };
+              tailwindCSS = {
+                emmetCompletions = true;
+              };
             };
           };
         };
