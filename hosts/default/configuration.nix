@@ -95,6 +95,8 @@
     #media-session.enable = true;
   };
 
+  virtualisation.docker.enable = true;
+
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
@@ -105,6 +107,7 @@
     extraGroups = [
       "networkmanager"
       "wheel"
+      "docker"
     ];
     packages = with pkgs; [
       kdePackages.kate
@@ -119,7 +122,7 @@
     };
     useGlobalPkgs = true;
     useUserPackages = true;
-    backupFileExtension = "backup-02-11-2025";
+    backupFileExtension = "backup-19-11-2025";
     users = {
       "${config.mainUser.username}" = import ./home.nix;
     };
