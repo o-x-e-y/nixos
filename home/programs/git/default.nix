@@ -19,9 +19,11 @@ in
   config = lib.mkIf cfg.enable {
     programs.git = {
       enable = true;
-      userName = "${mainUser.username}";
-      userEmail = "lucoerlemans37@gmail.com";
-      extraConfig = {
+      settings = {
+        user = {
+          name = "${mainUser.username}";
+          email = "lucoerlemans37@gmail.com";
+        };
         init.defaultBranch = "main";
         credential.helper = "store";
         core.editor = "code --wait";
