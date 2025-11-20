@@ -22,6 +22,7 @@ in
             myriad-dreamin.tinymist
             rust-lang.rust-analyzer
             tomoki1207.pdf
+            cweijan.vscode-database-client2
 
             # bradlc.vscode-tailwindcss
             # austenc.tailwind-docs

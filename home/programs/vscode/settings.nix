@@ -32,6 +32,7 @@ in
           "explorer.confirmDragAndDrop" = false;
           "explorer.confirmPasteNative" = false;
           "[nix]"."editor.tabSize" = 2;
+          "database-client.autoSync" = true;
         };
       };
     };
