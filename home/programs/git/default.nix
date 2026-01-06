@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   mainUser,
   ...
 }:
@@ -30,5 +31,25 @@ in
         merge.ff = false;
       };
     };
+    
+    home.packages = [
+      (pkgs.writeShellScriptBin "git-branch-diff" ''
+        set -eu
+      
+        # Default base branch is "main" unless user supplies one
+        base_branch="''${1:-main}"
+      
+        # Determine current branch
+        current_branch="$(git branch --show-current)"
+      
+        if [ -z "$current_branch" ]; then
+          echo "Error: not on a branch or not inside a git repo." >&2
+          exit 1
+        fi
+      
+        git rev-list --left-right --count "''${base_branch}...''${current_branch}"
+      '')
+      (pkgs.writeShellScriptBin "git-bd" "git-branch-diff")
+    ];
   };
 }
