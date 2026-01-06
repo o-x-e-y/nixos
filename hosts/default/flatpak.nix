@@ -1,16 +1,19 @@
 { config, pkgs, inputs, ... }:
 {
-  # Enable system-wide Flatpak service
-  services.flatpak.enable = true;
+  environment.systemPackages = [
+    (pkgs.writeShellScriptBin "stremio" ''
+      exec flatpak run com.stremio.Stremio "$@"
+    '')
+  ];
 
-  nix-flatpak = {
+  services.flatpak = {
     enable = true;
 
-    remotes = {
-      flathub = {
-        url = "https://flathub.org/repo/flathub.flatpakrepo";
-      };
-    };
+    # remotes = {
+    #   flathub = {
+    #     url = "https://flathub.org/repo/flathub.flatpakrepo";
+    #   };
+    # };
 
     packages = [
       "com.stremio.Stremio"

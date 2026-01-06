@@ -12,6 +12,7 @@
 {
   imports = [
     ./hardware-configuration.nix
+    ./flatpak.nix
     ./../../modules
   ];
 
@@ -108,6 +109,8 @@
       "networkmanager"
       "wheel"
       "docker"
+      "video"
+      "render"
     ];
     packages = with pkgs; [
       kdePackages.kate
@@ -122,7 +125,7 @@
     };
     useGlobalPkgs = true;
     useUserPackages = true;
-    backupFileExtension = "backup-19-11-2025";
+    backupFileExtension = "backup-2026-01-05";
     users = {
       "${config.mainUser.username}" = import ./home.nix;
     };
