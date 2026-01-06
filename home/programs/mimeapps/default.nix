@@ -1,6 +1,7 @@
 let
   firefox = "firefox.desktop";
   zed = "dev.zed.Zed.desktop";
+  mpv = "mpv.desktop";
 in
 {
   xdg.mimeApps = {
@@ -17,6 +18,14 @@ in
       "text/csv" = zed;
       "text/javascript" = zed;
       "text/xml" = zed;
+      
+      "video/mp4" = mpv;
+      "video/x-matroska" = mpv;  # .mkv
+      "video/webm" = mpv;
+      "video/x-msvideo" = mpv;   # .avi
+      "video/quicktime" = mpv;   # .mov
+      "video/mpeg" = mpv;
+      "video/x-flv" = mpv;
     };
   };
 }
