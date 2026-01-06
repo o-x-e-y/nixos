@@ -24,6 +24,7 @@ in
         "ls" = "ls --color=auto";
         "ll" = "ls --color=auto -l";
         "grep" = "grep --color=auto";
+        "hgrep" = "history | grep";
         ".." = "cd ..";
         "zed" = "${pkgs.zed-editor}/bin/zeditor";
         "rebuild" = "sudo nixos-rebuild switch --flake ~/nixos#nixos";
