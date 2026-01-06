@@ -42,7 +42,6 @@ in
           python-refactoring
           python-requirements
           rainbow-csv
-          ruff
           # scss
           sql
           toml
