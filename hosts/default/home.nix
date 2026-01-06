@@ -1,4 +1,4 @@
-{ pkgs, mainUser, ... }:
+{ pkgs, mainUser, config, ... }:
 {
   imports = [
     ./../../home/programs
@@ -50,6 +50,10 @@
     bat
     git-fame
     git-filter-repo
+    speedtest-cli
+    qbittorrent
+    riseup-vpn
+    haruna
 
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
