@@ -79,10 +79,10 @@ in
           rust-analyzer = {
             initialization_options = {
               check = {
-                command = "clippy";
+                command = "check";
               };
               cargo = {
-                allFeatures = true;
+                allFeatures = false;
               };
             };
           };
@@ -94,7 +94,6 @@ in
           tailwindcss-language-server = {
             settings = {
               includeLanguages = {
-                rust = "html";
               };
               tailwindCSS = {
                 emmetCompletions = true;
