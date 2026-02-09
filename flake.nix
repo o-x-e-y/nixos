@@ -17,9 +17,9 @@
     zed-extensions = {
       url = "github:DuskSystems/nix-zed-extensions";
     };
-    
+
     nix-flatpak = {
-     url = "github:gmodena/nix-flatpak/?ref=latest";
+      url = "github:gmodena/nix-flatpak/?ref=latest";
     };
   };
 
@@ -56,7 +56,7 @@
               zed-extensions.homeManagerModules.default
             ];
           }
-          
+
           nix-flatpak.nixosModules.nix-flatpak
 
           home-manager.nixosModules.home-manager

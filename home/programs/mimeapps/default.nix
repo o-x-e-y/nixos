@@ -18,12 +18,12 @@ in
       "text/csv" = zed;
       "text/javascript" = zed;
       "text/xml" = zed;
-      
+
       "video/mp4" = mpv;
-      "video/x-matroska" = mpv;  # .mkv
+      "video/x-matroska" = mpv; # .mkv
       "video/webm" = mpv;
-      "video/x-msvideo" = mpv;   # .avi
-      "video/quicktime" = mpv;   # .mov
+      "video/x-msvideo" = mpv; # .avi
+      "video/quicktime" = mpv; # .mov
       "video/mpeg" = mpv;
       "video/x-flv" = mpv;
     };

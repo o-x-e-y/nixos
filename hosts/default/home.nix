@@ -1,4 +1,9 @@
-{ pkgs, mainUser, config, ... }:
+{
+  pkgs,
+  mainUser,
+  config,
+  ...
+}:
 {
   imports = [
     ./../../home/programs
