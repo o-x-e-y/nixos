@@ -86,6 +86,12 @@ in
               };
             };
           };
+          ruff = {
+            binary = {
+              path = lib.getExe pkgs.ruff;
+              arguments = [ "server" ];
+            };
+          };
           package-version-server = {
             binary = {
               path = lib.getExe pkgs.package-version-server;
@@ -99,6 +105,11 @@ in
                 emmetCompletions = true;
               };
             };
+          };
+        };
+        dap = {
+          CodeLLDB = {
+            binary = "${pkgs.vscode-extensions.vadimcn.vscode-lldb}/share/vscode/extensions/vadimcn.vscode-lldb/adapter/codelldb";
           };
         };
       };
