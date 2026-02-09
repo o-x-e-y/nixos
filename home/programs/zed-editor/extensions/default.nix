@@ -17,6 +17,10 @@ in
         python313
         package-version-server
         zig
+        ruff
+        lldb
+        vscode-extensions.vadimcn.vscode-lldb
+        vtsls
       ];
     };
 
@@ -27,6 +31,8 @@ in
         [
           awk
           bqn
+          codebook
+          # color-highlight
           csharp
           dbml
           dockerfile
@@ -39,7 +45,6 @@ in
           make
           nix
           pylsp
-          python-refactoring
           python-requirements
           rainbow-csv
           # scss
