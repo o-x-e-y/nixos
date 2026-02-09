@@ -158,6 +158,7 @@
     texlivePackages.librebaskerville
     texlivePackages.inter
     courier-prime
+    roboto
   ];
 
   nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
