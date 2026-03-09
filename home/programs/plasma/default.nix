@@ -22,6 +22,17 @@
         theme = "__aurorae__svg__Utterly-Round-Dark-Solid";
       };
     };
+    
+    powerdevil = {
+      AC = {
+        displayBrightness = 80;
+        keyboardBrightness = 50;
+      };
+      battery = {
+        displayBrightness = 80;
+        keyboardBrightness = 0;
+      };
+    };
 
     kwin = {
       nightLight = {
@@ -82,6 +93,10 @@
           tapToClick = true;
         }
       ];
+    };
+    
+    configFile = {
+      kwinrc.Xwayland.Scale = 1.25;
     };
   };
 }
