@@ -47,9 +47,10 @@ in
           exit 1
         fi
 
+        echo "''${base_branch}...''${current_branch}"
         git rev-list --left-right --count "''${base_branch}...''${current_branch}"
       '')
-      (pkgs.writeShellScriptBin "git-bd" "git-branch-diff")
+      (pkgs.writeShellScriptBin "git-bd" ''git-branch-diff "$@"'')
     ];
   };
 }
