@@ -26,6 +26,14 @@
   @ocl lmet lalt                spc            @qwt rmet @ocr
 )
 
+(deflayer sturdy
+  `    1    2    3    4    5              6    7    8    9    0    [    ]    bspc
+  tab       v    m    l    c    p         x    f    o    u    j    /    =    ret
+  @cbsp     s    t    r    d    y         .    n    a    e    i    -    \
+  @osl z    k    q    g    w    z         b    h    '    ;    ,    @osr
+  @ocl lmet lalt                spc            @qwt rmet @ocr
+)
+
 (deflayer qwerty
   grv       1    2    3    4    5    6    7    8    9    0    -    =    bspc
   tab       q    w    e    r    t    y    u    i    o    p    [    ]    ret
@@ -38,6 +46,7 @@
   dvk (layer-switch dvorak)
   grg (layer-switch george)
   qwt (layer-switch qwerty)
+  str (layer-switch sturdy)
   b   (fork S-/ 1 (lsft rsft))
   :;  (fork S-; (unmod ;) (lsft rsft))
   qu  (multi q u)
@@ -53,6 +62,7 @@
   osr (one-shot 500 rsft)
   ocl (one-shot 500 lctl)
   ocr (one-shot 500 rctl)
+  cbsp C-bspc
 )
 
 ;; (deflayer sturdy
