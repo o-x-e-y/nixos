@@ -30,6 +30,7 @@ in
         "rebuild" = "sudo nixos-rebuild switch --flake ~/nixos#nixos";
         "garbage-collect" =
           "sudo nix-collect-garbage --delete-older-than 7d
+          && sudo nix-env --delete-generations --profile /nix/var/nix/profiles/system 7d
           && sudo nixos-rebuild boot --flake ~/nixos#nixos";
       };
     };
