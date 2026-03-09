@@ -4,6 +4,7 @@
     ./bash
     ./bat
     ./btop
+    ./direnv
     ./fastfetch
     ./foot
     ./git
