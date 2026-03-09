@@ -11,9 +11,9 @@ in
   config = lib.mkIf (cfg.enable && cfg.useSettings) {
     programs.zed-editor = {
       userSettings = {
-        show_edit_predictions = true;
-        features = {
-          edit_prediction_provider = "zed";
+        edit_predictions = {
+          provider = "zed";
+          mode = "subtle";
         };
         base_keymap = "VSCode";
         ui_font_size = 16;

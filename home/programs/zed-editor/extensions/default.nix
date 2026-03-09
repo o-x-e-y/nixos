@@ -13,7 +13,7 @@ in
     programs.zed-editor = {
       extraPackages = with pkgs; [
         nixd
-        nixfmt-rfc-style
+        nixfmt
         python313
         package-version-server
         zig

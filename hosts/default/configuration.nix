@@ -146,7 +146,7 @@ in
     };
     useGlobalPkgs = true;
     useUserPackages = true;
-    backupFileExtension = "backup-2026-02-09";
+    backupFileExtension = "backup-2026-03-09";
     users = {
       "${config.mainUser.username}" = import ./home.nix;
     };
@@ -167,7 +167,7 @@ in
     nixd
     nil
     gcc
-    nixfmt-rfc-style
+    nixfmt
     python313
     fd
     nix-index
