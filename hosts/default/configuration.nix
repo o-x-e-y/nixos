@@ -146,7 +146,7 @@ in
     };
     useGlobalPkgs = true;
     useUserPackages = true;
-    backupFileExtension = "backup-2026-03-09";
+    backupFileExtension = "backup-2026-03-11";
     users = {
       "${config.mainUser.username}" = import ./home.nix;
     };

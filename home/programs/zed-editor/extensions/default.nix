@@ -31,7 +31,6 @@ in
         [
           awk
           bqn
-          codebook
           # color-highlight
           csharp
           dbml
