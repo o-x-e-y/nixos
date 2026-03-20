@@ -22,7 +22,7 @@
         theme = "__aurorae__svg__Utterly-Round-Dark-Solid";
       };
     };
-    
+
     powerdevil = {
       AC = {
         displayBrightness = 80;
@@ -94,7 +94,7 @@
         }
       ];
     };
-    
+
     configFile = {
       kwinrc.Xwayland.Scale = 1.25;
     };
