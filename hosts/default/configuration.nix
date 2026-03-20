@@ -20,15 +20,22 @@ let
       done
     '';
   };
-  fonts-static = (pkgs.google-fonts.override { fonts = [ "Yrsa" "DM Sans" ]; }).overrideAttrs (
-    final: prev: {
-      nativeBuildInputs = (prev.nativeBuildInputs or [ ]) ++ [ font-to-static ];
+  fonts-static =
+    (pkgs.google-fonts.override {
+      fonts = [
+        "Yrsa"
+        "DM Sans"
+      ];
+    }).overrideAttrs
+      (
+        final: prev: {
+          nativeBuildInputs = (prev.nativeBuildInputs or [ ]) ++ [ font-to-static ];
 
-      preFixup = ''
-        find "$out" -name '*.ttf' -execdir font-to-static '{}' ';'
-      '';
-    }
-  );
+          preFixup = ''
+            find "$out" -name '*.ttf' -execdir font-to-static '{}' ';'
+          '';
+        }
+      );
 in
 {
   imports = [
