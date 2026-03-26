@@ -112,6 +112,35 @@ in
             binary = "${pkgs.vscode-extensions.vadimcn.vscode-lldb}/share/vscode/extensions/vadimcn.vscode-lldb/adapter/codelldb";
           };
         };
+        agent = {
+          tool_permissions = {
+            tools = {
+              terminal = {
+                always_allow = [
+                  {
+                    pattern = "^cargo\\s+test(\\s|$)";
+                  }
+                  {
+                    pattern = "^ls\\b";
+                  }
+                  {
+                    pattern = "^grep\\b";
+                  }
+                  {
+                    pattern = "^cat\\b";
+                  }
+                ];
+              };
+            };
+          };
+          default_model = {
+            provider = "zed.dev";
+            model = "gemini-3.1-pro-preview";
+            enable_thinking = false;
+          };
+          favorite_models = [ ];
+          model_parameters = [ ];
+        };
       };
     };
   };
