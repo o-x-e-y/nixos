@@ -30,6 +30,7 @@ in
         core.editor = "codium --wait";
         merge.ff = false;
       };
+      signing.format = null;
     };
 
     home.packages = [
