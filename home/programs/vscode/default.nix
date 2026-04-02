@@ -40,7 +40,7 @@ in
   config = lib.mkIf cfg.enable {
     programs.vscode = {
       enable = true;
-      package = pkgs.vscode;
+      package = pkgs.vscodium;
     };
   };
 }

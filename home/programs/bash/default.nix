@@ -27,6 +27,7 @@ in
         "hgrep" = "history | grep";
         ".." = "cd ..";
         "zed" = "${pkgs.zed-editor}/bin/zeditor";
+        "code" = "${pkgs.vscodium}/bin/codium";
         "rebuild" = "sudo nixos-rebuild switch --flake ~/nixos#nixos";
         "garbage-collect" =
           "sudo nix-collect-garbage --delete-older-than 7d

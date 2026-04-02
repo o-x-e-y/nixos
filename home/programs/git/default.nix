@@ -27,7 +27,7 @@ in
         };
         init.defaultBranch = "main";
         credential.helper = "store";
-        core.editor = "code --wait";
+        core.editor = "codium --wait";
         merge.ff = false;
       };
     };
