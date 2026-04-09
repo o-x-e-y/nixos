@@ -4,6 +4,7 @@
     ./bash
     ./bat
     ./btop
+    ./claude-code
     ./direnv
     ./fastfetch
     ./foot

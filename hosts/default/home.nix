@@ -60,6 +60,8 @@
     riseup-vpn
     haruna
     obs-studio
+    claude-code
+    claude-monitor
 
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
