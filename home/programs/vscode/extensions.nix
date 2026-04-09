@@ -23,6 +23,9 @@ in
             rust-lang.rust-analyzer
             tomoki1207.pdf
             cweijan.vscode-database-client2
+            jebbs.plantuml
+            jnoortheen.nix-ide
+            jdinhlife.gruvbox
 
             # bradlc.vscode-tailwindcss
             # austenc.tailwind-docs
