@@ -25,6 +25,7 @@ let
       fonts = [
         "Yrsa"
         "DM Sans"
+        "Cascadia Code"
       ];
     }).overrideAttrs
       (
