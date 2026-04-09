@@ -41,8 +41,10 @@ in
           jetbrains-icons
           kconfig
           latex
+          live-server
           make
           nix
+          plantuml
           pylsp
           python-requirements
           rainbow-csv
