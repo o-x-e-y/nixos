@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -19,5 +20,9 @@ in
     programs.claude-code = {
       enable = true;
     };
+    
+    home.packages = [
+      pkgs.claude-monitor
+    ];
   };
 }
