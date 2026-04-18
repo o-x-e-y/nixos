@@ -31,6 +31,7 @@ in
             "Bash(grep:*)"
             "Bash(cat:*)"
             "Bash(cargo:*)"
+            "Bash(plantuml:*)"
           ];
           ask = [
             "Bash(curl:*)"

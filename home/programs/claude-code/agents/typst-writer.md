@@ -86,9 +86,27 @@ For side-by-side text and image layouts, use the template helpers:
 - `#image_right(path: "img.png", caption: [...], reference: "label")[ Text content ]` places text on the left and a captioned figure on the right.
 - `#image_cols(img: image("img.png"), caption: [...], reference: "label", columns: (1fr, 1fr))[ Text content ]` for more control over column ratios.
 
-# Horizontal Rules
+# Diagrams
 
-NEVER use `---`. If you need a visual separator, use `#line(length: 100%)` or restructure with headings or whitespace instead. Prefer colons for inline separation.
+Diagrams make architecture, flows, and relationships far easier to grasp than prose. Use them where they add clarity: system architectures, sequence flows, state machines, entity relationships, component interactions. Do not overuse them, a diagram per section is too many and a diagram of something trivial adds noise rather than signal. Prefer one well-placed diagram over three redundant ones.
+
+All diagrams are authored in PlantUML and rendered to SVG, then included as figures. Follow this exact process for every diagram:
+
+1. In the same directory as the `.typ` file, create two folders if they do not already exist: `plantuml/` for the source files and `diagrams/` for the rendered SVGs.
+2. Write the PlantUML source to `plantuml/<diagram-name>.puml`.
+3. Render it by running `plantuml <path-to-puml> --svg --output-dir <relative-path-to-diagrams>` from the directory of the `.typ` file. For example, if the typst file lives in `report/` then run `plantuml plantuml/architecture.puml --svg --output-dir diagrams` from `report/`.
+4. Include the resulting SVG in the document as a figure with a caption and label, and reference it from the surrounding prose via `@label`:
+
+```typ
+The ingestion pipeline is shown in @ingest-flow:
+
+#figure(
+  image("diagrams/ingest-flow.svg"),
+  caption: [Ingestion pipeline from source to warehouse.]
+) <ingest-flow>
+```
+
+Name the `.puml` and `.svg` files identically (just different extensions) and keep the names short, lowercase, and kebab-cased. Regenerate the SVG whenever the `.puml` source changes, never hand-edit the SVG.
 
 # Other Template Utilities
 
@@ -112,3 +130,4 @@ Write in a direct, first-person voice. Be conversational but technically precise
 - Link to external resources naturally within sentences using `#link("url", [display text])`.
 - Use cross-references (`@label`) to point at snippets, figures, and other labeled elements rather than saying "the code above" or "the following image."
 - Do not over-explain. Trust the reader to follow technical content. Provide context where it matters, skip it where it does not.
+- Never use `---` which is em-dash.
