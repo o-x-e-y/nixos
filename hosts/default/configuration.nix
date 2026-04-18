@@ -26,6 +26,9 @@ let
         "Yrsa"
         "DM Sans"
         "Cascadia Code"
+        "Inter"
+        "IBM Plex Sans"
+        "Source Serif 4"
       ];
     }).overrideAttrs
       (
