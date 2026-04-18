@@ -20,6 +20,32 @@ in
     programs.claude-code = {
       enable = true;
 
+      settings = {
+        permissions = {
+          allow = [
+            "Bash(git diff:*)"
+            "Bash(ls:*)"
+            "Bash(bun run:*)"
+            "Bash(* --version)"
+            "Bash(* --help:*)"
+            "Bash(grep:*)"
+            "Bash(cat:*)"
+            "Bash(cargo:*)"
+          ];
+          ask = [
+            "Bash(curl:*)"
+            "WebFetch"
+          ];
+          deny = [
+            "Bash(cargo publish:*)"
+            "Read(./.env)"
+            "Read(./secrets/**)"
+          ];
+          defaultMode = "acceptEdits";
+          disableBypassPermissionsMode = "disable";
+        };
+      };
+
       agents = {
         typst-writer = ./agents/typst-writer.md;
       };
