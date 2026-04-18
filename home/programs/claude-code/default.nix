@@ -19,8 +19,12 @@ in
   config = lib.mkIf cfg.enable {
     programs.claude-code = {
       enable = true;
+
+      agents = {
+        typst-writer = ./agents/typst-writer.md;
+      };
     };
-    
+
     home.packages = [
       pkgs.claude-monitor
     ];

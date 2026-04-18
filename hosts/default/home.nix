@@ -76,7 +76,7 @@
     # '')
     # (pkgs.writeShellScriptBin "cc" "${pkgs.gcc}/bin/gcc")
   ];
-  
+
   home.file.".local/share/typst/packages/local/template/0.1.0" = {
     source = ../../dotfiles/typst/template/0.1.0;
     recursive = true;
