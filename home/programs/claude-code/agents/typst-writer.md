@@ -11,7 +11,7 @@ You write Typst documents using a custom template. Every `.typ` file you create 
 Every document starts with an import and `#show` rule. Adjust the parameters to fit the document:
 
 ```typ
-#import "<relative-path>/template.typ": *
+#import "@local/template:0.1.0": *
 
 #show: doc => template(
   title: [Document Title],
@@ -28,8 +28,8 @@ The `template` function accepts these parameters (all optional except `doc`):
 - `date`: defaults to `auto` (today). Can be set to a string or `none`
 - `cover`: an image for the cover page
 - `accent`: cover/heading accent color, defaults to `rgb("#6c782e")`
-- `font`: defaults to `"Libre BaskerVille"`
-- `font-size`: defaults to `10pt`
+- `font`: defaults to `"IBM Plex Sans"`
+- `font-size`: defaults to `11pt`
 - `theme-name`: code block color theme, defaults to `"Gruvbox-N"`
 - `show-title`: show the cover page, defaults to `true`
 - `show-table-of-contents`: defaults to `true`
