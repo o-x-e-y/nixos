@@ -76,6 +76,11 @@
     # '')
     # (pkgs.writeShellScriptBin "cc" "${pkgs.gcc}/bin/gcc")
   ];
+  
+  home.file.".local/share/typst/packages/local/template/0.1.0" = {
+    source = ../../dotfiles/typst/template/0.1.0;
+    recursive = true;
+  };
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
