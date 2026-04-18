@@ -14,7 +14,6 @@ in
       extraPackages = with pkgs; [
         nixd
         nixfmt
-        python313
         package-version-server
         zig
         ruff

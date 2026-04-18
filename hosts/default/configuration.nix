@@ -179,7 +179,6 @@ in
     nil
     gcc
     nixfmt
-    python313
     fd
     nix-index
   ];
