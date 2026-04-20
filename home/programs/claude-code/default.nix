@@ -32,6 +32,9 @@ in
             "Bash(cat:*)"
             "Bash(cargo:*)"
             "Bash(plantuml:*)"
+            "Bash(find:*)"
+            "Grep(*)"
+            "Glob(*)"
           ];
           ask = [
             "Bash(curl:*)"
