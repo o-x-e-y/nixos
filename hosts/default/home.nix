@@ -81,6 +81,14 @@
     source = ../../dotfiles/typst/template/0.1.0;
     recursive = true;
   };
+  home.file.".local/share/typst/packages/local/competence-template/0.1.0" = {
+    source = ../../dotfiles/typst/competence-template/0.1.0;
+    recursive = true;
+  };
+  home.file.".local/share/typst/packages/local/requirements/0.1.0" = {
+    source = ../../dotfiles/typst/requirements/0.1.0;
+    recursive = true;
+  };
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
