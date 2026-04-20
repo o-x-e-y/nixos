@@ -108,11 +108,53 @@ The ingestion pipeline is shown in @ingest-flow:
 
 Name the `.puml` and `.svg` files identically (just different extensions) and keep the names short, lowercase, and kebab-cased. Regenerate the SVG whenever the `.puml` source changes, never hand-edit the SVG.
 
+# Requirements Tables
+
+Requirement tables are produced by `#user-requirements`. Each row is a `(description, priority)` tuple. Priority must be one of `"must"`, `"high"`, `"med"`, or `"low"` — these drive the row's fill color and the priority badge. The table auto-numbers rows and emits a label for each one so you can reference them in prose.
+
+```typ
+#import "@local/requirements:0.1.0": *
+
+The user-facing requirements are collected in @user-req-table.
+
+#user-requirements(
+  caption: [User requirements for the ingestion tool.],
+)[
+  ([The user can upload a CSV file from the browser.], "must"),
+  ([The user can preview the first 100 rows before import.], "high"),
+  ([The user can schedule imports on a cron expression.], "med"),
+  ([The user can export past import logs as JSON.], "low"),
+] <user-req-table>
+```
+
+The `key` parameter controls both the label prefix and the display prefix. It defaults to `"US"` (user story), which produces labels `<us1>`, `<us2>`, … Pass a different key for other requirement types, e.g. `key: "FR"` gives `<fr1>`, `<fr2>`, … Use `start-at:` to continue numbering across multiple tables.
+
+## Referencing a requirement
+
+Every row is labeled as `<<lowercased-key><index>>`. Reference them inline with `@<label>`, exactly like a snippet or figure:
+
+```typ
+The CSV upload flow satisfies @us1, while the preview step covers @us2.
+```
+
+## Rendering a requirement's priority inline
+
+`#prio-for(<label>)` renders the priority badge for a given requirement by looking up its stored priority at layout time. Use it when prose needs to mention the priority without hard-coding it, so the badge stays in sync if the table changes:
+
+```typ
+Scheduled imports (@us3, #prio-for(<us3>)) are deferred to the next milestone.
+```
+
+The argument is the label itself, not a string. `#prio-for(<us3>)` resolves to a `MED` badge as long as the `us3` row is declared with priority `"med"`.
+
+## Standalone priority badges
+
+For a priority badge that is not tied to a specific requirement, use the prio helpers directly: `#must`, `#high`, `#med`, `#low`, or `#prio("must")` for the general form.
+
 # Other Template Utilities
 
 Use these when relevant:
 
-- `#requirements(..items, req_type: "FR")`: numbered requirement lists with auto-generated labels (`FR1`, `FR2`, etc.)
 - `#appendix[ ... ]`: wrap appendix content. Resets heading numbering to `A.1` style.
 - `#sql("SELECT ...")`: inline SQL formatting helper.
 - `#easy_date(2026, 4, 17)`: renders as `17 Apr 2026`.
