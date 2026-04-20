@@ -8,7 +8,7 @@
   } else if lower(priority) == "low" {
     rgb("#ffcfc9")
   } else {
-    none
+    white
   }
 }
 
@@ -26,7 +26,7 @@
       stroke: 0.4pt + rgb("#acacac"),
       inset: 1.7pt,
       radius: 2pt,
-      text(fill: color)[#upper(priority)]
+      text(fill: color)[#upper(priority)],
     ),
     inset: (y: -2pt, x: 0.3pt),
   )
@@ -38,14 +38,16 @@
 #let low = prio("low")
 
 #let user-requirements(
+  caption: none,
   key: "US",
   start-at: 1,
-  ..children
+  zebra-fill: rgb("#efefef"),
+  ..children,
 ) = {
   let req(
     description,
     priority,
-    index
+    index,
   ) = {
     let c = get-req-color(priority)
     let color = if c != none {
@@ -60,23 +62,33 @@
     (
       [#figure(kind: key, supplement: key, supplement) #label(reference)],
       [#align(left)[#description]],
-      text(fill: color)[#upper(priority)]
+      text(fill: color)[#upper(priority)],
     )
   }
 
-  let requirements = children.pos().enumerate().map(
-    ((row, (desc, prio))) => req(desc, prio, row + start-at))
+  let requirements = children
+    .pos()
+    .enumerate()
+    .map(
+      ((row, (desc, prio))) => req(desc, prio, row + start-at),
+    )
 
-  grid(
-    columns: (1fr, 7fr, 1fr),
+  let table = table(
+    columns: (5em, 1fr, 5em),
     stroke: 1pt,
     align: center + horizon,
-    inset: 6.7pt,
+    inset: (3 / 5) * 1em,
     fill: (col, row) => {
-      let thing = children.at(row).at(col - 1)
-      if col == 2 { get-req-color(thing) }
-      else { white }
+      let priority = children.at(row).at(1)
+      if col == 2 { get-req-color(priority) } else if calc.odd(row) { zebra-fill } else { none }
     },
     ..requirements.flatten()
+  )
+
+  figure(
+    kind: key,
+    supplement: key + " Table",
+    caption: caption,
+    table,
   )
 }

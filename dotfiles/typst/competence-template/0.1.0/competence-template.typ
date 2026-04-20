@@ -8,7 +8,12 @@
   else { white }
 }
 
-#let competence_profile(main_competence_numbers: (()), personal_numbers: (), caption: none, show_legend: false) = {
+#let competence_profile(
+  main_competence_numbers: (()),
+  personal_numbers: (),
+  caption: none,
+  show_legend: false
+) = {
   let scale_factor = 70%;
 
   // cell background color
@@ -25,12 +30,21 @@
   }
 
   let main_headings = (
-    [], [Managing], [Analysing], [Advising], [Designing], [Realising]
-  );
+    [],
+    [Managing],
+    [Analysing],
+    [Advising],
+    [Designing],
+    [Realising],
+  )
 
   let row_names = (
-    [User Interaction], [Business Processes], [Software], [Hardware], [Infrastructure]
-  );
+    [User Interaction],
+    [Business Processes],
+    [Software],
+    [Hardware],
+    [Infrastructure],
+  )
 
   let legend = scale(
     scale_factor,
@@ -46,13 +60,14 @@
         else if col == 2 { get_complevel_color(3) }
         else { white }
       },
-      [Level 1], [Level 2], [Level 3]
-    )
-  );
+      [Level 1], [Level 2], [Level 3],
+    ),
+  )
 
   let main_competence_row(idx) = (
-    format_label(row_names.at(idx)), ..main_competence_numbers.at(idx).map(format_cell)
-  );
+    format_label(row_names.at(idx)),
+    ..main_competence_numbers.at(idx).map(format_cell),
+  )
 
   let table1 = scale(
     scale_factor,
@@ -74,12 +89,13 @@
       inset: 10pt * scale_factor,
       ..main_headings.map(format_label),
       ..range(0, 5).map(main_competence_row).flatten(),
-    )
-  );
+    ),
+  )
 
   let personal_headings = (
-    [Professional Standard], [Personal Leadership]
-  );
+    [Professional Standard],
+    [Personal Leadership],
+  )
 
   let format_personal_data(num) = {
     box(height: 32pt * scale_factor, [#num])
@@ -108,10 +124,10 @@
       #scale(
         256% * scale_factor,
         [#legend],
-        reflow: true
+        reflow: true,
       )
-    ]
-  );
+    ],
+  )
 
   figure(
     caption: caption,
@@ -120,14 +136,16 @@
         columns: (2.7fr, 1fr),
         table1, table2,
       )
-    ]
+    ],
   )
 }
 
-#let kpi_table(rows: (())) = {
+#let kpi_table(rows: ()) = {
   let headers = (
-    [KPI], [Proof], [Rating]
-  );
+    [KPI],
+    [Proof],
+    [Rating],
+  )
 
   let format_header(header) = {
     text(white)[*#header*]
@@ -156,13 +174,12 @@
     align: center + horizon,
     inset: 8pt,
     ..headers.map(format_header),
-    ..range(0, rows.len()).map(i => {
-      rows
-        .at(i)
-        .slice(0, 3)
-        .map(v => [#v])
-    }).flatten()
-  );
+    ..range(0, rows.len())
+      .map(i => {
+        rows.at(i).slice(0, 3).map(v => [#v])
+      })
+      .flatten()
+  )
 
   let ratings = (none, "U", "S", "G", "O")
 
@@ -175,14 +192,13 @@
       let v = ratings.at(col)
       kpi-rating-color(v)
     },
-    ..ratings
-      .map(v => {
-        if v == none {
-          [Ungraded]
-        } else {
-          v
-        }
-      })
+    ..ratings.map(v => {
+      if v == none {
+        [Ungraded]
+      } else {
+        v
+      }
+    })
   )
 
   [
@@ -196,51 +212,8 @@
   [#link(dest)[#body] #linebreak()]
 }
 
-#let requirements_table(headers: (), rows: (()), req_prefix: "", ref_prefix: "") = {
-  let light_red = rgb(255, 222, 222);
-
-  let format_header(header) = {
-    text(light_red)[*#header*]
-  }
-
-  let table = table(
-    columns: (auto, 1.5fr, auto, auto),
-    fill: (col, row) => {
-      if row == 0 { rgb(139, 0, 0) }
-      else if calc.odd(row) { light_red }
-      else { white }
-    },
-    stroke: 1pt,
-    align: center + horizon,
-    inset: 8pt,
-    ..headers.map(format_header),
-    ..range(0, rows.len()).map(i => {
-      let row_content = rows.at(i).slice(0, 3)
-      let row_num = strfmt("{:03}", i + 1);
-      let first_col = [*#req_prefix#row_num*]
-      let second_col = [#row_content.at(0)]
-      let third_col_value = strfmt("{:03}", row_content.at(2));
-      let priority = upper(row_content.at(1));
-      let priority_color = if (priority == "HIGH") {
-        rgb(192, 0, 0)
-      } else if (priority == "MEDIUM") {
-        rgb(237, 125, 49)
-      } else if (priority == "LOW") {
-        rgb(0, 176, 80)
-      } else if (priority == "NONE") {
-        rgb(47, 116, 181)
-      }
-      let third_col = text(priority_color)[*#priority*]
-      let fourth_col = [*#ref_prefix#third_col_value*]
-      (first_col, second_col, third_col, fourth_col)
-    }).flatten()
-  );
-
-  table
-}
-
 #let complevel(num) = {
-  let color = get_complevel_color(num);
+  let color = get_complevel_color(num)
 
   let cl = box(
     block(
@@ -248,10 +221,10 @@
       stroke: 0.4pt + color.darken(30%),
       inset: 2pt,
       radius: 2pt,
-      text(fill: rgb("#000000"), [#num])
+      text(fill: rgb("#000000"), [#num]),
     ),
-    baseline:2pt,
-  );
+    baseline: 2pt,
+  )
 
   cl
 }
@@ -260,7 +233,7 @@
   teacher: none,
   grade: none,
   date: none,
-  doc
+  doc,
 ) = {
   let grade_info = if (upper(grade) == "U") {
     text(rgb(192, 0, 0), "Unsatisfactory")
@@ -272,7 +245,7 @@
     text(rgb(192, 0, 0), "Invalid grade")
   }
   let grade = if (grade != none) {
-    [Grade: *#grade_info* #linebreak()];
+    [Grade: *#grade_info* #linebreak()]
   }
   [
     #heading(level: 2, numbering: none)[#date]
@@ -283,7 +256,7 @@
 
 #kpi_table(rows: (
   (1, 2, 3),
-  (5, 6, 7)
+  (5, 6, 7),
 ));
 
 // Example usage:
@@ -292,7 +265,7 @@
   (none, 2, 3, 1, none),
   (2, none, 1, 3, 2),
   (1, 3, 2, none, 1),
-  (none, 1, 3, 2, none)
+  (none, 1, 3, 2, none),
 )
 
 #let personal_numbers = (1, none, 2, 3);
@@ -300,17 +273,5 @@
 #competence_profile(
   main_competence_numbers: main_competence_numbers,
   personal_numbers: personal_numbers,
-  caption: "Current profile"
-)
-
-#requirements_table(
-  req_prefix: "FR_",
-  ref_prefix: "US_",
-  headers: ([FR ID], [FUNCTIONAL REQUIREMENT], [PRIORITY], [US ID]),
-  rows: (
-    ([Requirement one], "low", 10),
-    ([Requirement dos], "medium", 10),
-    ([Requirement drie], "HIGH", 3 ),
-    ([Req 4], "none", 0),
-  )
+  caption: "Current profile",
 )

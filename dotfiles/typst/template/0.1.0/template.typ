@@ -1,7 +1,7 @@
 #let template-config(
   theme-name: "Gruvbox-N",
   heading-pagebreak: true,
-  doc
+  doc,
 ) = {
   import "@preview/codly:1.3.0": *
   show: codly-init.with()
@@ -25,7 +25,7 @@
   )
 
   codly(
-    languages: codly-langs + custom-langs
+    languages: codly-langs + custom-langs,
   )
 
   show ref: r => (
@@ -205,7 +205,7 @@
 ) = {
   show: template-config.with(
     theme-name: theme-name,
-    heading-pagebreak: heading-pagebreak
+    heading-pagebreak: heading-pagebreak,
   )
 
   set text(
@@ -265,13 +265,11 @@
     // cover image
     if cover != none {
       v(1.5em)
-      align(center,
-        figure(
-          cover,
-          outlined: false,
-          numbering: none,
-        )
-      )
+      align(center, figure(
+        cover,
+        outlined: false,
+        numbering: none,
+      ))
     }
 
     v(1fr)
@@ -306,35 +304,6 @@
   }
 
   doc
-}
-
-#let requirements(..reqs, req_type: "FR") = {
-  show figure: set align(left)
-
-  let len = reqs.pos().len()
-  let reqs = reqs
-    .pos()
-    .enumerate()
-    .map(((i, req)) => {
-      let label = label(req_type + str(i + 1))
-      let end = if i == len - 1 { "." } else { "," }
-      let figure = figure(
-        outlined: false,
-        supplement: req_type,
-        kind: req_type,
-        [#req#end],
-      )
-      [#figure #label]
-    })
-
-  enum(
-    numbering: (..nums) => {
-      let num = nums.pos().map(str).join(".") + ":"
-
-      return align(left)[*#req_type#num*]
-    },
-    ..reqs,
-  )
 }
 
 #let snippet(
