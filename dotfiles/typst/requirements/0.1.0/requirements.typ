@@ -37,6 +37,15 @@
 #let med = prio("med")
 #let low = prio("low")
 
+// Returns a prio badge for the requirement with the given label, e.g. req-prio(<us1>).
+// Priority is resolved at layout time, so it stays in sync if the table changes.
+#let prio-for(lbl) = context {
+  let results = query(label(str(lbl) + "-p"))
+  if results.len() > 0 {
+    prio(results.first().value)
+  }
+}
+
 #let user-requirements(
   caption: none,
   key: "US",
@@ -60,7 +69,10 @@
     let supplement = key + "-" + str(index)
 
     (
-      [#figure(kind: key, supplement: key, supplement) #label(reference)],
+      [
+        #figure(kind: key, supplement: key, supplement) #label(reference)
+        #metadata(priority) #label(reference + "-p")
+      ],
       [#align(left)[#description]],
       text(fill: color)[#upper(priority)],
     )
@@ -86,7 +98,7 @@
   )
 
   figure(
-    kind: key,
+    kind: key + "-table",
     supplement: key + " Table",
     caption: caption,
     table,
