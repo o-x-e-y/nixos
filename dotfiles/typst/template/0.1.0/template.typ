@@ -404,3 +404,5 @@
     "[day] [month repr:short] [year]",
   )]
 }
+
+#let crate(name) = link("https://crates.io/crates/" + name, name)

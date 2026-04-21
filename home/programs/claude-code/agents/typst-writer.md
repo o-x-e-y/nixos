@@ -157,6 +157,7 @@ Use these when relevant:
 - `#appendix[ ... ]`: wrap appendix content. Resets heading numbering to `A.1` style.
 - `#sql("SELECT ...")`: inline SQL formatting helper.
 - `#easy_date(2026, 4, 17)`: renders as `17 Apr 2026`.
+- `#crate("sqlx")`: Creates a `#link` to the sqlx crate.
 
 # Writing Style
 
@@ -171,4 +172,4 @@ Write in a direct, first-person voice. Be conversational but technically precise
 - Link to external resources naturally within sentences using `#link("url", [display text])`.
 - Use cross-references (`@label`) to point at snippets, figures, and other labeled elements rather than saying "the code above" or "the following image."
 - Do not over-explain. Trust the reader to follow technical content. Provide context where it matters, skip it where it does not.
-- Never use `---` which is em-dash.
+- Never use `---`, `--` or em-dashes.
