@@ -48,41 +48,34 @@
 
 #let user-requirements(
   key: "US",
-  start-at: 1,
   zebra-fill: rgb("#efefef"),
   ..children,
 ) = {
-  let req(
-    description,
-    priority,
-    index,
-  ) = {
-    let c = get-req-color(priority)
-    let color = if c != none {
-      c.saturate(100%).darken(40%)
-    } else {
-      black
-    }
+  let key-counter = counter("req-" + key)
 
-    let reference = lower(key) + str(index)
-    let supplement = key + "-" + str(index)
+  let req(description, priority) = {
+    let bg = get-req-color(priority)
+    let fg = if bg != none { bg.saturate(100%).darken(40%) } else { black }
 
     (
       [
-        #figure(kind: key, supplement: key, supplement) #label(reference)
-        #metadata(priority) #label(reference + "-p")
+        #key-counter.step()
+        #context {
+          let index = key-counter.get().first()
+          let reference = lower(key) + str(index)
+          let supplement = key + "-" + str(index)
+          [#figure(kind: key, supplement: key, supplement) #label(reference)
+           #metadata(priority) #label(reference + "-p")]
+        }
       ],
       [#align(left)[#description]],
-      text(fill: color)[#upper(priority)],
+      text(fill: fg)[#upper(priority)],
     )
   }
 
   let requirements = children
     .pos()
-    .enumerate()
-    .map(
-      ((row, (desc, prio))) => req(desc, prio, row + start-at),
-    )
+    .map(((desc, prio)) => req(desc, prio))
 
   table(
     columns: (5em, 1fr, 5em),
