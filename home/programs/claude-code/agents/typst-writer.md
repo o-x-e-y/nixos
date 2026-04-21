@@ -118,13 +118,12 @@ Requirement tables are produced by `#user-requirements`. Each row is a `(descrip
 The user-facing requirements are collected in @user-req-table.
 
 #user-requirements(
-  caption: [User requirements for the ingestion tool.],
 )[
   ([The user can upload a CSV file from the browser.], "must"),
   ([The user can preview the first 100 rows before import.], "high"),
   ([The user can schedule imports on a cron expression.], "med"),
   ([The user can export past import logs as JSON.], "low"),
-] <user-req-table>
+]
 ```
 
 The `key` parameter controls both the label prefix and the display prefix. It defaults to `"US"` (user story), which produces labels `<us1>`, `<us2>`, … Pass a different key for other requirement types, e.g. `key: "FR"` gives `<fr1>`, `<fr2>`, … Use `start-at:` to continue numbering across multiple tables.

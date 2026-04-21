@@ -47,7 +47,6 @@
 }
 
 #let user-requirements(
-  caption: none,
   key: "US",
   start-at: 1,
   zebra-fill: rgb("#efefef"),
@@ -85,7 +84,7 @@
       ((row, (desc, prio))) => req(desc, prio, row + start-at),
     )
 
-  let table = table(
+  table(
     columns: (5em, 1fr, 5em),
     stroke: 1pt,
     align: center + horizon,
@@ -95,12 +94,5 @@
       if col == 2 { get-req-color(priority) } else if calc.odd(row) { zebra-fill } else { none }
     },
     ..requirements.flatten()
-  )
-
-  figure(
-    kind: key + "-table",
-    supplement: key + " Table",
-    caption: caption,
-    table,
   )
 }
