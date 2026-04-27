@@ -33,6 +33,7 @@ in
             "Bash(cargo:*)"
             "Bash(plantuml:*)"
             "Bash(find:*)"
+            "Bash(typst compile:*)"
             "Grep(*)"
             "Glob(*)"
           ];
@@ -52,6 +53,7 @@ in
 
       agents = {
         typst-writer = ./agents/typst-writer.md;
+        comptences = ./agents/comptences.md;
       };
     };
 
