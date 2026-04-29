@@ -12,10 +12,23 @@ let
       BASE_URL="https://fhict.instructure.com"
       API_KEY="$(cat /run/secrets/canvas-api-key)"
 
-      tmpfile="$(mktemp /tmp/canvas-assignment-XXXXXX.md)"
-      trap 'rm -f "$tmpfile"' EXIT
+      NAME=""
+      DESCRIPTION=""
+      USE_EDITOR=true
 
-      cat > "$tmpfile" <<'TEMPLATE'
+      while [[ $# -gt 0 ]]; do
+        case "$1" in
+          --name) NAME="$2"; USE_EDITOR=false; shift 2 ;;
+          --desc) DESCRIPTION="$2"; shift 2 ;;
+          *) echo "Unknown argument: $1" >&2; exit 1 ;;
+        esac
+      done
+
+      if $USE_EDITOR; then
+        tmpfile="$(mktemp /tmp/canvas-assignment-XXXXXX.md)"
+        trap 'rm -f "$tmpfile"' EXIT
+
+        cat > "$tmpfile" <<'TEMPLATE'
 # Canvas Assignment — fill in below, then save and close the editor.
 # Format:
 #   First non-comment line  →  Assignment name
@@ -29,17 +42,16 @@ let
 
 TEMPLATE
 
-      # CANVAS_EDITOR overrides VISUAL/EDITOR so you can use --wait for GUI editors
-      # e.g. set CANVAS_EDITOR="zeditor --wait" in your shell
-      codium --wait "$tmpfile"
+        codium --wait "$tmpfile"
 
-      NAME="$(grep -v '^#' "$tmpfile" | grep -v '^[[:space:]]*$' | head -1)"
-      if [ -z "$NAME" ]; then
-        echo "Error: no assignment name found." >&2
-        exit 1
+        NAME="$(grep -v '^#' "$tmpfile" | grep -v '^[[:space:]]*$' | head -1)"
+        if [ -z "$NAME" ]; then
+          echo "Error: no assignment name found." >&2
+          exit 1
+        fi
+
+        DESCRIPTION="$(awk '/^#/{next} found{print} /^[[:space:]]*$/ && !found{found=1}' "$tmpfile" | sed '/^[[:space:]]*$/d')"
       fi
-
-      DESCRIPTION="$(awk '/^#/{next} found{print} /^[[:space:]]*$/ && !found{found=1}' "$tmpfile" | sed '/^[[:space:]]*$/d')"
 
       echo "Creating assignment: $NAME"
 
