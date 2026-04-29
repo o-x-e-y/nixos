@@ -1,5 +1,6 @@
 {
   imports = [
+    ./canvas
     ./alacritty
     ./bash
     ./bat
