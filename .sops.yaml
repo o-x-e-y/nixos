@@ -1,0 +1,7 @@
+keys:
+  - &oxey age13r4erml28qaz9j4sdgq42mrds09tf0rwamhfpl6hq2hjpeknd4ssq7a796
+creation_rules:
+  - path_regex: secrets/secrets.yaml$
+    key_groups:
+      - age:
+          - *oxey

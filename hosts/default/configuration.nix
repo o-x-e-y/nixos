@@ -48,6 +48,14 @@ in
     ./../../modules
   ];
 
+  sops = {
+    defaultSopsFile = ./../../secrets/secrets.yaml;
+    age.keyFile = "/home/oxey/.config/sops/age/keys.txt";
+    secrets.canvas-api-key = {
+      owner = config.mainUser.username;
+    };
+  };
+
   modules = {
     kanata.enable = true;
   };
