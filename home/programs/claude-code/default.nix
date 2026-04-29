@@ -69,6 +69,7 @@ in
       agents = {
         typst-writer = ./agents/typst-writer.md;
         comptences = ./agents/comptences.md;
+        canvas-submit = ./agents/canvas-submit.md;
       };
     };
 
