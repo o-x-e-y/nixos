@@ -26,9 +26,9 @@ in
           email = "lucoerlemans37@gmail.com";
         };
         init.defaultBranch = "main";
-        credential.helper = "store";
         core.editor = "codium --wait";
         merge.ff = false;
+        url."git@github.com:".insteadOf = "https://github.com/";
       };
       signing.format = null;
     };

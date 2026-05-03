@@ -54,6 +54,11 @@ in
     secrets.canvas-api-key = {
       owner = config.mainUser.username;
     };
+    secrets.github_ssh_key = {
+      owner = config.mainUser.username;
+      path = "/home/${config.mainUser.username}/.ssh/id_ed25519_github";
+      mode = "0600";
+    };
   };
 
   modules = {

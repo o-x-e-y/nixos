@@ -49,6 +49,7 @@ in
             "Bash(plantuml:*)"
             "Bash(find:*)"
             "Bash(typst compile:*)"
+            "Bash(wasm-pack:*)"
             "Grep(*)"
             "Glob(*)"
           ];

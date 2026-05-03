@@ -45,6 +45,7 @@ in
             "h"
           ];
           Assembly = [ "*.casm" ];
+          JSON = [ "*.dof" ];
         };
         languages = {
           Assembly = {

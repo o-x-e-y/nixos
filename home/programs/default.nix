@@ -15,6 +15,7 @@
     ./mimeapps
     ./plasma
     ./spotify-player
+    ./ssh
     ./vscode
     ./zed-editor
   ];
