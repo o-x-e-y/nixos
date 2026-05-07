@@ -55,16 +55,16 @@ in
             tab_size = 4;
           };
           JavaScript = {
-            tab_size = 4;
+            tab_size = 2;
           };
           Rust = {
             # language_servers = ["rust-analyzer" "tailwindcss-language-server"];
           };
           TypeScript = {
-            tab_size = 4;
+            tab_size = 2;
           };
           TSX = {
-            tab_size = 4;
+            tab_size = 2;
           };
           Nix = {
             tab_size = 2;
