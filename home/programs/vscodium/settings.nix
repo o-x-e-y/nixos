@@ -4,11 +4,11 @@
   ...
 }:
 let
-  cfg = config.apps.vscode;
+  cfg = config.apps.vscodium;
 in
 {
   config = lib.mkIf (cfg.enable && cfg.useSettings) {
-    programs.vscode = {
+    programs.vscodium = {
       profiles.default = {
         userSettings = {
           "git.autofetch" = true;

@@ -4,11 +4,11 @@
   ...
 }:
 let
-  cfg = config.apps.vscode;
+  cfg = config.apps.vscodium;
 in
 {
   config = lib.mkIf (cfg.enable && cfg.useKeybindings) {
-    programs.vscode = {
+    programs.vscodium = {
       profiles.default = {
         keybindings = [
           {

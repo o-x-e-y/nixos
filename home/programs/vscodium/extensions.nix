@@ -5,11 +5,11 @@
   ...
 }:
 let
-  cfg = config.apps.vscode;
+  cfg = config.apps.vscodium;
 in
 {
   config = lib.mkIf (cfg.enable && cfg.useExtensions) {
-    programs.vscode = {
+    programs.vscodium = {
       profiles.default = {
         extensions =
           with pkgs.vscode-extensions;

@@ -16,7 +16,7 @@
     ./plasma
     ./spotify-player
     ./ssh
-    ./vscode
+    ./vscodium
     ./zed-editor
   ];
 }

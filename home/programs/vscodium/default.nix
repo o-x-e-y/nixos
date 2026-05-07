@@ -5,7 +5,7 @@
   ...
 }:
 let
-  cfg = config.apps.vscode;
+  cfg = config.apps.vscodium;
 in
 {
   imports = [
@@ -14,33 +14,32 @@ in
     ./keybindings.nix
   ];
 
-  options.apps.vscode = {
+  options.apps.vscodium = {
     enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Enable vscode package";
+      description = "Enable vscodium package";
     };
     useSettings = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Use Oxey vscode settings";
+      description = "Use Oxey vscodium settings";
     };
     useExtensions = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Use Oxey extensions";
+      description = "Use Oxey vscodium extensions";
     };
     useKeybindings = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Use Oxey keybindings";
+      description = "Use Oxey vscodium keybindings";
     };
   };
 
   config = lib.mkIf cfg.enable {
-    programs.vscode = {
+    programs.vscodium = {
       enable = true;
-      package = pkgs.vscodium;
     };
   };
 }
