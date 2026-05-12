@@ -126,7 +126,7 @@ The user-facing requirements are collected in @user-req-table.
 ]
 ```
 
-The `key` parameter controls both the label prefix and the display prefix. It defaults to `"US"` (user story), which produces labels `<us1>`, `<us2>`, … Pass a different key for other requirement types, e.g. `key: "FR"` gives `<fr1>`, `<fr2>`, … Use `start-at:` to continue numbering across multiple tables.
+The `key` parameter controls both the label prefix and the display prefix. It defaults to `"US"` (user story), which produces labels `<us1>`, `<us2>`, … Pass a different key for other requirement types, e.g. `key: "FR"` gives `<fr1>`, `<fr2>`, …. If you add multiple tables, they will continue counting upward without duplicate numbers so you can split tables however you want.
 
 ## Referencing a requirement
 
