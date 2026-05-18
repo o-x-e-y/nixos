@@ -50,6 +50,7 @@ in
             "Bash(find:*)"
             "Bash(typst compile:*)"
             "Bash(wasm-pack:*)"
+            "Bash(git * log:*)"
             "Grep(*)"
             "Glob(*)"
           ];
@@ -64,6 +65,9 @@ in
           ];
           defaultMode = "acceptEdits";
           disableBypassPermissionsMode = "disable";
+          additionalDirectories = [
+            "~/Repos"
+          ];
         };
       };
 
