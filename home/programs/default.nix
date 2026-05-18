@@ -13,6 +13,7 @@
     ./konsole
     ./libreoffice
     ./mimeapps
+    ./okular
     ./plasma
     ./spotify-player
     ./ssh
