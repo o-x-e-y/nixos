@@ -26,6 +26,11 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    oxeylyzer = {
+      url = "github:o-x-e-y/oxeylyzer";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -37,6 +42,7 @@
       zed-extensions,
       nix-flatpak,
       sops-nix,
+      oxeylyzer,
       ...
     }@inputs:
     {
@@ -55,6 +61,7 @@
 
             nixpkgs.overlays = [
               zed-extensions.overlays.default
+              oxeylyzer.overlays.default
             ];
 
             home-manager.sharedModules = [
