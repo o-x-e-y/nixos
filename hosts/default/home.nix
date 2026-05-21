@@ -52,6 +52,7 @@ in
     teams-for-linux
     typst
     typstyle
+    plantuml
     tinymist
     gimp3
     ungoogled-chromium
