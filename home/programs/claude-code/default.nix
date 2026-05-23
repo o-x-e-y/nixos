@@ -55,6 +55,7 @@ in
           disableBypassPermissionsMode = "disable";
           additionalDirectories = [
             "~/Repos"
+            "~/Documents/fontys"
           ];
         };
       };
