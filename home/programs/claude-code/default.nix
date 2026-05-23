@@ -6,6 +6,7 @@
 }:
 let
   cfg = config.apps.claude-code;
+  status-line = import ./commands/status-line.nix { inherit pkgs; };
 in
 {
   options.apps.claude-code = {
@@ -21,20 +22,7 @@ in
       enable = true;
 
       settings = {
-        statusLine = {
-          type = "command";
-          command = ''
-            input=$(cat)
-            used=$(echo "$input" | ${pkgs.jq}/bin/jq -r '.context_window.used_percentage // empty')
-            five=$(echo "$input" | ${pkgs.jq}/bin/jq -r '.rate_limits.five_hour.used_percentage // empty')
-            week=$(echo "$input" | ${pkgs.jq}/bin/jq -r '.rate_limits.seven_day.used_percentage // empty')
-            out=""
-            [ -n "$used" ] && out="ctx:$(printf '%.0f' "$used")%"
-            [ -n "$five" ] && out="$out 5h:$(printf '%.0f' "$five")%"
-            [ -n "$week" ] && out="$out 7d:$(printf '%.0f' "$week")%"
-            echo "$out"
-          '';
-        };
+        statusLine = status-line;
 
         permissions = {
           allow = [
