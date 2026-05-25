@@ -1,5 +1,6 @@
 {
   pkgs,
+  lib,
   mainUser,
   ...
 }:
@@ -76,6 +77,7 @@ in
     claude-monitor
     fend
     oxeylyzer
+    flips
 
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
@@ -112,6 +114,14 @@ in
     "competence-template"
     "requirements"
   ]);
+
+  home.activation.applyTetrisGymPatch = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    rom="$HOME/Games/tetris-usa.nes"
+    out="$HOME/Games/tetris-gym.nes"
+    if [ -f "$rom" ] && [ ! -f "$out" ]; then
+      $DRY_RUN_CMD ${pkgs.flips}/bin/flips --apply ${../../public/TetrisGYM-6.0.0.bps} "$rom" "$out"
+    fi
+  '';
 
   # Home Manager can also manage your environment variables through
   # 'home.sessionVariables'. These will be explicitly sourced when using a
