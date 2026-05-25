@@ -20,6 +20,7 @@ in
         lldb
         vscode-extensions.vadimcn.vscode-lldb
         vtsls
+        jdk
       ];
     };
 
@@ -37,6 +38,7 @@ in
           env
           html
           http
+          java
           jetbrains-icons
           kconfig
           latex
