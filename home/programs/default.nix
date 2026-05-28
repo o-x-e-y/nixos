@@ -1,10 +1,10 @@
 {
   imports = [
-    ./canvas
     ./alacritty
     ./bash
     ./bat
     ./btop
+    ./canvas
     ./claude-code
     ./direnv
     ./fastfetch
@@ -13,6 +13,7 @@
     ./konsole
     ./libreoffice
     ./mimeapps
+    ./minecraft
     ./okular
     ./plasma
     ./spotify-player

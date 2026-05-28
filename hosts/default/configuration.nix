@@ -54,6 +54,12 @@ in
     secrets.canvas-api-key = {
       owner = config.mainUser.username;
     };
+    secrets.grahp-city = {
+      owner = config.mainUser.username;
+    };
+    secrets.grahp-survival = {
+      owner = config.mainUser.username;
+    };
     secrets.github_ssh_key = {
       owner = config.mainUser.username;
       path = "/home/${config.mainUser.username}/.ssh/id_ed25519_github";
@@ -193,6 +199,7 @@ in
     nixfmt
     fd
     nix-index
+    sops
   ];
 
   fonts.packages = with pkgs; [
