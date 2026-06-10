@@ -41,18 +41,33 @@ in
             "Bash(git * log:*)"
             "Grep(*)"
             "Glob(*)"
-          ];
-          ask = [
             "Bash(curl:*)"
             "WebFetch"
           ];
+          ask = [];
           deny = [
             "Bash(cargo publish:*)"
+            "Bash(npm publish:*)"
+            "Bash(twine upload:*)"
+
+            "Bash(git push --force:*)"
+            "Bash(git push -f:*)"
+            "Bash(git reset --hard:*)"
+            "Bash(git clean -f:*)"
+
+            "Bash(rm -rf:*)"
+
             "Read(./.env)"
+            "Read(**/.env)"
+            "Read(**/.env.*)"
             "Read(./secrets/**)"
+            "Read(~/.ssh/**)"
+            "Read(~/.gnupg/**)"
+            "Read(~/.aws/credentials)"
+            "Read(**/*.pem)"
+            "Read(**/*.key)"
           ];
           defaultMode = "acceptEdits";
-          disableBypassPermissionsMode = "disable";
           additionalDirectories = [
             "~/Repos"
             "~/Documents/fontys"
