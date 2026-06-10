@@ -3,6 +3,7 @@
 ;; )
 
 (defsrc
+  esc
   grv       1    2    3    4    5    6    7    8    9    0    -    =    bspc
   tab       q    w    e    r    t    y    u    i    o    p    [    ]    ret
   caps      a    s    d    f    g    h    j    k    l    ;    '    \
@@ -11,6 +12,7 @@
 )
 
 (deflayer gust
+  esc
   `    1    2    3    4    5         6    7    8    9    0    [    ]    bspc
   tab  @:;  u    o    f    j         @quk k    l    r    v    /    =    ret
   bspc e    i    a    c    y         d    h    t    n    s    -    \
@@ -18,10 +20,20 @@
   @ocl lmet lalt                spc            @qwt rmet @ocr
 )
 
+(deflayer gustmode
+  @qwe
+  `    1    2    3    4    5         6    7    8    9    0    [    ]    bspc
+  tab  @:;  u    o    f    j         @quk k    l    r    v    /    =    @qwr
+  bspc e    i    a    c    y         d    h    t    n    s    -    \
+  @osl .    ,    .    p    g    '    b    m    w    x    z    @osr
+  @ocl lmet lalt                spc            @qwt rmet @ocr
+)
+
 (deflayer qwerty
+  esc
   grv       1    2    3    4    5    6    7    8    9    0    -    =    bspc
   tab       q    w    e    r    t    y    u    i    o    p    [    ]    ret
-  caps      a    s    d    f    g    h    j    k    l    ;    '    \
+  caps      a    s    d    f    g    h    j    k    l    ;    '    @gmd
   lsft \    z    x    c    v    b    n    m    ,    .    /    rsft
   lctl lmet lalt           spc                 @gst rmet rctl
 )
@@ -31,7 +43,9 @@
   gst (layer-switch gust)
   ;; str (layer-switch sturdy)
   qwt (layer-switch qwerty)
-  str (layer-switch sturdy)
+  gmd (multi f13 (layer-switch gustmode))
+  qwr (multi ret (layer-switch qwerty))
+  qwe (multi esc (layer-switch qwerty))
   b   (fork S-/ 1 (lsft rsft))
   :;  (fork S-; (unmod ;) (lsft rsft))
   qu  (multi q u)
