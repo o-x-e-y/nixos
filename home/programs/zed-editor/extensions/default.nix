@@ -31,14 +31,13 @@ in
         [
           awk
           bqn
-          # color-highlight
-          csharp
+          # csharp
           dbml
-          dockerfile
+          docker-compose
           env
           html
           http
-          java
+          # java
           jetbrains-icons
           kconfig
           latex
