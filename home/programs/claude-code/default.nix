@@ -44,7 +44,7 @@ in
             "Bash(curl:*)"
             "WebFetch"
           ];
-          ask = [];
+          ask = [ ];
           deny = [
             "Bash(cargo publish:*)"
             "Bash(npm publish:*)"
