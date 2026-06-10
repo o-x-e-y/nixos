@@ -52,11 +52,18 @@
         modules = [
           ./hosts/default/configuration.nix
           ./hosts/default/main-user.nix
+          ./hosts/default/claude-code-override.nix
 
           {
             mainUser = {
               enable = true;
               username = "oxey";
+            };
+
+            claudeCodeOverride = {
+              enable = true;
+              version = "2.1.170";
+              hash = "sha256-hJ4AcnegRCqydXDT49bUN4dQeUZZDo3RlH5aObcIH54=";
             };
 
             nixpkgs.overlays = [
