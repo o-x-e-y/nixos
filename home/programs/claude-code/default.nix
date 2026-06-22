@@ -24,6 +24,9 @@ in
       settings = {
         statusLine = status-line;
 
+        model = "opus";
+        effortLevel = "xhigh";
+
         permissions = {
           allow = [
             "Bash(git diff:*)"
