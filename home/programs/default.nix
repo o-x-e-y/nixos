@@ -15,6 +15,7 @@
     ./mimeapps
     ./minecraft
     ./okular
+    ./osu-lazer
     ./plasma
     ./spotify-player
     ./ssh
