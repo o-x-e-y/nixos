@@ -69,6 +69,7 @@ in
 
   modules = {
     kanata.enable = true;
+    opentabletdriver.enable = true;
   };
 
   # Bootloader.
@@ -138,16 +139,6 @@ in
 
   hardware.bluetooth.enable = true;
   hardware.uinput.enable = true;
-
-  # Tablet support via the system OpenTabletDriver daemon, used for BOTH the
-  # desktop and osu. The module also installs udev rules (libusb/hidraw +
-  # /dev/uinput access for our user) and blacklists the conflicting
-  # `wacom`/`hid-uclogic` kernel modules. Only one process may claim the
-  # tablet's USB device, so osu's *bundled* OTD handler must be disabled
-  # in-game (Settings -> Input) -- osu then receives the daemon's virtual
-  # cursor like any other absolute pointer.
-  hardware.opentabletdriver.enable = true;
-  hardware.opentabletdriver.daemon.enable = true;
 
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
