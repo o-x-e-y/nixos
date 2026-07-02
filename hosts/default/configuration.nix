@@ -65,6 +65,17 @@ in
       path = "/home/${config.mainUser.username}/.ssh/id_ed25519_github";
       mode = "0600";
     };
+    secrets.git_fhict_token = {
+      owner = config.mainUser.username;
+    };
+    templates."git-credentials-fhict" = {
+      content = ''
+        username=oxey
+        password=${config.sops.placeholder.git_fhict_token}
+      '';
+      owner = config.mainUser.username;
+      mode = "0600";
+    };
   };
 
   modules = {
