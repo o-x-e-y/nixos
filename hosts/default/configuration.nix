@@ -68,6 +68,9 @@ in
     secrets.git_fhict_token = {
       owner = config.mainUser.username;
     };
+    secrets.intervals_icu_key = {
+      owner = config.mainUser.username;
+    };
     templates."git-credentials-fhict" = {
       content = ''
         username=oxey

@@ -7,6 +7,15 @@
 let
   cfg = config.apps.claude-code;
   status-line = import ./commands/status-line.nix { inherit pkgs; };
+  intervals-icu = pkgs.writeShellApplication {
+    name = "intervals-icu";
+    runtimeInputs = with pkgs; [
+      curl
+      jq
+      coreutils
+    ];
+    text = builtins.readFile ./intervals-icu.sh;
+  };
 in
 {
   options.apps.claude-code = {
@@ -45,6 +54,7 @@ in
             "Grep(*)"
             "Glob(*)"
             "Bash(curl:*)"
+            "Bash(intervals-icu:*)"
             "WebFetch"
           ];
           ask = [ ];
@@ -84,6 +94,10 @@ in
         canvas-submit = ./agents/canvas-submit.md;
       };
 
+      commands = {
+        fetch-rides = ./commands/fetch-rides.md;
+      };
+
       plugins = [
         (pkgs.fetchFromGitHub {
           owner = "obra";
@@ -96,6 +110,7 @@ in
 
     home.packages = [
       pkgs.claude-monitor
+      intervals-icu
     ];
   };
 }
