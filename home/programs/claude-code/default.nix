@@ -35,6 +35,7 @@ in
 
         model = "opus";
         effortLevel = "xhigh";
+        tui = "fullscreen";
 
         permissions = {
           allow = [
@@ -80,7 +81,7 @@ in
             "Read(**/*.pem)"
             "Read(**/*.key)"
           ];
-          defaultMode = "acceptEdits";
+          defaultMode = "auto";
           additionalDirectories = [
             "~/Repos"
             "~/Documents/fontys"
