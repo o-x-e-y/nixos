@@ -25,6 +25,7 @@ in
   apps = {
     alacritty.enable = false;
     foot.enable = false;
+    ghostty.enable = false;
     libreoffice.extraPackages = with pkgs; [
       hunspellDicts.en_GB-ise
       hunspellDicts.nl_NL
