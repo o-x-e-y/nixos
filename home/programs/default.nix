@@ -9,6 +9,7 @@
     ./direnv
     ./fastfetch
     ./foot
+    ./ghostty
     ./git
     ./konsole
     ./libreoffice
