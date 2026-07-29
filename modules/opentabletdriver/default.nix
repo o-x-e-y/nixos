@@ -39,10 +39,8 @@ in
     #   * harden the auto-restart so the residual sub-second race is invisible:
     #     retry forever (no start limit), quickly, and don't dump 8MB cores.
     systemd.user.services.opentabletdriver = {
-      after = [ "plasma-workspace-wayland.target" ];
       unitConfig.StartLimitIntervalSec = 0;
       serviceConfig = {
-        RestartSec = 2;
         LimitCORE = 0;
       };
     };
