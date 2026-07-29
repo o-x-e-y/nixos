@@ -71,6 +71,18 @@ in
     secrets.intervals_icu_key = {
       owner = config.mainUser.username;
     };
+    secrets.garmin-connect-email = {
+      owner = config.mainUser.username;
+    };
+    secrets.garmin-connect-password = {
+      owner = config.mainUser.username;
+    };
+    secrets.justwatch-email = {
+      owner = config.mainUser.username;
+    };
+    secrets.justwatch-password = {
+      owner = config.mainUser.username;
+    };
     templates."git-credentials-fhict" = {
       content = ''
         username=oxey
