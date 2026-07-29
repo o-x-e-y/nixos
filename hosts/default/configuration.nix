@@ -165,6 +165,8 @@ in
 
   hardware.bluetooth.enable = true;
   hardware.uinput.enable = true;
+  # wootility + wooting udev rules
+  hardware.wooting.enable = true;
 
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
