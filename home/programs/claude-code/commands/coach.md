@@ -131,6 +131,42 @@ and lost rep 2. Same rider, four days apart, same nominal freshness.
 Jul 27's VO2 5×5 landed in full at 16:44 in 23 °C. Judge the temperature, then use
 the clock to control it — start quality before 10:00 when the forecast tops 28 °C.
 
+## `weather` — forecasting the window before the session
+
+Rule 8 says check the forecast the evening before. `weather` is the tool for it —
+Open-Meteo through a curl wrapper, no API key, default location Beek en Donk
+(`-l eindhoven | helmond | <lat>,<lon>` to move it).
+
+```
+weather now                    weather day +1 [12-15]      hourly table
+weather today [12-15]          weather window +1 12-15     summary over a window
+```
+
+`window` is the one to reach for: it collapses a candidate session window into
+mean/range temperature, total rain, gusts and cloud — the fields rules 1 and 8
+actually turn on. Dates before today come from the ERA5 archive, today and later
+from the forecast. **They are not interchangeable**: measured on Aug 13 2026 they
+disagree by ~1.4 °C, which is the same size as the offset below, so never quote the
+forecast endpoint's `past_days` for a ride that already happened.
+
+**Air temperature predicts head-unit temperature almost directly.** The plan used
+to assume the head unit read far higher because the sensor carries radiant load —
+the Aug 13 cell predicted 26–31 °C against an air temperature of 20 °C. Measured
+against `temp_work` in the session log the offset is about **+1 °C**:
+
+| | air over the reps | head unit | Δ |
+|---|---|---|---|
+| Aug 13, reps 08:30–09:25 | 20.0 °C | 20.5 | +0.5 |
+| Aug 15, reps ~10:15–11:45 | 25.2 °C | 25.8 | +0.6 |
+
+So a forecast can be read straight against rule 1's 26–28 / 28+ gates with a +1 °C
+nudge, which is what the `window` summary prints. Two points, and both rep windows
+were inferred from the session structure rather than the streams — widen the check
+if a call sits right on a gate.
+
+Wind is worth a look on the same call: flat exposed roads plus gusts make a steady
+275 W materially harder to hold, and it costs nothing to read it off the same table.
+
 ## Cronometer — what was actually eaten
 
 Logged intake comes from the **`cronometer` MCP** (`mcp__cronometer__*`). The tool
