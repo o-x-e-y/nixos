@@ -97,6 +97,7 @@ in
 
       commands = {
         fetch-rides = ./commands/fetch-rides.md;
+        coach = ./commands/coach.md;
       };
 
       plugins = [
