@@ -1,12 +1,11 @@
 ---
-description: Load the summer training block — what it is for, how the repo drives Garmin and intervals.icu, and the rules the block has earned
-argument-hint: [question or focus]
-allowed-tools: Read, Grep, Glob, Bash(date:*)
+description: Coach the summer training block — the plan, the tooling, the rules it earned, and optionally recent rides and nutrition
+argument-hint: [notes, a question, and/or "pull the last N days"]
+allowed-tools: Read, Grep, Glob, Bash(date:*), Bash(intervals-icu:*), Bash(nix-shell:*), mcp__cronometer__get_food_log, mcp__cronometer__get_daily_nutrition, mcp__cronometer__get_nutrition_scores, mcp__cronometer__get_biometrics
 ---
 
-Starter context for coaching work on the summer training plan
-(`~/Documents/summer-training`). **This command pulls no new data** — use
-`/fetch-rides` for that, and for the caveats on reading intervals.icu.
+Coaching context for the summer training plan (`~/Documents/summer-training`),
+plus the tools to pull recent data when the prompt asks for it.
 
 Today: !`date +"%A %-d %B %Y"`
 
@@ -18,11 +17,11 @@ FTP of **275 W** (289 W average over the 20-min test on 30 Jun) to **≥300 W**,
 ≥316 W average means the goal is hit.
 
 The shape is **two quality days a week on a deep Z2 base**: one threshold or
-sweet-spot session, one VO2, everything else easy enough to recover from them. The
-rider already has a healthy top end (565 W for 1 min, 440 W for 8×1 min); the
-missing stimulus is *accumulated time at and just below threshold*, so the block
-progresses **time-in-zone before watts** — 48 min at 273 W on Jul 30, 45 min at
-275 W on Aug 13, 54 min on Aug 17.
+sweet-spot, one VO2, everything else easy enough to recover from them. The rider
+already has a healthy top end (565 W for 1 min, 440 W for 8×1 min); the missing
+stimulus is *accumulated time at and just below threshold*, so the block progresses
+**time-in-zone before watts** — 48 min at 273 W Jul 30, 45 min at 275 W Aug 13,
+54 min Aug 17.
 
 Zones at FTP 275: **Z1 <154 · Z2 154–209 · Z3 209–250 · Z4 250–292 · Z5 292–333 ·
 Z6 333–415 · Z7 >415 W.**
@@ -46,6 +45,8 @@ workouts/workouts.json ──┬──▶ summer-training-plan.typ  (the plan PD
   structured workout
 review/log.json  ─▶ review/sessions.py ─▶ review/sessions.json ─▶ the plan's session log
 nutrition/fuel.py ─▶ nutrition/fuel.json ─▶ the plan's per-day Fuel badge
+                          ▲
+      what was eaten ─────┘  Cronometer, via the `cronometer` MCP (read-only)
 ```
 
 - `summer-training-plan.typ` — the plan itself, ~480 lines. Week tables with a
@@ -58,59 +59,122 @@ nutrition/fuel.py ─▶ nutrition/fuel.json ─▶ the plan's per-day Fuel badg
 - `review/` — `log.json` holds only the two things an API cannot know: what was
   prescribed and the one-clause verdict. Everything objective is pulled.
 - `nutrition/` — `fuel.py` builds daily kcal/carb targets from planned watts, the
-  `work:` shift hours, and intervals.icu.
+  `work:` shift hours, and intervals.icu. It prescribes; it never sees intake.
 - `docs/superpowers/` — design docs and implementation plans for the tooling.
 
-## `garmin/push.py` — structured workouts onto the watch
+# Pulling data
 
-Reads `workouts.json`, runs it through `transform.py` (min→sec, explicit power →
-±10 W alert band, zones → watt bands, nested repeats, `skip-last-recovery`) and
-`garmin_dto.py` (the exact Garmin payload), then uploads and **schedules** each
-workout on the Garmin calendar as `STP <date> · <name>`.
+**Nothing is pulled unless the prompt asks for it.** A bare `/coach`, or a question
+the repo already answers, reads files only. Fetch when the prompt asks for recent
+training ("pull the last 3 days", "how did this week go"), or when a claim needs
+evidence the repo does not hold.
 
-```sh
-nix-shell --run "python garmin/dry_run.py"        # print every workout as a tree, no account
-nix-shell --run "python garmin/push.py --login"   # ONE TIME: 2FA, caches a token
-nix-shell --run "python garmin/push.py --days 14"          # offline preview
-nix-shell --run "python garmin/push.py --days 14 --push"   # create + schedule
-nix-shell --run "python garmin/push.py --prune --push"     # delete past-dated STP workouts
-```
+## intervals.icu — athlete i563199, synced from Garmin
 
-- **Dry-run by default**; `--push` is the only thing that writes.
-- **Idempotent by content hash** — `.push-state.json` records what went up, so
-  editing one workout re-pushes only that one. Only dates on/after today.
-- Needs the flake shell (garth + garminconnect, pinned to nixos-25.11); direnv
-  loads it on `cd`. Credentials come from sops, never the repo.
-- `notes` days become **one-step alert-free workouts** so they appear on the
-  calendar; rest days are omitted. `--no-notes` skips them.
-- Push a **short window**. The plan adapts constantly — months of scheduled
-  workouts are just cleanup later.
+`intervals-icu activities <days>` is the entry point. In its JSON: `np_w` =
+normalized power, `intensity` = IF × 100, `load` = training load (TSS), `h` =
+moving time in hours. Activity `id`s feed the drill-downs — prefer the summary, and
+drill down only where the review needs it:
 
-## `icu/push.py` — planned load onto the intervals.icu calendar
+- `intervals-icu intervals <id>` — auto-detected intervals. **Not the laps** — see below
+- `intervals-icu wellness [days]` — weight, resting HR, sleep, HRV
+- `intervals-icu activity <id>` — full activity JSON (large; rarely needed)
+- `intervals-icu streams <id> [types]` — per-second data (very large; deep dives only)
+- `intervals-icu streams <id> temp` — ambient temperature; pull for **every** quality
+  session before drawing conclusions from HR
+- `intervals-icu get <path>` — anything else, see https://intervals.icu/api-docs.html
 
-Garmin's *planned* workouts never sync back to intervals.icu; only completed
-activities do. Without this, intervals.icu cannot project anything. This script
-posts each plan day as calendar-event text, and **intervals.icu parses it
-server-side and computes `moving_time` and `icu_training_load` itself** — so the
-week shows a projected TSS and the fitness chart projects CTL/ATL/TSB forward
-through the rest of the block. That projection is what makes "Thursday lands at
-TSB ~-8" a statement rather than a guess.
+## Structured sessions: read the intent first
 
-```sh
-python3 icu/push.py --days 16            # offline preview (stdlib only, no nix shell)
-python3 icu/push.py --days 16 --show     # ... with the full workout text
-python3 icu/push.py --days 16 --push     # create/update, then report TSS by week
-```
+Sessions pushed from this repo are named `STP <date> · <name>`. Match on that
+**name**, not the activity date — sessions get ridden a day late. The intended steps
+live in `workouts/workouts.json` under `.workouts["<date>"].steps`. Judge the ride
+against *those*, not against whatever intervals.icu detected.
 
-- Same IR as the Garmin build, with two deliberate differences: `tol_w=0` (275 W
-  renders as `275W`, not a ±10 W band) and power alerts **unconditionally**, since
-  an untargeted step contributes nothing to the load estimate and the 20-min test
-  is the block's biggest session.
-- **No local state.** Ownership is by `external_id` (`stp-<date>`); every run
-  re-reads the calendar, so it self-heals and never touches a hand-made event.
-- `render.py`'s `EASY_PCT` (50%) and `ENDURANCE_PCT` (65%) price everything the
-  plan leaves untargeted. Notes are 31 of 55 days — drop them and the projected
-  weekly load lands at roughly half the real figure.
+`intervals-icu intervals <id>` distorts outdoor sessions in two known ways:
+
+- **It splits reps at junctions.** Brief coasting becomes a 6–20 s `RECOVERY`,
+  turning three reps into eight fragments. Merge `WORK` intervals separated by gaps
+  under ~30 s before reading anything into the structure.
+- **It charges rep ramp-ups to the preceding recovery.** A `WORK` interval doesn't
+  open until power stabilises, so the ramp-in inflates the recovery's average watts
+  and shortens the rep.
+
+intervals.icu knows the true lap count (`icu_lap_count` on the activity) but exposes
+no laps endpoint — `/activity/<id>/laps` 404s. The `distance` stream is available if
+5 km autolaps need reconstructing by hand.
+
+**Never call a fade from power alone.** A real fade is power declining *while HR
+holds or climbs*. Split any suspect block into quarters and check both channels —
+falling HR alongside falling power is a deliberate ease-off, not a failure. Use
+`intervals-icu streams <id> watts,heartrate` piped into `nix-shell -p python3`.
+
+## Heat: get the temperature before reading HR
+
+Rule 1 below is the decision; this is how to read it. Use the stream, not the
+summary field:
+
+- `intervals-icu streams <id> temp` is a real per-second series, not a start-only
+  value — Aug 1 2026 tracks 29 °C down to 20 °C across an evening.
+- Average it **over the work intervals**, not the whole ride. The activity's
+  `average_temp` can badly misrepresent them: Aug 1 averaged 23.5 °C while its first
+  hour sat at 29 °C.
+- Resolution is integer °C, and the sensor sits on the head unit, so it carries
+  radiant and body heat. Reliable for comparing rides against each other; not a
+  shaded air reading.
+
+Worked comparison: Jul 30's 4×12 held 273 W at HR 163–165 with its reps at
+**26.8 °C**; Aug 3's 2×15 at the same watts ran its reps at **30.4 °C**, hit HR 181,
+and lost rep 2. Same rider, four days apart, same nominal freshness.
+
+**Time of day is the lever, not the variable.** Jul 15 failed at 10:03 in 27 °C;
+Jul 27's VO2 5×5 landed in full at 16:44 in 23 °C. Judge the temperature, then use
+the clock to control it — start quality before 10:00 when the forecast tops 28 °C.
+
+## Cronometer — what was actually eaten
+
+Logged intake comes from the **`cronometer` MCP** (`mcp__cronometer__*`). The tool
+descriptions say what each call does; they do not say the three things that matter.
+
+- **`fuel.json` is the target, Cronometer is the outcome.** The comparison worth
+  making is `get_daily_nutrition(date)` against `nutrition/fuel.json`'s `total_kcal`
+  and `carb_g` for the same day. Nothing else closes that loop.
+- **Ignore Cronometer's own target.** Its `total_target_kcal` knows nothing about
+  training load — on Aug 16 it read 2631 against `fuel.py`'s 3610 and called the
+  rider ~600 kcal *over* while they were ~380 kcal *under*. It points the wrong way
+  on a build block. Never quote it as a verdict.
+- **`get_biometrics` is not a weigh-in log.** It is a carry-forward series: it
+  returns the boundaries of whatever range you ask for with the last known value
+  repeated. Two different windows both came back as two points at 65.2 kg. **Weight
+  comes from `intervals-icu wellness`**, which hooks into Garmin directly and is what
+  `fuel.py` reads; Cronometer's figure is hand-entered and goes stale.
+
+Pull a day when the question turns on fuelling — a session that heat and TSB do not
+explain, or the day before a headline session. Under-carbing before quality is a
+real finding; one day's total on an easy week is noise. The five diary-writing tools
+are denied at the harness: cite a day, don't edit one.
+
+# The tooling
+
+## Pushing the plan out — `garmin/push.py` and `icu/push.py`
+
+Both read `workouts.json` and are documented in full in `garmin/README.md` and
+`icu/README.md`. Read those before running either; what matters here is why they
+exist and what they cost.
+
+- **`garmin/push.py`** puts structured workouts on the watch, scheduled on the
+  Garmin calendar as `STP <date> · <name>` — the name the completed activity comes
+  back under, which is how a ride gets matched to its intent.
+- **`icu/push.py`** exists because Garmin's *planned* workouts never sync back to
+  intervals.icu; only completed ones do. It posts each plan day as calendar text,
+  which intervals.icu parses server-side and prices itself — projecting weekly TSS
+  and CTL/ATL/TSB forward. That projection is what makes "Thursday lands at
+  TSB ~-8" a statement rather than a guess. Its `render.py` prices untargeted days
+  too; drop those and projected load lands at roughly half the real figure.
+- **Both are dry-run by default** — `--push` is the only thing that writes. Garmin
+  is idempotent by content hash, icu by `external_id`, so re-running is safe.
+- **Push a short window.** The plan adapts constantly; months of scheduled workouts
+  are just cleanup later.
 
 ## Keeping the plan coherent
 
@@ -127,7 +191,7 @@ Four artefacts go stale independently. After changing anything:
 is neither in `workouts.json` nor in that table contributes zero exercise energy,
 and nothing warns you.
 
-## The rules this block earned
+# The rules this block earned
 
 Read `How to Adjust` at the end of the plan for all nine. The ones that change
 decisions most:
@@ -168,9 +232,9 @@ decisions most:
   were overturned by re-reading the data (Jul 3 was not a failure; rep length was
   standing in for heat). Say so plainly in the document when it happens.
 
-## Task
+# Task
 
-Orient first, in both cases:
+Orient first, always:
 
 1. Read the plan's **Overview & Principles**, the **week table covering today**,
    and **How to Adjust**. The file is large; grep for the week heading rather than
@@ -181,14 +245,21 @@ Then:
 
 **$ARGUMENTS**
 
-If there is a question above, that is the job — answer it, grounded in the plan
-and the session log, citing the rows and rules it turns on. Read further into the
-plan or the tooling if the question needs it, and say plainly when the evidence
-does not settle it. Don't preface the answer with a status report.
+It may carry notes on a ride just done, a question, a request to pull data, or
+several at once. Take it as written.
 
-If nothing is above, this was a bare `/coach`: report where the block stands in a
-few lines — the current week and its intent, the next quality session and its
-gates, and anything that looks stale or unresolved. Then stop and wait.
+- **Asks for data** — "pull the last 3 days", or a claim only the API can settle:
+  fetch, then review against the current week. Did quality sessions match their
+  targets in watts, duration and reps (temperature over the reps before blaming
+  fitness or fatigue)? Easy days actually easy, IF below ~0.75? Volume vs plan?
+- **Asks a question** — answer it from the plan and the session log, citing the
+  rows and rules it turns on. Pull data only if the question needs it.
+- **Carries notes on a session** — record them as a prescribed/delivered/verdict
+  row for `review/log.json`, not as prose.
+- **Empty** — a bare `/coach`: where the block stands in a few lines. Current week
+  and its intent, next quality session and its gates, anything stale or unresolved.
+  Pull nothing, then stop and wait.
 
-Either way: propose changes, don't make them. Nothing gets edited or pushed until
-the rider says so.
+No status-report preamble. Say plainly when the evidence doesn't settle it. Flag
+what the plan should change with its reasoning — **propose changes, don't make
+them.** Nothing gets edited or pushed until the rider says so.

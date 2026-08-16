@@ -77,6 +77,12 @@ in
     secrets.garmin-connect-password = {
       owner = config.mainUser.username;
     };
+    secrets.cronometer-email = {
+      owner = config.mainUser.username;
+    };
+    secrets.cronometer-password = {
+      owner = config.mainUser.username;
+    };
     secrets.justwatch-email = {
       owner = config.mainUser.username;
     };
