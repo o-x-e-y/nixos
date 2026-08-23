@@ -1,7 +1,7 @@
 ---
 description: Coach the summer training block — the plan, the tooling, the rules it earned, and optionally recent rides and nutrition
 argument-hint: [notes, a question, and/or "pull the last N days"]
-allowed-tools: Read, Grep, Glob, Bash(date:*), Bash(intervals-icu:*), Bash(nix-shell:*), mcp__cronometer__get_food_log, mcp__cronometer__get_daily_nutrition, mcp__cronometer__get_nutrition_scores, mcp__cronometer__get_biometrics
+allowed-tools: Read, Grep, Glob, Bash(date:*), Bash(intervals-icu:*), Bash(weather:*), Bash(nix-shell:*), mcp__cronometer__get_food_log, mcp__cronometer__get_daily_nutrition, mcp__cronometer__get_nutrition_scores, mcp__cronometer__get_biometrics
 ---
 
 Coaching context for the summer training plan (`~/Documents/summer-training`),
@@ -13,7 +13,7 @@ Today: !`date +"%A %-d %B %Y"`
 
 A **10-week FTP build, Jun 22 – Aug 30 2026**, aimed at one number: raise a tested
 FTP of **275 W** (289 W average over the 20-min test on 30 Jun) to **≥300 W**, or
-~4.1 → ~4.5 W/kg at 66 kg. It is settled by a **final 20-min test on Mon Aug 24** —
+~4.1 → ~4.5 W/kg at 66.1 kg. It is settled by a **final 20-min test on Mon Aug 24** —
 ≥316 W average means the goal is hit.
 
 The shape is **two quality days a week on a deep Z2 base**: one threshold or
@@ -84,6 +84,13 @@ drill down only where the review needs it:
   session before drawing conclusions from HR
 - `intervals-icu get <path>` — anything else, see https://intervals.icu/api-docs.html
 
+**Never ask the rider for RPE or feel.** They are entered on the watch after every
+structured workout and sync through with the activity — `icu_rpe` (1–10) and `feel`
+(1–5, **1 strongest**) on `intervals-icu activity <id>`. They are *not* on the
+`activities <days>` summary, which is why they look absent; that is the only reason
+to reach for the full activity JSON on a normal review. `review/sessions.py` already
+harvests both, so a session logged and re-run carries them without anyone being asked.
+
 ## Structured sessions: read the intent first
 
 Sessions pushed from this repo are named `STP <date> · <name>`. Match on that
@@ -111,8 +118,8 @@ falling HR alongside falling power is a deliberate ease-off, not a failure. Use
 
 ## Heat: get the temperature before reading HR
 
-Rule 1 below is the decision; this is how to read it. Use the stream, not the
-summary field:
+*Judge the heat during the reps* is the decision; this is how to read it. Use the
+stream, not the summary field:
 
 - `intervals-icu streams <id> temp` is a real per-second series, not a start-only
   value — Aug 1 2026 tracks 29 °C down to 20 °C across an evening.
@@ -124,18 +131,18 @@ summary field:
   shaded air reading.
 
 Worked comparison: Jul 30's 4×12 held 273 W at HR 163–165 with its reps at
-**26.8 °C**; Aug 3's 2×15 at the same watts ran its reps at **30.4 °C**, hit HR 181,
+**26.9 °C**; Aug 3's 2×15 at the same watts ran its reps at **30.7 °C**, hit HR 181,
 and lost rep 2. Same rider, four days apart, same nominal freshness.
 
-**Time of day is the lever, not the variable.** Jul 15 failed at 10:03 in 27 °C;
+**Time of day is the lever, not the variable.** Jul 15 failed at 10:03 in 27.8 °C;
 Jul 27's VO2 5×5 landed in full at 16:44 in 23 °C. Judge the temperature, then use
 the clock to control it — start quality before 10:00 when the forecast tops 28 °C.
 
 ## `weather` — forecasting the window before the session
 
-Rule 8 says check the forecast the evening before. `weather` is the tool for it —
-Open-Meteo through a curl wrapper, no API key, default location Beek en Donk
-(`-l eindhoven | helmond | <lat>,<lon>` to move it).
+*Judge the heat during the reps* says check the forecast the evening before.
+`weather` is the tool for it — Open-Meteo through a curl wrapper, no API key,
+default location Beek en Donk (`-l eindhoven | helmond | <lat>,<lon>` to move it).
 
 ```
 weather now                    weather day +1 [12-15]      hourly table
@@ -143,26 +150,29 @@ weather today [12-15]          weather window +1 12-15     summary over a window
 ```
 
 `window` is the one to reach for: it collapses a candidate session window into
-mean/range temperature, total rain, gusts and cloud — the fields rules 1 and 8
-actually turn on. Dates before today come from the ERA5 archive, today and later
+mean/range temperature, total rain, gusts and cloud — the fields the heat rule
+actually turns on. Dates before today come from the ERA5 archive, today and later
 from the forecast. **They are not interchangeable**: measured on Aug 13 2026 they
-disagree by ~1.4 °C, which is the same size as the offset below, so never quote the
+disagree by ~1.4 °C, more than the head-unit offset below, so never quote the
 forecast endpoint's `past_days` for a ride that already happened.
 
 **Air temperature predicts head-unit temperature almost directly.** The plan used
 to assume the head unit read far higher because the sensor carries radiant load —
 the Aug 13 cell predicted 26–31 °C against an air temperature of 20 °C. Measured
-against `temp_work` in the session log the offset is about **+1 °C**:
+against `temp_work` in the session log the offset is small:
 
 | | air over the reps | head unit | Δ |
 |---|---|---|---|
 | Aug 13, reps 08:30–09:25 | 20.0 °C | 20.5 | +0.5 |
 | Aug 15, reps ~10:15–11:45 | 25.2 °C | 25.8 | +0.6 |
 
-So a forecast can be read straight against rule 1's 26–28 / 28+ gates with a +1 °C
-nudge, which is what the `window` summary prints. Two points, and both rep windows
-were inferred from the session structure rather than the streams — widen the check
-if a call sits right on a gate.
+So a forecast reads almost straight against the heat rule's 26–28 / 28+ gates. Note
+the `window` summary adds a flat **+1 °C**, so it prints about half a degree hot
+against these two — err with it, not against it. Treat the nudge as an
+approximation either way: two points, the head unit resolves to whole °C, and both
+rep windows were inferred from the session structure rather than the streams. It is
+not sharp enough to settle a call sitting on a gate — when one does, move the start
+rather than split the difference.
 
 Wind is worth a look on the same call: flat exposed roads plus gusts make a steady
 275 W materially harder to hold, and it costs nothing to read it off the same table.
@@ -172,13 +182,24 @@ Wind is worth a look on the same call: flat exposed roads plus gusts make a stea
 Logged intake comes from the **`cronometer` MCP** (`mcp__cronometer__*`). The tool
 descriptions say what each call does; they do not say the three things that matter.
 
+- **Never score a day's intake before the day is over.** A diary pulled in the evening
+  is a partial day, and reading it as a total turns unlogged dinner into a deficit. This
+  has produced one wrong conclusion already: Aug 19 2026 was recorded at 17:02 as *1279
+  kcal and 135 g carb short* with energy availability at a supposed ~19 kcal/kg FFM, and the
+  full day actually came in at **4596 / 734 against a 4490 / 660 target — a surplus**.
+  Pull the day the *following* morning. If a same-day pull is unavoidable, label it
+  partial and do not draw a verdict from it.
 - **`fuel.json` is the target, Cronometer is the outcome.** The comparison worth
   making is `get_daily_nutrition(date)` against `nutrition/fuel.json`'s `total_kcal`
   and `carb_g` for the same day. Nothing else closes that loop.
-- **Ignore Cronometer's own target.** Its `total_target_kcal` knows nothing about
-  training load — on Aug 16 it read 2631 against `fuel.py`'s 3610 and called the
-  rider ~600 kcal *over* while they were ~380 kcal *under*. It points the wrong way
-  on a build block. Never quote it as a verdict.
+- **Ignore Cronometer's own target.** The rider eats to `fuel.py`'s numbers and does
+  not look at Cronometer's — `total_target_kcal` is an artifact of Cronometer's model,
+  not a target anyone follows. It cannot be made to agree, either: the MCP has no
+  target-setting call, and Cronometer's only per-day mechanism is day-of-week macro
+  templates, which cannot express a date-varying number. Its base is a flat figure
+  against a plan whose daily target swings by well over 1000 kcal, so it will look
+  plausible on an ordinary day and be badly wrong on the ones that matter. Never quote
+  it, or its "remaining kcal", as a verdict.
 - **`get_biometrics` is not a weigh-in log.** It is a carry-forward series: it
   returns the boundaries of whatever range you ask for with the last known value
   repeated. Two different windows both came back as two points at 65.2 kg. **Weight
@@ -229,30 +250,34 @@ and nothing warns you.
 
 # The rules this block earned
 
-Read `How to Adjust` at the end of the plan for all nine. The ones that change
+The plan's `How to Adjust` carries all nine under these names. **Cite a rule by
+name, never by number** — the list has been inserted into twice, so the numbers
+have moved and a stale "rule 7" now points at the wrong rule. The ones that change
 decisions most:
 
-1. **Heat is the variable; the clock is only the lever.** Judge temperature *during
-   the reps*, not the day's peak — ~8 bpm separates 27 °C from 30 °C at the same
-   watts, which looks exactly like under-recovery. 26–28 °C, consider moving the
-   start; 28 °C+, change course. **Never rescale FTP off a hot session.**
-2. **Hold FTP 275 to the Aug 24 test.** Targets are ridden as ceilings you are
-   allowed to beat, noted rather than rescaled. The test is what moves the number.
-3. **Progress time-in-zone first, watts last.** Raise total work, then rep length,
-   then watts. Prefer 5×4 over 4×5, 4×12 over 3×16.
-4. **Trust feel, ignore RPE.** Feel runs 1–5 with **1 strongest** and orders the
-   block almost perfectly; RPE reads 9 on six of eight sessions including the best
-   and the worst. The rider's free-text note is worth more than either.
-5. **An endurance day has a target, not a ceiling.** 155–200 W *held*. Z1 transport
-   and commutes are recovery — real, worth keeping, and **not** the endurance day.
-   Budgeting them as one is the error that cost this block its aerobic base in
-   Weeks 5–7 (22 min of Z2 on Jul 29 against 135 min on Aug 11). Watts are the
-   guardrail; read HR for drift (>~8 bpm at the same power = the ride changed).
-6. **Fit quality to the work calendar.** Hard sessions on a free day, or on a work
-   day *before* an evening shift. All-day shifts stay easy or rest. Never a hard
-   session the day before a day that cannot absorb it.
-7. **Long reps need a number, not feel.** Every long-rep session that broke did so
-   because rep 1 drifted up; the two that went cleanly were ridden to a hard ceiling.
+- **Judge the heat during the reps.** Heat is the variable; the clock is only the
+  lever. Judge temperature *during the reps*, not the day's peak — ~8 bpm separates
+  27 °C from 30 °C at the same watts, which looks exactly like under-recovery.
+  26–28 °C, consider moving the start; 28 °C+, change course. **Never rescale FTP
+  off a hot session.**
+- **Hold the FTP.** 275 stands to the Aug 24 test. Targets are ridden as ceilings
+  you are allowed to beat, noted rather than rescaled. The test moves the number.
+- **Time-in-zone before watts.** Raise total work, then rep length, then watts.
+  Prefer 5×4 over 4×5, 4×12 over 3×16.
+- **Trust feel; ignore RPE.** Feel runs 1–5 with **1 strongest** and orders the
+  block almost perfectly; RPE reads 9 on six of eight sessions including the best
+  and the worst. The rider's free-text note is worth more than either.
+- **Watts are the guardrail.** An endurance day has a target, not a ceiling:
+  155–200 W *held*. Z1 transport and commutes are recovery — real, worth keeping,
+  and **not** the endurance day. Budgeting them as one is the error that cost this
+  block its aerobic base in Weeks 5–7 (22 min of Z2 on Jul 29 against 135 min on
+  Aug 11). Read HR for drift (>~8 bpm at the same power = the ride changed).
+- **Fit quality to the work calendar.** Hard sessions on a free day, or on a work
+  day *before* an evening shift. All-day shifts stay easy or rest. Never a hard
+  session the day before a day that cannot absorb it.
+- **Progress the total, not the target.** Long reps need a number, not feel: every
+  long-rep session that broke did so because rep 1 drifted up; the two that went
+  cleanly were ridden to a hard ceiling.
 
 ## Working style
 
