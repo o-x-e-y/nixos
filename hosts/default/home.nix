@@ -113,6 +113,7 @@ in
     "template"
     "competence-template"
     "requirements"
+    "training-plan"
   ]);
 
   home.activation.applyTetrisGymPatch = lib.hm.dag.entryAfter [ "writeBoundary" ] ''

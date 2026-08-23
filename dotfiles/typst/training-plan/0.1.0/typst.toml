@@ -1,0 +1,4 @@
+[package]
+name = "training-plan"
+version = "0.1.0"
+entrypoint = "training-plan.typ"
