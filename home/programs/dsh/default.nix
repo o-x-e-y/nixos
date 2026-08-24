@@ -11,6 +11,21 @@ let
   # run through uvx against nixpkgs' Python so uv never downloads its own.
   cronometer-mcp-version = "0.2.1";
 
+  settingsFormat = pkgs.formats.yaml { };
+
+  # $DSH_HOME/settings.yaml is mutable state the web UI owns, so this is a
+  # merge rather than a copy: `select(fileIndex == 0) * select(fileIndex == 1)`
+  # deep-merges the declared file over the live one, so a key nobody declared
+  # here (ui-onboarding.welcomeNoticeVersion, anything set from a settings page)
+  # survives every rebuild while declared keys are restored.
+  dshHome =
+    if config.programs.dsh.home != null then
+      config.programs.dsh.home
+    else
+      "${config.home.homeDirectory}/.dsh";
+
+  settingsFile = settingsFormat.generate "dsh-settings.yaml" cfg.settings;
+
   # Built from ../claude-code's scripts rather than relying on that module
   # having put them on PATH. Same name, same inputs, same text, so Nix resolves
   # these to the very store paths apps.claude-code already builds -- the coach
@@ -73,6 +88,18 @@ let
     - id: tool-skill
       disabled: false
 
+    # The AGENTS.md/CLAUDE.md workspace loader. Enabled in dsh-base, but the
+    # tui bundle turns it off (dsh-tui/cordis.patch.yml:56), so the TUI would
+    # otherwise see no project instruction files at all while headless does.
+    # It walks the ancestor chain upward from the session workspace rather than
+    # reading only the root, so per-project files are picked up the way
+    # claude-code does it. maxBytes is restated because a patch replaces the
+    # targeted row's whole config.
+    - id: agent-instructions
+      disabled: false
+      config:
+        maxBytes: 65536
+
     # Claude as a model route. pi-ai (the multi-provider layer under
     # dsh-llm-pi-ai) bundles @anthropic-ai/sdk and ships anthropic in its
     # installed catalog, so the route needs no baseURL, protocol or model list
@@ -124,22 +151,71 @@ in
       default = true;
       description = "Enable DeepSeek Harness (dsh)";
     };
+
+    settings = lib.mkOption {
+      type = settingsFormat.type;
+      default = { };
+      example = lib.literalExpression ''
+        {
+          noema-memory = {
+            command = "noema-mcp";
+            recallBudgetTokens = 1200;
+          };
+        }
+      '';
+      description = ''
+        Declared `$DSH_HOME/settings.yaml` entries, keyed by the namespace each
+        plugin registers. Merged into the existing file on activation: declared
+        keys win, everything else the web UI wrote is left alone.
+
+        This is the escape hatch for plugins that register their configuration
+        through the settings service instead of a Cordis config schema -- those
+        cannot be reached from the profile patch at all.
+      '';
+    };
   };
 
   config = lib.mkIf cfg.enable {
+    # Namespaces are whatever each plugin registers with the settings service;
+    # `noema-memory` is dsh-noema's, from its names.js. Only `command` is
+    # load-bearing -- the Nix build ships no bundled server, so the plugin's
+    # `bundled` default finds nothing. The other two are already upstream
+    # defaults, pinned because they are decisions rather than accidents:
+    # acceptByDefault is what makes noema_remember persist instead of queueing
+    # behind the server's `review` write policy, and an explicit noemaRoot beats
+    # an implicit ~/.agent-memory when it holds the whole memory store.
+    apps.dsh.settings = {
+      noema-memory = {
+        command = "noema-mcp";
+        noemaRoot = "${config.home.homeDirectory}/.agent-memory";
+        acceptByDefault = true;
+      };
+    };
+
     programs.dsh = {
       enable = true;
 
       # One profile per interaction face -- the face bundles are mutually
       # exclusive, so they cannot share a tree. Each materializes as
       # $DSH_HOME/profiles/nix-<name>.
+      # noema rides on the two interactive faces only: its tools are worth
+      # having wherever a conversation continues, but headless is one-shot and
+      # would just pay the server spawn. Its settings page is web-only, so the
+      # one-time setup below has to happen under nix-web even if the TUI is
+      # where it gets used.
       profiles = {
         tui = {
-          bundles = [ pkgs.dsh.bundles.tui ];
+          bundles = [
+            pkgs.dsh.bundles.tui
+            pkgs.dsh.bundles.noema
+          ];
           patch = cordisPatch;
         };
         web = {
-          bundles = [ pkgs.dsh.bundles.web-app ];
+          bundles = [
+            pkgs.dsh.bundles.web-app
+            pkgs.dsh.bundles.noema
+          ];
           patch = cordisPatch;
         };
         headless = {
@@ -181,11 +257,39 @@ in
       unset -f dsh_export_secret
     '';
 
-    # The coach skill drives these through the bash tool, which inherits the
-    # session PATH -- the old wrapper's runtimeInputs is what this replaces.
+    # Restores the declared settings on every activation without taking the file
+    # over. Runs whether or not dsh has started before: an absent settings.yaml
+    # is installed outright, an existing one is merged into.
+    home.activation.dshSettings = lib.mkIf (cfg.settings != { }) (
+      lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        dsh_settings=${lib.escapeShellArg "${dshHome}/settings.yaml"}
+        $DRY_RUN_CMD mkdir -p "$(dirname "$dsh_settings")"
+        if [ -e "$dsh_settings" ]; then
+          $DRY_RUN_CMD ${lib.getExe pkgs.yq-go} eval-all --inplace \
+            'select(fileIndex == 0) * select(fileIndex == 1)' \
+            "$dsh_settings" ${settingsFile}
+        else
+          $DRY_RUN_CMD install -m 0644 ${settingsFile} "$dsh_settings"
+        fi
+      ''
+    );
+
+    # The coach skill drives weather/intervals-icu through the bash tool, which
+    # inherits the session PATH -- the old wrapper's runtimeInputs is what this
+    # replaces.
+    #
+    # noema-mcp is the memory server the noema bundle drives. Upstream ships it
+    # inside per-platform npm packages, but those carry only a `files: [bin]`
+    # manifest with no bin/ -- the binary is staged from a cargo build at
+    # release time, which a source build never runs. So the bundle's default
+    # `command: 'bundled'` finds nothing, and the server has to be resolved
+    # from PATH instead. Set Settings -> Noema Memory -> Server command to
+    # `noema-mcp` once; a bare name rather than a store path, so it survives
+    # rebuilds (that setting lives in $DSH_HOME, which Nix does not manage).
     home.packages = [
       weather
       intervals-icu
+      pkgs.dsh.noema-mcp
     ];
   };
 }
