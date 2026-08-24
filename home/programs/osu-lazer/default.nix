@@ -64,15 +64,14 @@ in
     home.activation = lib.concatMapAttrs (
       file: seed:
       lib.optionalAttrs (builtins.pathExists seed) {
-        "seedOsu-${lib.replaceStrings [ "." ] [ "-" ] file}" =
-          lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-            dest="$HOME/${osuDir}/${file}"
-            if [ ! -e "$dest" ]; then
-              $DRY_RUN_CMD mkdir -p "$(dirname "$dest")"
-              $DRY_RUN_CMD cp ${seed} "$dest"
-              $DRY_RUN_CMD chmod u+w "$dest"
-            fi
-          '';
+        "seedOsu-${lib.replaceStrings [ "." ] [ "-" ] file}" = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          dest="$HOME/${osuDir}/${file}"
+          if [ ! -e "$dest" ]; then
+            $DRY_RUN_CMD mkdir -p "$(dirname "$dest")"
+            $DRY_RUN_CMD cp ${seed} "$dest"
+            $DRY_RUN_CMD chmod u+w "$dest"
+          fi
+        '';
       }
     ) seeds;
   };
