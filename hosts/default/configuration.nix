@@ -65,6 +65,9 @@ in
       path = "/home/${config.mainUser.username}/.ssh/id_ed25519_github";
       mode = "0600";
     };
+    secrets.deepseek-api-key = {
+      owner = config.mainUser.username;
+    };
     secrets.git_fhict_token = {
       owner = config.mainUser.username;
     };
