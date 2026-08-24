@@ -31,6 +31,11 @@
       url = "github:o-x-e-y/oxeylyzer";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    deepseek-harness = {
+      url = "github:moraxyc/deepseek-harness.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -43,6 +48,7 @@
       nix-flatpak,
       sops-nix,
       oxeylyzer,
+      deepseek-harness,
       ...
     }@inputs:
     {
@@ -69,11 +75,13 @@
             nixpkgs.overlays = [
               zed-extensions.overlays.default
               oxeylyzer.overlays.default
+              deepseek-harness.overlays.default
             ];
 
             home-manager.sharedModules = [
               plasma-manager.homeModules.plasma-manager
               zed-extensions.homeManagerModules.default
+              deepseek-harness.homeModules.default
             ];
           }
 

@@ -119,6 +119,14 @@ in
     "flakes"
   ];
 
+  # deepseek-harness.nix builds dsh from the upstream pnpm monorepo; its cache
+  # is what keeps `dsh` and the tui bundle from being a source build here.
+  # `extra-` rather than plain, so cache.nixos.org stays in the list.
+  nix.settings.extra-substituters = [ "https://deepseek-harness-nix.cachix.org" ];
+  nix.settings.extra-trusted-public-keys = [
+    "deepseek-harness-nix.cachix.org-1:5NrkwLN9veNMhiINtU5ZeV4isXFhFsOwn6Ms7J1M+TA="
+  ];
+
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
