@@ -7,6 +7,7 @@
     ./canvas
     ./claude-code
     ./direnv
+    ./dsh
     ./fastfetch
     ./foot
     ./ghostty
