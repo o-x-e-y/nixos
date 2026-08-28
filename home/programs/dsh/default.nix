@@ -106,6 +106,54 @@ let
     # -- only where to find the credential. There is no claude-code subagent
     # provider in 0.1.1-rc.2, so this is what "Claude in dsh" means today.
     #
+    # Qwen3.8-27B through Qwen Cloud, which is a front end over DashScope
+    # International -- hence the aliyuncs endpoint. Deliberately NOT the
+    # openrouter route: pi-ai ships openrouter, but the compat gate withholds
+    # openRouterRouting, so nothing can pin which of its eleven upstreams
+    # serves a request. That means an unknown quantization and an unknown
+    # context ceiling per call, which is the wrong footing for judging whether
+    # this model is worth keeping. Official costs ~18% more ($0.50/$3.00
+    # against $0.35/$2.75) and answers with the reference weights at 1M.
+    #
+    # pi-ai 0.82.1 ships no `qwen-cloud` provider, and its nearest route
+    # (qwen-token-plan) points somewhere else entirely
+    # (token-plan.ap-southeast-1.maas.aliyuncs.com), so this route declares the
+    # whole provider: endpoint and wire protocol included. Being off-catalog is
+    # the upside -- per dsh-llm-pi-ai's discovery.d.ts, "fetch available
+    # models" only interrogates a route the catalog does NOT ship, so this one
+    # can actually be probed from the web UI, while an openrouter route would
+    # answer from its bundled Qwen3.6-era list.
+    #
+    # Two model fields are load-bearing because a hand-declared model defaults
+    # to neither: `input` (the route default is [text], which would leave the
+    # vision encoder unreachable) and `reasoningEfforts` (absent means "does
+    # not reason", and thinking mode is the reason to run this model). "off" is
+    # quoted because a bare `off` is a YAML 1.1 boolean.
+    #
+    # maxTokensField and supportsUsageInStreaming are stated rather than left
+    # to pi-ai, which for an endpoint it does not recognize answers as though
+    # it were OpenAI itself -- wrong for most OpenAI-compatible gateways.
+    #
+    # Qwen Cloud's built-in tools (code_interpreter, web_search, ...) are
+    # Responses-API-only server-side tools and are not reachable over
+    # openai-completions. That costs nothing: dsh's own web_search runs through
+    # the `web` service against DEEPSEEK_API_KEY, independent of whichever
+    # model is serving chat, so it keeps working unchanged under this route.
+    #
+    # The key is region-bound and the name does not say so. Model Studio keys
+    # only authenticate against the region that issued them (a mismatch is 401
+    # invalid_api_key), and catalogs differ per region -- verified 2026-08-28,
+    # Frankfurt serves qwen3.8-max but NOT this model, Singapore serves both.
+    # So `dashscope-api-key` is specifically the SINGAPORE key, and adding a
+    # second region later means a second secret rather than replacing this one.
+    #
+    # baseURL is the shared Singapore endpoint rather than the workspace-scoped
+    # ws-<id>.ap-southeast-1.maas.aliyuncs.com form. Both serve this model.
+    # Alibaba documents the workspace form as the newer path with better
+    # stability and is steering away from the shared domains, so this may want
+    # revisiting; it is a one-line change, and the only cost is putting the
+    # workspace id into a world-readable /nix/store file.
+    #
     # The UI writes provider settings into $DSH_HOME/settings.yaml, which
     # resolves ON TOP of this, so adding routes by hand there still works. A
     # missing key surfaces per request as MISSING_CREDENTIAL rather than
@@ -115,6 +163,37 @@ let
         providers:
           anthropic:
             apiKeyEnv: ANTHROPIC_API_KEY
+          qwen-cloud:
+            apiKeyEnv: DASHSCOPE_API_KEY
+            displayName: Qwen Cloud
+            api: openai-completions
+            baseURL: https://dashscope-intl.aliyuncs.com/compatible-mode/v1
+            models:
+              - id: qwen3.8-27b
+                name: Qwen3.8 27B
+                contextWindow: 1000000
+                maxTokens: 131072
+                input:
+                  - text
+                  - image
+                reasoningEfforts:
+                  "off": null
+                  low: low
+                  medium: medium
+                  high: high
+                compat:
+                  thinkingFormat: qwen
+                  maxTokensField: max_tokens
+                  supportsUsageInStreaming: true
+                  # pi-ai sends the system prompt under the `developer` role to
+                  # any model that declares reasoning, which this one does.
+                  # DashScope answers 400: "developer is not one of ['system',
+                  # 'assistant', 'user', 'tool', 'function']". false keeps
+                  # `system`. Probed 2026-08-28: developer is the ONLY field of
+                  # the OpenAI-shaped set this endpoint rejects -- store,
+                  # reasoning_effort, max_completion_tokens and strict tools
+                  # are all accepted.
+                  supportsDeveloperRole: false
 
     - insert:
         # Cronometer, mirroring ../claude-code/cronometer. Credentials arrive as
@@ -299,6 +378,7 @@ in
         local pair var file
         for pair in \
           "DEEPSEEK_API_KEY=/run/secrets/deepseek-api-key" \
+          "DASHSCOPE_API_KEY=/run/secrets/dashscope-api-key" \
           "CRONOMETER_USERNAME=/run/secrets/cronometer-email" \
           "CRONOMETER_PASSWORD=/run/secrets/cronometer-password" \
           "ANTHROPIC_API_KEY=/run/secrets/anthropic-api-key"

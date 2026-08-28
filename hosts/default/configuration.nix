@@ -68,6 +68,9 @@ in
     secrets.deepseek-api-key = {
       owner = config.mainUser.username;
     };
+    secrets.dashscope-api-key = {
+      owner = config.mainUser.username;
+    };
     secrets.git_fhict_token = {
       owner = config.mainUser.username;
     };
@@ -96,6 +99,7 @@ in
     templates."dsh-env" = {
       content = ''
         DEEPSEEK_API_KEY=${config.sops.placeholder.deepseek-api-key}
+        DASHSCOPE_API_KEY=${config.sops.placeholder.dashscope-api-key}
         CRONOMETER_USERNAME=${config.sops.placeholder.cronometer-email}
         CRONOMETER_PASSWORD=${config.sops.placeholder.cronometer-password}
       '';
