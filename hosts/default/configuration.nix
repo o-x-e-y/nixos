@@ -92,6 +92,16 @@ in
     secrets.justwatch-password = {
       owner = config.mainUser.username;
     };
+    # systemd EnvironmentFile for the dsh-web user unit which is only read at startup
+    templates."dsh-env" = {
+      content = ''
+        DEEPSEEK_API_KEY=${config.sops.placeholder.deepseek-api-key}
+        CRONOMETER_USERNAME=${config.sops.placeholder.cronometer-email}
+        CRONOMETER_PASSWORD=${config.sops.placeholder.cronometer-password}
+      '';
+      owner = config.mainUser.username;
+      mode = "0600";
+    };
     templates."git-credentials-fhict" = {
       content = ''
         username=oxey

@@ -230,31 +230,88 @@ in
       defaultProfile = config.programs.dsh.profiles.tui.materializedName;
     };
 
+    # The web face as a systemd user unit instead of a foreground `dsh
+    # --profile nix-web`. This is the one path with a real secret story:
+    # EnvironmentFile= is read by systemd when the unit starts, so the keys
+    # reach dsh without a shell profile, without the store, and without landing
+    # in every other process's environment the way the bash exports below do.
+    # The TUI cannot use it -- it runs in your terminal, not under systemd --
+    # so that face still depends on programs.bash.initExtra.
+    #
+    # Everything else is upstream's default and already matches this config:
+    # `profiles` inherits programs.dsh.profiles, `profile` is "nix-web" (the web
+    # profile's materializedName), listenAddress/port are 127.0.0.1:3080, and
+    # dataDir resolves to the same $DSH_HOME -- so settings.yaml, the profile
+    # trees and the noema store are shared with the TUI rather than forked.
+    #
+    # autoStart is off: the web face is not in normal use, and an always-on unit
+    # is not free. Measured idle cost was ~275 MB RSS across three processes --
+    # node, plus a uvx/python mcp-cronometer pair it spawns at boot and holds
+    # open forever whether or not anything queries it -- and it binds 3080
+    # unauthenticated from login onward, which is a standing agent endpoint with
+    # a live API key rather than a foreground process that can be Ctrl-C'd.
+    # `systemctl --user start dsh-web` when the web UI is actually wanted.
+    #
+    # --no-open because the unit inherits the session manager's environment
+    # (BROWSER, WAYLAND_DISPLAY are imported there), so every start -- including
+    # each Restart=on-failure -- otherwise opens a real Firefox tab.
+    #
+    # Starting it while `dsh --profile nix-web` runs in the foreground is the
+    # EADDRINUSE case; stop one or the other.
+    services.dsh = {
+      enable = true;
+      autoStart = false;
+      extraArguments = [ "--no-open" ];
+      environmentFile = "/run/secrets/rendered/dsh-env";
+    };
+
     # dsh has no file-based credential path: `!!js` runs in an ESM bundle with
     # no `require`, and dsh-mcp-client has no envFile option, so both the
     # provider keys and the Cronometer pair have to be real environment
     # variables before dsh starts. sops decrypts to /run/secrets at activation;
     # this reads them at shell start.
     #
-    # ANTHROPIC_API_KEY has no sops.secrets entry yet -- declaring one that does
-    # not exist fails activation. The readability guard keeps it dormant until
-    # the secret is added, at which point the anthropic route above starts
-    # resolving.
+    # This is the TUI/headless half of the story -- the dsh-web unit above gets
+    # the same values through sops.templates."dsh-env" instead. Both derive from
+    # the same sops.secrets entries, so there is one source of truth even though
+    # there are two delivery paths.
+    #
+    # A wrapper function rather than exports at shell start: `local -x` scopes
+    # each value to this function and its children, so the keys exist for the
+    # dsh process tree and nowhere else. Exporting at login instead put a live
+    # API key and the Cronometer password into every shell and every child of
+    # one -- build tools, npm scripts, anything whose environment ends up in a
+    # log, a crash report or a screen share. That is exposure surface, not a
+    # privilege boundary: /run/secrets/* is 0400 and owned by this user, so
+    # anything running as the user could always read the files directly.
+    #
+    # `command dsh` bypasses the function, so this covers every face -- bare
+    # `dsh` for the TUI and `dsh --profile nix-headless` are the same binary.
+    # As with the exports it replaces, this reaches interactive bash only.
+    #
+    # An already-set value wins, so a var exported by hand for a one-off is not
+    # clobbered. ANTHROPIC_API_KEY has no sops.secrets entry yet -- declaring
+    # one that does not exist fails activation. The readability guard keeps it
+    # unset rather than empty until the secret is added, at which point the
+    # anthropic route above starts resolving.
     programs.bash.initExtra = lib.mkAfter ''
-      dsh_export_secret() {
-        local var="$1" file="$2"
-        if [ -z "''${!var:-}" ] && [ -r "$file" ]; then
-          printf -v "$var" '%s' "$(< "$file")"
-          export "''${var?}"
-        fi
+      dsh() {
+        local pair var file
+        for pair in \
+          "DEEPSEEK_API_KEY=/run/secrets/deepseek-api-key" \
+          "CRONOMETER_USERNAME=/run/secrets/cronometer-email" \
+          "CRONOMETER_PASSWORD=/run/secrets/cronometer-password" \
+          "ANTHROPIC_API_KEY=/run/secrets/anthropic-api-key"
+        do
+          var=''${pair%%=*}
+          file=''${pair#*=}
+          if [ -z "''${!var:-}" ] && [ -r "$file" ]; then
+            local -x "''${var?}"
+            printf -v "$var" '%s' "$(< "$file")"
+          fi
+        done
+        command dsh "$@"
       }
-
-      dsh_export_secret DEEPSEEK_API_KEY    /run/secrets/deepseek-api-key
-      dsh_export_secret CRONOMETER_USERNAME /run/secrets/cronometer-email
-      dsh_export_secret CRONOMETER_PASSWORD /run/secrets/cronometer-password
-      dsh_export_secret ANTHROPIC_API_KEY   /run/secrets/anthropic-api-key
-
-      unset -f dsh_export_secret
     '';
 
     # Restores the declared settings on every activation without taking the file
