@@ -1,0 +1,15 @@
+# dsh-usage bundle patch: mounts the DeepSeek balance indicator into a profile
+# layer stack. The profile's own cordis.patch.yml applies after this layer, so
+# the `dsh-usage` row can be reconfigured (or disabled) by id from there --
+# which is how home/programs/dsh/default.nix sets its options.
+#
+# The row injects `tuiStatus` (declared in src/index.js, not here). That is
+# required rather than optional: rows load concurrently, so without it this one
+# can activate before the dsh-tui-extensions row provides the service, and
+# dsh-tui's caller guard then rejects every status write for the rest of the
+# session -- silently, because the TUI discards the warning. Under headless/web
+# the row therefore stays PENDING, which is correct: it has nothing to
+# contribute without a status line.
+- insert:
+    - id: dsh-usage
+      name: '@oxey/dsh-usage'

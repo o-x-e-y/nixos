@@ -57,6 +57,14 @@ let
   # claude-code `/coach` command ports to a skill rather than a command.
   skills = ./skills;
 
+  # The DeepSeek credit balance in the TUI status line -- `bal:$4.65 (2m)`,
+  # and nothing else. Tokens, cache hit rate and context occupancy are already
+  # rendered by the TUI from its own dsh-token-meter (see the statusBar
+  # settings below), so the only real gap is `GET /user/balance`: an HTTP call
+  # to the account, which nothing in the harness makes. Local source rather
+  # than a fetched bundle because it does not exist upstream.
+  dsh-usage = pkgs.callPackage ./usage.nix { inherit (pkgs) dsh; };
+
   # The declarative seam, now owned by deepseek-harness.nix. A profile composes
   # as: base layer, then the profile's bundles in list order, then this string
   # as the profile's cordis.patch.yml. Nothing is passed at launch any more --
@@ -283,10 +291,27 @@ in
       # one-time setup below has to happen under nix-web even if the TUI is
       # where it gets used.
       profiles = {
+        # dsh-usage rides on the TUI alone: the status line is the whole point
+        # of it, and `tuiStatus` exists nowhere else. It holds no state, so
+        # mounting it elsewhere would be harmless -- just inert.
+        #
+        # Last in the list so its `insert` lands after the tui bundle's rows.
+        # The row also injects `tuiStatus`, which is what actually guarantees
+        # ordering -- list position alone does not, since rows load
+        # concurrently, and a row that activates before the service exists has
+        # its status writes silently rejected for the whole session.
+        #
+        # Defaults are unconfigured on purpose -- they are already the choices
+        # this host would make (poll every 5 min, credential from
+        # $DEEPSEEK_API_KEY, which the `dsh` wrapper below exports).
+        # ./usage/README.md lists the whole config surface; anything worth
+        # changing goes in a `- id: dsh-usage` row in this profile's patch,
+        # which applies after the bundle's own layer.
         tui = {
           bundles = [
             pkgs.dsh.bundles.tui
             pkgs.dsh.bundles.noema
+            dsh-usage
           ];
           patch = cordisPatch;
         };
