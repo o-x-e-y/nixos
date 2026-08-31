@@ -65,6 +65,58 @@ let
   # than a fetched bundle because it does not exist upstream.
   dsh-usage = pkgs.callPackage ./usage.nix { inherit (pkgs) dsh; };
 
+  # dsh-TUI 0.10.0-beta.1 instead of pkgs.dsh.bundles.tui (0.9.3), which cannot
+  # boot against dsh-workspace 0.1.2-alpha.2. See ./tui.nix for the full story;
+  # it is a temporary bridge, not a preference for the beta.
+  dsh-tui = pkgs.dsh.callPackage ./tui.nix { };
+
+  # Upstream's dshBundleCheckHook polls the web profile's endpoint with a bare
+  # `curl` off PATH, and curl never arrives there: it is listed in the hook's
+  # propagatedNativeBuildInputs, which for a multi-output package resolves to
+  # the *dev* output -- `bin/curl-config`, no `bin/curl`. So the nix-web check
+  # dies on "curl: command not found", waits out its 60s timeout and fails the
+  # build even though the server booted fine (its log carries the `dsh web:
+  # http://127.0.0.1:...` line the hook was waiting for).
+  #
+  # Substituting the store path into the script rather than fixing the
+  # propagation: pointing the input at `lib.getBin pkgs.curl` does put a real
+  # `bin/curl` in the hook's propagated set, but it still does not land on PATH
+  # for the installCheck phase, and an absolute path does not care either way.
+  dsh-check-hook =
+    pkgs.makeSetupHook
+      {
+        name = "dsh-bundle-check-hook";
+        propagatedNativeBuildInputs = with pkgs; [
+          coreutils
+          util-linux
+        ];
+      }
+      (
+        pkgs.runCommand "dsh-bundle-check-hook.sh" { } ''
+          substitute ${pkgs.dsh.dshBundleCheckHook}/nix-support/setup-hook "$out" \
+            --replace-fail 'curl --fail' '${lib.getExe' pkgs.curl "curl"} --fail'
+        ''
+      );
+
+  # dsh itself, rebuilt against the hook above.
+  #
+  # `pkgs.dsh.overrideScope` does NOT work here, which is why this is shaped the
+  # way it is. `withProfiles` composes as `dsh.override { profiles = ...; }`
+  # against package.nix's own `dsh` argument -- the self-reference -- so the
+  # composition always re-derives from whatever that argument points at, and a
+  # scope-level override of a scope-local package never reaches it. Overriding
+  # `dsh` to the fixed package alongside the hook ties that knot: the recursion
+  # now lands on this package, so every `withProfiles`/`override` the module
+  # layers on top keeps the working hook.
+  dsh-fixed =
+    let
+      self = pkgs.dsh.dsh.override {
+        dsh = self;
+        dshBundleCheckHook = dsh-check-hook;
+      };
+    in
+    self;
+
   # The declarative seam, now owned by deepseek-harness.nix. A profile composes
   # as: base layer, then the profile's bundles in list order, then this string
   # as the profile's cordis.patch.yml. Nothing is passed at launch any more --
@@ -111,8 +163,10 @@ let
     # Claude as a model route. pi-ai (the multi-provider layer under
     # dsh-llm-pi-ai) bundles @anthropic-ai/sdk and ships anthropic in its
     # installed catalog, so the route needs no baseURL, protocol or model list
-    # -- only where to find the credential. There is no claude-code subagent
-    # provider in 0.1.1-rc.2, so this is what "Claude in dsh" means today.
+    # -- only where to find the credential. The monorepo does carry a
+    # subagent-claude-code package, but dsh-base does not depend on it in
+    # 0.1.2-alpha.2, so it reaches none of these profiles and this is still
+    # what "Claude in dsh" means today.
     #
     # Qwen3.8-27B through Qwen Cloud, which is a front end over DashScope
     # International -- hence the aliyuncs endpoint. Deliberately NOT the
@@ -123,7 +177,7 @@ let
     # this model is worth keeping. Official costs ~18% more ($0.50/$3.00
     # against $0.35/$2.75) and answers with the reference weights at 1M.
     #
-    # pi-ai 0.82.1 ships no `qwen-cloud` provider, and its nearest route
+    # pi-ai 0.84.2 ships no `qwen-cloud` provider, and its nearest route
     # (qwen-token-plan) points somewhere else entirely
     # (token-plan.ap-southeast-1.maas.aliyuncs.com), so this route declares the
     # whole provider: endpoint and wire protocol included. Being off-catalog is
@@ -244,8 +298,8 @@ in
       default = { };
       example = lib.literalExpression ''
         {
-          noema-memory = {
-            command = "noema-mcp";
+          some-plugin = {
+            command = "some-plugin-server";
             recallBudgetTokens = 1200;
           };
         }
@@ -263,33 +317,46 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # Namespaces are whatever each plugin registers with the settings service;
-    # `noema-memory` is dsh-noema's, from its names.js. Only `command` is
-    # load-bearing -- the Nix build ships no bundled server, so the plugin's
-    # `bundled` default finds nothing. The other two are already upstream
-    # defaults, pinned because they are decisions rather than accidents:
-    # acceptByDefault is what makes noema_remember persist instead of queueing
-    # behind the server's `review` write policy, and an explicit noemaRoot beats
-    # an implicit ~/.agent-memory when it holds the whole memory store.
-    apps.dsh.settings = {
-      noema-memory = {
-        command = "noema-mcp";
-        noemaRoot = "${config.home.homeDirectory}/.agent-memory";
-        acceptByDefault = true;
-      };
-    };
+    # Nothing declared here at the moment. graph-memory, which replaced noema as
+    # the memory layer, configures through its Cordis schema (the `graph-memory`
+    # row in its bundle patch) rather than the settings service, so it needs no
+    # namespace here and no one-time setup in the web UI. The option stays
+    # because the next plugin may well go the other way.
 
     programs.dsh = {
       enable = true;
 
+      # Carries the dshBundleCheckHook curl fix through every composition the
+      # module builds from it.
+      package = dsh-fixed;
+
       # One profile per interaction face -- the face bundles are mutually
       # exclusive, so they cannot share a tree. Each materializes as
       # $DSH_HOME/profiles/nix-<name>.
-      # noema rides on the two interactive faces only: its tools are worth
-      # having wherever a conversation continues, but headless is one-shot and
-      # would just pay the server spawn. Its settings page is web-only, so the
-      # one-time setup below has to happen under nix-web even if the TUI is
-      # where it gets used.
+      #
+      # graph-memory rides on the two interactive faces only: its recall is
+      # worth having wherever a conversation continues, but headless is one-shot
+      # and would only pay to open the store. It replaces dsh-noema, which
+      # cannot load at all under 0.1.2-alpha.2 -- noema imports
+      # `settingsNamespace` from @deepseek-ai/dsh-settings and that export is
+      # gone, so the plugin tree dies at boot. Its upstream is dormant (last
+      # commit 2026-08-21, still declaring DSH 0.1.1-rc.1 as its tested target),
+      # so this is a replacement rather than a wait.
+      #
+      # graph-memory was picked over the other packaged memory layers on one
+      # hard constraint: mneme and memento inject `webServer`, so under the TUI
+      # profile they never activate and the boot check fails on a pending entry.
+      # graph-memory injects only base services (tools, llm, systemPrompt,
+      # agentLoop, agents, agentPresets, sessions, credentials), needs no
+      # companion server process the way noema needed noema-mcp, and keeps its
+      # store in $DSH_HOME/graph-memory/graph-memory.db. It is FTS5 keyword
+      # recall out of the box; setting GRAPH_MEMORY_EMBEDDING_API_KEY (plus
+      # _BASE_URL/_MODEL/_DIMENSIONS) in the dsh environment turns on semantic
+      # vector recall.
+      #
+      # The old store is left untouched at ~/.agent-memory. Its 11 live entries
+      # are exported to $DSH_HOME/graph-memory/noema-export.md; feed them back
+      # with the `gm_record` tool when convenient.
       profiles = {
         # dsh-usage rides on the TUI alone: the status line is the whole point
         # of it, and `tuiStatus` exists nowhere else. It holds no state, so
@@ -309,8 +376,8 @@ in
         # which applies after the bundle's own layer.
         tui = {
           bundles = [
-            pkgs.dsh.bundles.tui
-            pkgs.dsh.bundles.noema
+            dsh-tui
+            pkgs.dsh.bundles.graph-memory
             dsh-usage
           ];
           patch = cordisPatch;
@@ -318,7 +385,7 @@ in
         web = {
           bundles = [
             pkgs.dsh.bundles.web-app
-            pkgs.dsh.bundles.noema
+            pkgs.dsh.bundles.graph-memory
           ];
           patch = cordisPatch;
         };
@@ -346,7 +413,8 @@ in
     # `profiles` inherits programs.dsh.profiles, `profile` is "nix-web" (the web
     # profile's materializedName), listenAddress/port are 127.0.0.1:3080, and
     # dataDir resolves to the same $DSH_HOME -- so settings.yaml, the profile
-    # trees and the noema store are shared with the TUI rather than forked.
+    # trees and the graph-memory store are shared with the TUI rather than
+    # forked.
     #
     # autoStart is off: the web face is not in normal use, and an always-on unit
     # is not free. Measured idle cost was ~275 MB RSS across three processes --
@@ -440,18 +508,12 @@ in
     # inherits the session PATH -- the old wrapper's runtimeInputs is what this
     # replaces.
     #
-    # noema-mcp is the memory server the noema bundle drives. Upstream ships it
-    # inside per-platform npm packages, but those carry only a `files: [bin]`
-    # manifest with no bin/ -- the binary is staged from a cargo build at
-    # release time, which a source build never runs. So the bundle's default
-    # `command: 'bundled'` finds nothing, and the server has to be resolved
-    # from PATH instead. Set Settings -> Noema Memory -> Server command to
-    # `noema-mcp` once; a bare name rather than a store path, so it survives
-    # rebuilds (that setting lives in $DSH_HOME, which Nix does not manage).
+    # pkgs.dsh.noema-mcp is gone with noema itself: graph-memory talks to its
+    # own SQLite store in-process, so there is no companion server binary to put
+    # on PATH and nothing to point a settings page at.
     home.packages = [
       weather
       intervals-icu
-      pkgs.dsh.noema-mcp
     ];
   };
 }

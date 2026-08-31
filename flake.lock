@@ -9,11 +9,11 @@
         "systems": "systems"
       },
       "locked": {
-        "lastModified": 1787562388,
-        "narHash": "sha256-7OQSajEsF94eR+isH3uUbIeuiCPl4CcVvEMmX0tm9oI=",
+        "lastModified": 1788115974,
+        "narHash": "sha256-m9IMOqRM+1tPlIKHHKZg1eBf0iqA/tz2IwBEBn523q0=",
         "owner": "moraxyc",
         "repo": "deepseek-harness.nix",
-        "rev": "53826339abf4b17381196c20b4213ddb75bd5731",
+        "rev": "81c2d5f692b621754da7ac9ddd18e99cd3241144",
         "type": "github"
       },
       "original": {
@@ -30,11 +30,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1785627969,
-        "narHash": "sha256-4dtXQk/NMePegK/nWp5NSeuZKLATItOq61lpEvmXqGw=",
+        "lastModified": 1787559586,
+        "narHash": "sha256-onL0VLf9vPllmT0H/OlURIU5r5t5WIEl7t4tVNKT0Nw=",
         "owner": "hercules-ci",
         "repo": "flake-parts",
-        "rev": "427bf4bd9435fdf21321c8cc628c24efc14c0f7a",
+        "rev": "9d0d87172c374f89da73c1cfe6d81ae62feac1f1",
         "type": "github"
       },
       "original": {
