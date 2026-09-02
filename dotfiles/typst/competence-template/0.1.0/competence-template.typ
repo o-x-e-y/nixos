@@ -8,11 +8,34 @@
   else { white }
 }
 
+// Axis labels default to the wording used by the current (v1.1) Fontys
+// study plan / competence templates. Pass the corresponding argument to
+// override, e.g. for the older wording:
+//   main_headings: ([Managing], [Analysing], [Advising], [Designing], [Realising]),
+//   row_names: ([User Interaction], [Business Processes], [Software], [Hardware], [Infrastructure]),
 #let competence_profile(
   main_competence_numbers: (()),
   personal_numbers: (),
   caption: none,
-  show_legend: false
+  show_legend: false,
+  main_headings: (
+    [Analysis],
+    [Advise],
+    [Design],
+    [Realise],
+    [Manage \ & Control],
+  ),
+  row_names: (
+    [User Interaction],
+    [Organisational processes],
+    [Software],
+    [Hardware Interfacing],
+    [Infrastructure],
+  ),
+  personal_headings: (
+    [Professional Standard],
+    [Personal Leadership],
+  ),
 ) = {
   let scale_factor = 70%;
 
@@ -29,22 +52,8 @@
     text(white)[#label]
   }
 
-  let main_headings = (
-    [],
-    [Managing],
-    [Analysing],
-    [Advising],
-    [Designing],
-    [Realising],
-  )
-
-  let row_names = (
-    [User Interaction],
-    [Business Processes],
-    [Software],
-    [Hardware],
-    [Infrastructure],
-  )
+  // leading empty cell is the corner of the grid
+  let header_row = ([],) + main_headings
 
   let legend = scale(
     scale_factor,
@@ -74,8 +83,8 @@
     origin: top + left,
     reflow: true,
     table(
-      columns: 6,
-      rows: 6,
+      columns: main_headings.len() + 1,
+      rows: row_names.len() + 1,
       fill: (col, row) => {
         if col == 0 and row == 0 { white }
         else if col == 0 or row == 0 { black }
@@ -87,14 +96,9 @@
       },
       align: center + horizon,
       inset: 10pt * scale_factor,
-      ..main_headings.map(format_label),
-      ..range(0, 5).map(main_competence_row).flatten(),
+      ..header_row.map(format_label),
+      ..range(0, row_names.len()).map(main_competence_row).flatten(),
     ),
-  )
-
-  let personal_headings = (
-    [Professional Standard],
-    [Personal Leadership],
   )
 
   let format_personal_data(num) = {
@@ -107,8 +111,7 @@
     reflow: true,
     [
       #table(
-        columns: 2,
-        rows: 2,
+        columns: personal_headings.len(),
         fill: (col, row) => {
           if row == 0 { black }
           else { get_complevel_color(personal_numbers.at(col)) }
