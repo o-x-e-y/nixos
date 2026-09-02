@@ -102,6 +102,7 @@ in
         DASHSCOPE_API_KEY=${config.sops.placeholder.dashscope-api-key}
         CRONOMETER_USERNAME=${config.sops.placeholder.cronometer-email}
         CRONOMETER_PASSWORD=${config.sops.placeholder.cronometer-password}
+        INTERVALS_API_KEY=${config.sops.placeholder.intervals_icu_key}
       '';
       owner = config.mainUser.username;
       mode = "0600";
