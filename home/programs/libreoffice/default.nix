@@ -15,7 +15,7 @@ in
       description = "Enable libreoffice";
     };
 
-    package = lib.mkPackageOption pkgs "libreoffice-fresh" { };
+    package = lib.mkPackageOption pkgs "libreoffice-stable" { };
 
     extraPackages = lib.mkOption {
       type = lib.types.listOf lib.types.package;
