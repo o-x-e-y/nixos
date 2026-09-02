@@ -51,11 +51,22 @@ let
     text = builtins.readFile ./../claude-code/intervals-icu.sh;
   };
 
+  # Shared with ../claude-code/intervals-icu, the same way the two shell
+  # wrappers above resolve to one store path: same file, same arguments, so
+  # both modules land on the same derivation.
+  intervals-icu-mcp = pkgs.callPackage ./../claude-code/intervals-icu/package.nix { };
+
   # Skills are plain SKILL.md directories, so the whole tree goes to the store
   # and dsh scans it read-only. dsh's own command registry is programmatic
   # (ctx.commands.register, from a plugin) and has no markdown loader, so the
   # claude-code `/coach` command ports to a skill rather than a command.
-  skills = ./skills;
+  #
+  # Rendered from ../claude-code/coach rather than held as a second copy of the
+  # same document: the two hand-maintained files had drifted 41 lines apart by
+  # 2 Sep 2026, and this harness was the one missing the Cronometer write
+  # prohibition it is the only one unable to enforce. Same import as
+  # ../claude-code's, so both land on one derivation per output.
+  skills = (import ./../claude-code/coach { inherit pkgs; }).skills;
 
   # The DeepSeek credit balance in the TUI status line -- `bal:$4.65 (2m)`,
   # and nothing else. Tokens, cache hit rate and context occupancy are already

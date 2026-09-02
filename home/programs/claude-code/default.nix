@@ -8,6 +8,9 @@ let
   cfg = config.apps.claude-code;
   status-line = import ./commands/status-line.nix { inherit pkgs; };
 
+  # Shared with ../dsh, which renders the same body as a skill. See ./coach.
+  coach = import ./coach { inherit pkgs; };
+
   intervals-icu = pkgs.writeShellApplication {
     name = "intervals-icu";
     runtimeInputs = with pkgs; [
@@ -23,6 +26,7 @@ in
   # its own permission entries; the lists merge back into the ones below.
   imports = [
     ./cronometer
+    ./intervals-icu
     ./weather
   ];
 
@@ -105,7 +109,7 @@ in
       };
 
       commands = {
-        coach = ./commands/coach.md;
+        coach = coach.commandText;
       };
 
       plugins = [

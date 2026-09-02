@@ -95,8 +95,10 @@ let
   description = "Coach the summer training block (~/Documents/summer-training), closed 1 Sep 2026 at FTP 275 → 293 — the plan, the tooling, and the rules it earned.";
 in
 {
-  # A path, as home-manager's claude-code `commands` attrset expects.
-  command = pkgs.writeText "coach.md" ''
+  # A string, not a path: home-manager's claude-code module routes `commands`
+  # entries through `if lib.isPath content then source else text`, and a
+  # derivation is neither a path nor a string as far as that check is concerned.
+  commandText = ''
     ---
     description: ${description} Optionally pulls recent rides and nutrition.
     argument-hint: [notes, a question, and/or "pull the last N days"]
