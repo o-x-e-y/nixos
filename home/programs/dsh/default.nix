@@ -76,10 +76,39 @@ let
   # than a fetched bundle because it does not exist upstream.
   dsh-usage = pkgs.callPackage ./usage.nix { inherit (pkgs) dsh; };
 
-  # dsh-TUI 0.10.0-beta.1 instead of pkgs.dsh.bundles.tui (0.9.3), which cannot
-  # boot against dsh-workspace 0.1.2-alpha.2. See ./tui.nix for the full story;
-  # it is a temporary bridge, not a preference for the beta.
-  dsh-tui = pkgs.dsh.callPackage ./tui.nix { };
+  # There are no local bundle pins here any more. This file used to carry two,
+  # both bridges over a deepseek-harness.nix pin that lagged a broken upstream
+  # release: dsh-TUI 0.10.0-beta.2 over the pinned 0.9.3, and dsh-context 0.38.5
+  # over the pinned 0.38.3, neither of which could boot against dsh-workspace
+  # 0.1.2-alpha.2. The pin has caught up on both -- tui 0.10.0-beta.3 and
+  # context 0.40.1 -- so they are gone, as their own comments said they should
+  # be once it did. ./tui.nix went with them.
+  #
+  # If a release forces another bridge, do NOT write it as an override of `src`
+  # on the upstream bundle. That is what was here:
+  #
+  #   pkgs.dsh.bundles.context.overrideAttrs (finalAttrs: prev: {
+  #     version = "0.38.5";
+  #     src = fetchFromGitHub { ... };
+  #     pnpmDeps = prev.pnpmDeps.overrideAttrs { inherit (finalAttrs) src version; };
+  #   })
+  #
+  # and it is silently wrong. pnpmDeps is a fixed-output derivation, and an
+  # FOD's store path is a function of its name and outputHash alone -- never of
+  # its inputs. The name is `dsh-context-pnpm-deps`, carrying no version, and
+  # the inherited hash does not move when src does. So re-pointing src builds a
+  # new .drv that resolves to the store path already realized for *upstream's*
+  # version; Nix finds it valid and never runs the fetch. Upstream's dependency
+  # tree then meets our lockfile in the sandbox and pnpm dies on
+  # ERR_PNPM_NO_OFFLINE_TARBALL, naming whichever package the new lockfile
+  # wanted -- an error that reads like a broken lockfile and says nothing about
+  # the override that caused it. It stayed invisible across 0.38.3 -> 0.38.5
+  # because both shared one dependency hash, and only surfaced when the pin
+  # moved to 0.40.1 and that hash finally changed.
+  #
+  # Copy the upstream package.nix instead, the way ./tui.nix did, and state the
+  # pnpmDeps hash outright. A stale literal hash fails at the FOD with a real
+  # mismatch, which is the behaviour worth having.
 
   # Upstream's dshBundleCheckHook polls the web profile's endpoint with a bare
   # `curl` off PATH, and curl never arrives there: it is listed in the hook's
@@ -294,6 +323,32 @@ let
               CRONOMETER_PASSWORD: !!js process.env.CRONOMETER_PASSWORD ?? '''
               CRONOMETER_ACCOUNT_TZ: Europe/Amsterdam
               UV_PYTHON_DOWNLOADS: never
+
+        # intervals.icu, mirroring ../claude-code/intervals-icu. The read half
+        # overlaps intervals-icu.sh, which stays on PATH for the coach skill:
+        # the script returns raw API JSON, these tools return the consolidated
+        # week/fuelling/metrics shapes, and only this path can write a plan back
+        # to the calendar.
+        #
+        # Unlike Claude Code there is no per-tool permission surface here, so
+        # `upload_week_plan` -- which pushes to the calendar Garmin and Zwift
+        # sync from, and whose `clear` argument deletes the existing event range
+        # first -- is reachable without a prompt. That is the one asymmetry
+        # between the two clients worth knowing about.
+        - id: mcp-intervals-icu
+          name: '@deepseek-ai/dsh-mcp-client'
+          config:
+            serverName: intervals-icu
+            transport: stdio
+            command: ${lib.getExe intervals-icu-mcp}
+            env:
+              # Same `?? '''` guard as the Cronometer pair above: an unset
+              # variable would otherwise resolve to undefined and fail
+              # validation, taking the whole boot down rather than this server.
+              INTERVALS_API_KEY: !!js process.env.INTERVALS_API_KEY ?? '''
+              # Restated rather than shared with the claude-code module, which
+              # cannot be read from here. Same athlete as intervals-icu.sh.
+              ATHLETE_ID: i563199
   '';
 in
 {
@@ -387,8 +442,11 @@ in
         # which applies after the bundle's own layer.
         tui = {
           bundles = [
-            dsh-tui
+            pkgs.dsh.bundles.tui
             pkgs.dsh.bundles.graph-memory
+            pkgs.dsh.bundles.modsearch
+            pkgs.dsh.bundles.context
+            pkgs.dsh.bundles.billion-context
             dsh-usage
           ];
           patch = cordisPatch;
@@ -397,6 +455,9 @@ in
           bundles = [
             pkgs.dsh.bundles.web-app
             pkgs.dsh.bundles.graph-memory
+            pkgs.dsh.bundles.modsearch
+            pkgs.dsh.bundles.context
+            pkgs.dsh.bundles.billion-context
           ];
           patch = cordisPatch;
         };
@@ -485,6 +546,7 @@ in
           "DASHSCOPE_API_KEY=/run/secrets/dashscope-api-key" \
           "CRONOMETER_USERNAME=/run/secrets/cronometer-email" \
           "CRONOMETER_PASSWORD=/run/secrets/cronometer-password" \
+          "INTERVALS_API_KEY=/run/secrets/intervals_icu_key" \
           "ANTHROPIC_API_KEY=/run/secrets/anthropic-api-key"
         do
           var=''${pair%%=*}
