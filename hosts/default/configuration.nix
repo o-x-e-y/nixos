@@ -296,6 +296,8 @@ in
   #   enableSSHSupport = true;
   # };
 
+  services.journald.extraConfig = "MaxRetentionSec=6month";
+
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
