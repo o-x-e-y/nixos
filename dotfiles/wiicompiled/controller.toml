@@ -1,0 +1,53 @@
+[controller]
+# Managed by home/programs/wiicompiled. This whole section is spliced into
+# ~/.local/share/WiiCompiled/Config.toml on every activation, replacing whatever
+# [controller] section is there; every other section (paths, video, audio) is
+# left alone. Keep all commentary *inside* the section and above the bindings:
+# the splice removes from the [controller] header to the next one, so a comment
+# above the header would survive and accumulate on every rebuild, and
+# `wiicompiled-config-backup` replaces everything from the first binding down.
+#
+# Edit bindings here, not in the F10 bar, or a rebuild reverts them -- or run
+# `wiicompiled-config-backup` to pull live changes back into this file.
+#
+# Values are SDL gamepad button names, and two comma-separated names both bind:
+#   south east west north      (Cross Circle Square Triangle on a PS pad)
+#   back guide start
+#   left_stick right_stick     (stick clicks)
+#   left_shoulder right_shoulder
+#   dpad_up dpad_down dpad_left dpad_right
+#   misc1 (Share) touchpad misc2 misc3 misc4
+#   left_paddle1/2 right_paddle1/2
+#   unmapped
+#
+# Translated from dolphin-emu's GCPadNew.ini [GCPad1] (PS4 Controller):
+#
+#   a      accelerate   Cross, and R1. Dolphin had this on R2, which cannot be
+#                       reproduced: this build binds GameCube buttons to digital
+#                       pad buttons only, and the analog triggers are hardwired
+#                       to GameCube L/R -- so R2 drifts here instead. R1 is the
+#                       nearest shoulder-position stand-in. Drop
+#                       `,right_shoulder` for Cross only.
+#   b      brake        Square, as in the Dolphin profile.
+#   x      use item     Triangle, as in the Dolphin profile.
+#   y      use item     Circle. Dolphin's Y sat on keyboard `S`, a leftover from
+#                       its default keyboard profile rather than a pad binding,
+#                       so this one is chosen rather than translated.
+#   z      unused       Mario Kart Wii does not use it, and R1 is accelerate.
+#   l, r   drift        "unmapped" means "read the analog trigger", which is
+#                       what actually drives drift. This is the default.
+#
+# Sticks are not remappable: left stick steers, right stick is the C-stick.
+
+a = "south,right_shoulder"
+b = "west"
+x = "north"
+y = "east"
+z = "unmapped"
+start = "start"
+l = "unmapped"
+r = "unmapped"
+up = "dpad_up"
+down = "dpad_down"
+left = "dpad_left"
+right = "dpad_right"

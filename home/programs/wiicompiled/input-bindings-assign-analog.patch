@@ -1,0 +1,19 @@
+diff --git a/runtime/src/input_bindings.cpp b/runtime/src/input_bindings.cpp
+index 6ffa984..d151df0 100644
+--- a/runtime/src/input_bindings.cpp
++++ b/runtime/src/input_bindings.cpp
+@@ -203,7 +203,13 @@ void Apply(PADStatus* statuses) noexcept {
+                 const auto scaled = static_cast<uint8_t>(safe * 255.0);
+                 uint8_t& target =
+                     info.analog == 1 ? statuses[port].triggerLeft : statuses[port].triggerRight;
+-                target = std::max(target, scaled);
++                // Assign rather than max: an explicit binding replaces the
++                // default source for this control instead of stacking on it.
++                // Games read the analog trigger travel rather than the
++                // PAD_TRIGGER_* bit -- Mario Kart Wii drifts on it -- so under
++                // std::max the physical trigger keeps driving the control even
++                // after something else is bound to it, and both fire at once.
++                target = scaled;
+             }
+         }
+     }

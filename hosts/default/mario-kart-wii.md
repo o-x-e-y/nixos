@@ -114,6 +114,61 @@ it at the PAL image so everything uses the one WiiCompiled requires.
 nothing, because `IsRecompModeActive()` ands it with `OperatingSystem.IsWindows()`.
 WiiCompiled runs entirely outside WheelWizard on this machine.
 
+## Controller bindings
+
+[`dotfiles/wiicompiled/GCPadNew.ini`](../../dotfiles/wiicompiled/GCPadNew.ini) is
+the source of truth — a real Dolphin profile, copyable straight to
+`~/.config/dolphin-emu/GCPadNew.ini`.
+[`home/programs/wiicompiled`](../../home/programs/wiicompiled) converts it with
+`gcpad-to-controller.awk` and splices the result into `Config.toml`'s
+`[controller]` section on activation, leaving `[paths]`, `[video]` and `[audio]`
+alone. Rerunning is a no-op. `apps.wiicompiled.inputSource = "toml"` switches to
+the hand-written [`controller.toml`](../../dotfiles/wiicompiled/controller.toml),
+kept as a fallback for a WiiCompiled without the expression engine.
+
+The repo is authoritative: **rebinding in the F10 bar survives until the next
+rebuild**, which reverts it. `wiicompiled-config-backup` pulls the live section
+back into `controller.toml` (only that form round-trips — the game writes
+bindings, not the Dolphin profile they came from).
+
+### Why the conversion is not just an import
+
+WiiCompiled has its own `GCPadNew.ini` importer, and it is not used here, for
+two reasons.
+
+**It cannot read this profile.** Its name table
+(`runtime/src/input_bindings.cpp`) holds Dolphin's XInput-style names — `Button
+X`, `Button Y` — while Dolphin's SDL3 backend writes *positional* ones, `Button
+W` and `Button N`. Those have no entry, so an import silently drops them. The
+converter rewrites them to WiiCompiled's own vocabulary (`west`, `north`), which
+its evaluator accepts as a fallback. **This is worth a PR upstream**: adding
+`Button S/E/W/N` to `ButtonNames()` is a four-line fix.
+
+**Freeing R2 needs a patched runtime.** Two layers had to give way. First,
+aurora only synthesises the GameCube R *button* from the R2 axis when no real
+button is mapped to it (`if (!rightTriggerSet && tr > activationZone)` in
+`pad.cpp`), so a plain `r = "left_shoulder"` stops that. But that is not enough:
+games read the **analog travel**, not the button bit — Mario Kart Wii drifts on
+it — and aurora assigns `status[i].triggerRight` from the R2 axis
+unconditionally. Only an expression can drive the analog value, and
+`InputBindings::Apply()` merged it with `std::max`, so R2 kept drifting *and*
+accelerated, while the button mapped to drift did nothing at all.
+
+The fix is [`input-bindings-assign-analog.patch`](../../home/programs/wiicompiled/input-bindings-assign-analog.patch):
+one line in `Apply()`, `std::max(target, scaled)` → `target = scaled`, so an
+explicit binding replaces the default source instead of stacking on it. That
+patch is why the converter emits an expression for `Triggers/L` and `Triggers/R`
+in addition to the plain key — the plain key stops the button synthesis, the
+expression takes over the analog. Both are needed. **This is the second thing
+worth upstreaming**, alongside the missing positional button names.
+
+Resulting layout: R2 accelerates, Square brakes, Triangle and Circle use items,
+L1 drifts, R1 wheelies (D-pad Up), L2 is GameCube L.
+
+Sticks are not remappable (`kControls` covers buttons and triggers only), and
+bindings are positional and shared by every port. Wii U Pro Controllers are
+skipped by the runtime, and Wii Remotes with an extension never reach this layer.
+
 ## Things that will bite you
 
 - **The compiled game is not in the Nix store.** It lives in
@@ -133,6 +188,16 @@ WiiCompiled runs entirely outside WheelWizard on this machine.
   `~/.config/WheelWizard` — `CT-MKWII` is the project's former name and the
   folder was never renamed. `config.json`, `RR.json`, `logs/` and `Mods/` are
   all in there.
+- **The installed game is currently built from upstream `main`, not the pinned
+  AppImage.** The input expression engine landed on 2026-09-05, hours after
+  v0.2.27 was cut, so the pinned release cannot bind a control to a trigger at
+  all. The binaries in `Install/` came from a local checkout staged at
+  `~/.local/share/WiiCompiled/workspace-main`, built with nixpkgs' clang against
+  v0.2.27's prebuilt aurora/Dawn (safe: the only aurora change on main is a GC
+  Pocket+ rumble fix). **When the next release lands, bump
+  `wiicompiled.version`, re-run `wiicompiled-setup install …`, and this
+  divergence disappears** — the dotfiles and the splice need no changes, since
+  the expression keys live in the same `[controller]` section.
 - **Retro Rewind updates come from WheelWizard**, and WiiCompiled compiled a
   *snapshot* of `Code.pul`. After WheelWizard updates Retro Rewind, re-run
   `wiicompiled-setup install …` to pick it up; `check-products` will tell you

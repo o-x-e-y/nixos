@@ -22,6 +22,7 @@
     ./spotify-player
     ./ssh
     ./vscodium
+    ./wiicompiled
     ./zed-editor
   ];
 }
