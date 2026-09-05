@@ -67,9 +67,9 @@
             };
 
             claudeCodeOverride = {
-              enable = false;
-              version = "2.1.170";
-              hash = "sha256-hJ4AcnegRCqydXDT49bUN4dQeUZZDo3RlH5aObcIH54=";
+              enable = true;
+              version = "2.1.258";
+              hash = "sha256-cE8TNKxl0+ieHGwddmMpOteGphZq/bcbUHUzffYw+XY=";
             };
 
             nixpkgs.overlays = [
