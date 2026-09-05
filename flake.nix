@@ -59,6 +59,7 @@
           ./hosts/default/configuration.nix
           ./hosts/default/main-user.nix
           ./hosts/default/claude-code-override.nix
+          ./hosts/default/wheelwizard-override.nix
 
           {
             mainUser = {
@@ -70,6 +71,22 @@
               enable = true;
               version = "2.1.258";
               hash = "sha256-cE8TNKxl0+ieHGwddmMpOteGphZq/bcbUHUzffYw+XY=";
+            };
+
+            wheelwizardOverride = {
+              enable = true;
+              version = "2.5.3";
+              hash = "sha256-yh0kRPfs/g47Hrn+T3MHR2/Vyf7aPTWsszUQNBfw0W4=";
+
+              dolphin = {
+                version = "2606a";
+                hash = "sha256-TAIxBEGbbYvoOi+dukr2Hij0J/NL9Iy6pcgf2bhEgI8=";
+              };
+
+              wiicompiled = {
+                version = "0.2.27";
+                hash = "sha256-QYIxF9KkXZZcRGrPLnze22hG7NeJVwyBtnRTMUSBGvs=";
+              };
             };
 
             nixpkgs.overlays = [
