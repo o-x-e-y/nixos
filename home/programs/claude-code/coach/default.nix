@@ -92,7 +92,7 @@ let
     "@EMPTY_CASE@" = "**Nothing specific** —";
   };
 
-  description = "Coach the summer training block (~/Documents/summer-training), closed 1 Sep 2026 at FTP 275 → 293 — the plan, the tooling, and the rules it earned.";
+  description = "Coach the winter training block (~/Documents/winter-training) — base through spring, aimed at WVAN crits from early April 2027, on FTP 293. The plan, the tooling, and the rules two blocks earned.";
 in
 {
   # A string, not a path: home-manager's claude-code module routes `commands`
@@ -102,7 +102,7 @@ in
     ---
     description: ${description} Optionally pulls recent rides and nutrition.
     argument-hint: [notes, a question, and/or "pull the last N days"]
-    allowed-tools: Read, Grep, Glob, Bash(date:*), Bash(intervals-icu:*), Bash(weather:*), Bash(nix-shell:*), mcp__cronometer__get_food_log, mcp__cronometer__get_daily_nutrition, mcp__cronometer__get_nutrition_scores, mcp__cronometer__get_biometrics
+    allowed-tools: Read, Grep, Glob, Bash(date:*), Bash(intervals-icu:*), Bash(weather:*), Bash(nix-shell:*), Bash(python3:*), Bash(typst:*), mcp__cronometer__get_food_log, mcp__cronometer__get_daily_nutrition, mcp__cronometer__get_nutrition_scores, mcp__cronometer__get_biometrics
     ---
 
     ${claudeCodeBody}
@@ -118,7 +118,7 @@ in
         description: ${description} Use when asked about training, a ride just done, FTP, fuelling, the session log, or whether a quality session should go ahead.
         ---
 
-        # Coaching the summer training block
+        # Coaching the winter training block
 
         ${dshBody}
       ''
