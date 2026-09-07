@@ -50,6 +50,7 @@ in
   # environment.
   home.packages = with pkgs; [
     discord
+    kdePackages.kate
     spotify
     teams-for-linux
     typst

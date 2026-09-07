@@ -21,8 +21,16 @@ in
   config = lib.mkIf cfg.enable {
     users.users.${cfg.username} = {
       isNormalUser = true;
+      description = "main user";
       initialPassword = "waddahell";
       shell = pkgs.bash;
+      extraGroups = [
+        "networkmanager"
+        "wheel"
+        "docker"
+        "video"
+        "render"
+      ];
     };
   };
 }
