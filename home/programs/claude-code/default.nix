@@ -102,6 +102,14 @@ in
         };
       };
 
+      # global CLAUDE.md start of conversation context
+      context = ''
+        # Environment
+
+        This machine is NixOS. If a package isn't available, run
+        `nix-shell -p <package> --run "<command>"` rather than reporting it as missing.
+      '';
+
       agents = {
         typst-writer = ./agents/typst-writer.md;
         comptences = ./agents/comptences.md;
