@@ -4,16 +4,10 @@
 }:
 {
   fonts.packages = with pkgs; [
-    noto-fonts
+    # Fonts not available through google
     nerd-fonts.jetbrains-mono
-    texlivePackages.librebaskerville
-    texlivePackages.inter
-    courier-prime
-    roboto
 
-    # These six ship from Google as variable fonts only. Typst reads the
-    # wght/wdth/opsz axes directly since 0.15, so they no longer need to be
-    # instantiated into static weights first.
+    # Note: missing names fail silently without crashing the build
     (google-fonts.override {
       fonts = [
         "Yrsa"
@@ -22,6 +16,9 @@
         "Inter"
         "IBM Plex Sans"
         "Source Serif 4"
+        "Libre Baskerville"
+        "Roboto"
+        "Courier Prime"
       ];
     })
   ];
