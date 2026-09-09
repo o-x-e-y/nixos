@@ -32,6 +32,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    pathe-cli = {
+      url = "github:o-x-e-y/pathe-cli";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     deepseek-harness = {
       url = "github:moraxyc/deepseek-harness.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -48,6 +53,7 @@
       nix-flatpak,
       sops-nix,
       oxeylyzer,
+      pathe-cli,
       deepseek-harness,
       ...
     }@inputs:
@@ -92,6 +98,7 @@
             nixpkgs.overlays = [
               zed-extensions.overlays.default
               oxeylyzer.overlays.default
+              pathe-cli.overlays.default
               deepseek-harness.overlays.default
             ];
 

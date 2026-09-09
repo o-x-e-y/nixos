@@ -27,6 +27,7 @@ in
   imports = [
     ./cronometer
     ./intervals-icu
+    ./pathe
     ./weather
   ];
 
