@@ -28,7 +28,8 @@ syntax and every cinema slug, and it is kept current with the code.
 | the request is about | run |
 |---|---|
 | what's on, a day's programme | `pathe programme [date]` |
-| when a particular film plays | `pathe film "<titel>" --days N` |
+| where a film is playing at all | `pathe where "<titel>"` |
+| when and at what times a film plays | `pathe film "<titel>" --days N` |
 | arthouse, In the Picture | `pathe arthouse` |
 | Pride Night | `pathe pride` |
 | classics, re-releases, old films | `pathe classics` |
@@ -57,6 +58,15 @@ say `--days 7` when the request is clearly about the near term.
 by default, and what went is named after `gefilterd:`. Leave that alone unless
 the request wants them: `--include-kids` for a family outing, `--include-dubs`
 for a Dutch-spoken screening, `--all` for both. Note `pathe film` never filters.
+
+**Where versus when.** `where` costs one request and lists only the cinemas
+that have the title; `film` fetches actual times for the cinemas you name. For
+"where can I see X" run `where` first, then `film -c <the ones that matter>`.
+Do not answer a "where" question by passing all 31 slugs to `film`.
+
+**Favourites.** The default set comes from `~/.config/pathe/settings.json`.
+`-f` selects it explicitly, which is what you want on `where` when the question
+is only about the user's own cinemas.
 
 **Formats** are per screening, not per film — the same title plays 4DX at 15:15
 and flat at 20:15. If asked "is it in IMAX", read the rows, not the header.

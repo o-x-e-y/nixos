@@ -106,6 +106,7 @@
               plasma-manager.homeModules.plasma-manager
               zed-extensions.homeManagerModules.default
               deepseek-harness.homeModules.default
+              pathe-cli.homeManagerModules.default
             ];
           }
 

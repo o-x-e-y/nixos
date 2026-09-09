@@ -1,14 +1,13 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 let
   cfg = config.apps.claude-code;
 
-  # pkgs.pathe-cli comes from the pathe-cli flake input's overlay, added in
-  # ../../../../flake.nix alongside the oxeylyzer one it mirrors.
+  # The package and the favourites config live in ../../pathe; this module owns
+  # only the agent-facing surface.
   #
   # A CLI and not an MCP server, for the reason ../weather spells out: the Pathé
   # API is an unauthenticated GET and every bit of consolidation the tool does --
@@ -21,8 +20,6 @@ let
 in
 {
   config = lib.mkIf cfg.enable {
-    home.packages = [ pkgs.pathe-cli ];
-
     # Lists merge across modules, so this appends to the allowlist in
     # ../default.nix rather than replacing it. Read-only and unauthenticated:
     # there is no secret to declare and nothing here can order a seat, so this

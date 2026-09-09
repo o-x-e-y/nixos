@@ -18,6 +18,7 @@
     ./minecraft
     ./okular
     ./osu-lazer
+    ./pathe
     ./plasma
     ./spotify-player
     ./ssh

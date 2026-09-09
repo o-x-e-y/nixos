@@ -214,11 +214,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788943568,
-        "narHash": "sha256-0T9uvyczbWcmt1uZBCqPDVvCdFP8phQp2o1LVm1/gGA=",
+        "lastModified": 1788947985,
+        "narHash": "sha256-JY2Eu5O/ujbuzY17oEKsFkO/sUwykub8aw3gb3YwWGw=",
         "owner": "o-x-e-y",
         "repo": "pathe-cli",
-        "rev": "ee59e1a5ffbc89dfbd8efda6021cf60042536c75",
+        "rev": "90e15fd82c427518323a28f4f71575548de6d80a",
         "type": "github"
       },
       "original": {
