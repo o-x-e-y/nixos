@@ -141,45 +141,6 @@ let
         ''
       );
 
-  # `pkgs/dsh/profiles.nix` composes each profile as: the web bundle if the
-  # profile needs the web GUI host, the tui bundle if it needs a terminal, the
-  # headless bundle if neither, and only then the profile's own bundles. The
-  # web test is an OR across `passthru.requiresWeb` of every bundle in the
-  # list, and both modsearch and dsh-context set it -- so either one alone
-  # dragged @deepseek-ai/dsh-web-app into nix-tui. That is why bare `dsh` also
-  # stood up an HTTP server on 127.0.0.1:3080 and why a second TUI died on
-  # EADDRINUSE: the port is the web face's, and the TUI was carrying it.
-  #
-  # Turning the requirement off rather than dropping the two bundles. The flag
-  # is about their *client* halves, which only the web app ever loads: both
-  # declare `dsh.client.platform = "web"`, and a terminal session cannot reach
-  # that UI whether or not the server runs. The host halves are unaffected --
-  # dsh-context injects `sessionProjections` and modsearch injects nothing,
-  # both base services -- and neither bundle patch targets a row that web-app
-  # alone inserts (dsh-context inserts one row; modsearch inserts one and
-  # patches `web`, which dsh-base provides). So the /context command and the
-  # modsearch tools survive in the TUI; only the browser dashboard goes, and
-  # it was never reachable from there.
-  #
-  # `overrideAttrs` rather than `//`: passthru carries the bundle protocol
-  # (`dshBundle`, `dshBundleHelper`, `runtimeDeps`) that composition.nix
-  # validates, so it has to be merged, not replaced. outPath does not move --
-  # nothing rebuilds, this only changes what profiles.nix reads.
-  #
-  # Overridden once and shared with the web profile below, NOT applied per
-  # profile: composeBundles unions the bundle lists of every profile, and a
-  # patched value next to an unpatched one would be two entries for one
-  # package. nix-web still gets the web host from its own
-  # `pkgs.dsh.bundles.web-app`, which keeps its requiresWeb.
-  withoutWebHost = bundle: bundle.overrideAttrs (prev: {
-    passthru = prev.passthru // {
-      requiresWeb = false;
-    };
-  });
-
-  modsearch = withoutWebHost pkgs.dsh.bundles.modsearch;
-  context = withoutWebHost pkgs.dsh.bundles.context;
-
   # dsh itself, rebuilt against the hook above.
   #
   # `pkgs.dsh.overrideScope` does NOT work here, which is why this is shaped the
@@ -393,6 +354,63 @@ let
               # cannot be read from here. Same athlete as intervals-icu.sh.
               ATHLETE_ID: i563199
   '';
+  # Applied to the tui profile ALONE, after cordisPatch.
+  #
+  # The web GUI host rides along in that profile and cannot be taken out:
+  # modsearch and dsh-context both declare `passthru.requiresWeb`, and
+  # pkgs/dsh/profiles.nix ORs that across a profile's bundles to decide the
+  # profile needs @deepseek-ai/dsh-web-app, HTTP server included. Clearing the
+  # flag does compose -- both host halves inject base services only
+  # (sessionProjections, and nothing) and neither bundle patch targets a row
+  # web-app alone inserts -- but then nix-tui boots the real Ink TUI during
+  # dshBundleCheckHook's smoke test, which runs without a pty, and the build
+  # dies on "Raw mode is not supported on the current process.stdin". The hook
+  # has a TTY path for exactly that case, gated on the profile's `requiresTty`;
+  # the home-manager module exposes no such option, and the package argument
+  # that does is overwritten by withProfiles. So the web host stays.
+  #
+  # Its fixed port does not have to. 3080 was the whole cost of carrying it: a
+  # second `dsh` died on EADDRINUSE, as did a TUI started while the dsh-web
+  # unit held the port. `port: 0` asks the OS for a free one --
+  # dsh-host-webserver documents it ("`port` 0 requests an OS-assigned port;
+  # `ctx.webServer.port` reads the listening port afterwards") and its schema
+  # is natural().max(65535), so 0 validates rather than being rejected as
+  # unset. TUI sessions stop colliding with each other and with the unit, which
+  # keeps 3080 because this layer is the tui profile's alone -- the web profile
+  # still resolves `ctx.webStartup.port ?? 3080`, and the headless profile has
+  # no webserver row at all, which is also why this cannot live in cordisPatch:
+  # a patch naming a row that profile lacks warns instead of applying.
+  #
+  # A patch REPLACES the targeted row's whole config, so both rows restate
+  # every key their base layer sets.
+  tuiPatch = ''
+    - id: webserver
+      config:
+        host: !!js ctx.webStartup.host ?? '127.0.0.1'
+        port: !!js ctx.webStartup.port ?? 0
+        compression: gzip
+        compressionLevel: 1
+        compressionThresholdBytes: 1024
+
+    # And it must not open a browser. This is the other half of "bare `dsh`
+    # launches the web UI": a foreground run inherits BROWSER and the Wayland
+    # display, so `openBrowser` resolves true and every TUI launch also raised
+    # a real Firefox tab -- the same reason services.dsh passes --no-open.
+    # z.boolean(), so a literal rather than !!js.
+    #
+    # printUrl stays TRUE, deliberately. dshBundleCheckHook's web check greps
+    # the boot log for the `dsh web: <url>` line that this field emits and
+    # curls it to decide the profile came up; silencing it would leave the hook
+    # polling an empty log until its timeout and fail the build. One line
+    # behind the TUI's alternate screen is the cheaper end of that trade.
+    - id: web-runtime
+      config:
+        openBrowser: false
+        printUrl: true
+        surfaceContext: true
+        trustedHosts: !!js ctx.webStartup.trustedHosts
+  '';
+
 in
 {
   options.apps.dsh = {
@@ -492,19 +510,19 @@ in
           bundles = [
             pkgs.dsh.bundles.tui
             pkgs.dsh.bundles.graph-memory
-            modsearch
-            context
+            pkgs.dsh.bundles.modsearch
+            pkgs.dsh.bundles.context
             pkgs.dsh.bundles.billion-context
             dsh-usage
           ];
-          patch = cordisPatch;
+          patch = cordisPatch + tuiPatch;
         };
         web = {
           bundles = [
             pkgs.dsh.bundles.web-app
             pkgs.dsh.bundles.graph-memory
-            modsearch
-            context
+            pkgs.dsh.bundles.modsearch
+            pkgs.dsh.bundles.context
             pkgs.dsh.bundles.billion-context
           ];
           patch = cordisPatch;
