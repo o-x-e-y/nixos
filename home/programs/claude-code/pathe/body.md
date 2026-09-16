@@ -1,10 +1,8 @@
 Answer a question about what is playing at Pathé, using the `pathe` CLI.
 
-Today: !`date +"%A %-d %B %Y (%Y-%m-%d)"`
+@TODAY@
 
-**The request:**
-
-$ARGUMENTS
+@TASK_INPUT@
 
 ## The tool
 

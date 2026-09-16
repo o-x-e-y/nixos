@@ -59,14 +59,17 @@ let
   # Skills are plain SKILL.md directories, so the whole tree goes to the store
   # and dsh scans it read-only. dsh's own command registry is programmatic
   # (ctx.commands.register, from a plugin) and has no markdown loader, so the
-  # claude-code `/coach` command ports to a skill rather than a command.
+  # claude-code `/coach` and `/pathe` commands port to skills rather than
+  # commands -- which is also what puts both back in front of a person here: a
+  # user-invocable skill is invoked by its own `/name` gesture.
   #
-  # Rendered from ../claude-code/coach rather than held as a second copy of the
-  # same document: the two hand-maintained files had drifted 41 lines apart by
-  # 2 Sep 2026, and this harness was the one missing the Cronometer write
-  # prohibition it is the only one unable to enforce. Same import as
-  # ../claude-code's, so both land on one derivation per output.
-  skills = (import ./../claude-code/coach { inherit pkgs; }).skills;
+  # Rendered from ../claude-code/{coach,pathe} rather than held as a second copy
+  # of the same document: the two hand-maintained coach files had drifted 41
+  # lines apart by 2 Sep 2026, and this harness was the one missing the
+  # Cronometer write prohibition it is the only one unable to enforce. Same
+  # imports as ../claude-code's, so both land on one derivation per output.
+  coachSkills = (import ./../claude-code/coach { inherit pkgs; }).skills;
+  patheSkills = (import ./../claude-code/pathe { inherit pkgs; }).skills;
 
   # The DeepSeek credit balance in the TUI status line -- `bal:$4.65 (2m)`,
   # and nothing else. Tokens, cache hit rate and context occupancy are already
@@ -184,7 +187,8 @@ let
       disabled: false
       config:
         customSkillDirs:
-          - ${skills}
+          - ${coachSkills}
+          - ${patheSkills}
     - id: tool-skill
       disabled: false
 

@@ -8,8 +8,11 @@ let
   cfg = config.apps.claude-code;
   status-line = import ./commands/status-line.nix { inherit pkgs; };
 
-  # Shared with ../dsh, which renders the same body as a skill. See ./coach.
+  # Shared with ../dsh, which renders the same body as a skill. See ./coach and
+  # ./pathe -- neither is a module any more, each renders one document for both
+  # harnesses and is imported here.
   coach = import ./coach { inherit pkgs; };
+  pathe = import ./pathe { inherit pkgs; };
 
   intervals-icu = pkgs.writeShellApplication {
     name = "intervals-icu";
@@ -24,10 +27,11 @@ in
 {
   # One directory per integration. Each owns its package, its credentials and
   # its own permission entries; the lists merge back into the ones below.
+  # ./coach and ./pathe are not modules: they render a document for both
+  # harnesses, and the settings that used to come with them live here.
   imports = [
     ./cronometer
     ./intervals-icu
-    ./pathe
     ./weather
   ];
 
@@ -70,6 +74,12 @@ in
             "Glob(*)"
             "Bash(curl:*)"
             "Bash(intervals-icu:*)"
+
+            # Read-only and unauthenticated: the Pathé API is an open GET and
+            # the CLI cannot book a seat, so this allows rather than asks. It
+            # moved here from ./pathe when that directory became the document
+            # both harnesses read -- a document has no permissions of its own.
+            "Bash(pathe:*)"
             "WebFetch"
           ];
           ask = [ ];
@@ -119,6 +129,7 @@ in
 
       commands = {
         coach = coach.commandText;
+        pathe = pathe.commandText;
       };
 
       plugins.superpowers = pkgs.fetchFromGitHub {
