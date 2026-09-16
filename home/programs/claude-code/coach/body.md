@@ -196,11 +196,31 @@ harvests both, so a session logged and re-run carries them without anyone being 
 rider's own free-text note is the only feel channel there, and it is worth more than
 either.
 
-**Gym sessions are not on intervals.icu at all.** Nothing syncs them, they carry no
-load, and they are invisible to every projection here — two lifts a week cost nothing
-on paper and a great deal in the legs. Their record is the rider's note and a
-`log.json` row. Soreness is the only readout, so the useful question is what the
-*next ride* felt like, not what the lift felt like.
+**Gym sessions reach intervals.icu, but only half of it** *(corrected 14 Sep 2026;
+this said they do not sync at all)*. They sync and carry load — 36 on Sep 8, 14 on Sep
+12 — and intervals.icu counts that into ATL while excluding it from CTL. Those are the
+only two days in the block where `ctlLoad` and `atlLoad` diverge, and the gap is the
+lift's load exactly.
+
+**Follow that precedent; do not re-derive CTL here.** The rider's read — lifting should
+cost freshness without buying aerobic fitness — is what the split already does, and
+nothing in this repo computes CTL itself (`sessions.py` reads wellness `ctl`/`atl`
+straight from the API). One consequence to carry, and one that used to be there:
+
+- **TSB runs low, permanently.** ATL converges to mean daily load and CTL gains nothing
+  back, so two lifts a week sit roughly 7 points of TSB below a gym-free block. It is an
+  offset, not a transient: winter TSB is not comparable with the summer's rows. Size is
+  soft — strength load is TRIMP from heart rate, and Sep 8 was the chest strap against
+  Sep 12's wrist.
+- **The projection now carries them** *(fixed 14 Sep 2026; it did not until then)*.
+  `workouts.json` has a `gym` block, and `icu/push.py` posts each lift as a second,
+  `WeightTraining`-typed event beside the day's ride with its load stated outright —
+  which reproduces the same ATL-not-CTL split in the forward projection. So a projected
+  gym day is no longer easier than the day you will ride. `nutrition/fuel.py` reads the
+  same block, so gym days are listed in exactly one place.
+
+Their record is otherwise the rider's note and a `log.json` row, and soreness is the only
+readout, so the useful question is what the *next ride* felt like, not the lift.
 
 ## Structured sessions: read the intent first
 

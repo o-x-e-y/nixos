@@ -306,17 +306,35 @@
   else { rgb("#5a5a5a") }
 }
 
-// The block's whole evidentiary base in one table. Objective columns come from
-// intervals.icu via review/sessions.py; only `prescribed` and `verdict` are
-// written by hand, in review/log.json. Cite a row rather than retelling it.
+// The block's whole evidentiary base. Objective fields come from intervals.icu
+// via review/sessions.py; only `prescribed` and `verdict` are written by hand,
+// in review/log.json. Cite a row rather than retelling it.
+//
+// Each session is two table rows: a scannable strip — date, name, conditions —
+// and beneath it, spanning the full width, the asked/delivered/verdict triple
+// the log exists to hold. Those three were columns until 13 Sep 2026, and they
+// could not be: verdicts run to paragraphs, so once date, name, target and
+// conditions had taken their natural widths the verdict column collapsed to a
+// pillar a dozen characters wide and every table read as empty space beside it.
 #let session-log(data, kind: "quality") = {
   let rows = data.sessions.filter(s => s.type == kind)
   if rows.len() == 0 { return [] }
 
-  let hdr(body) = table.cell(
+  let hdr(body, align: left) = table.cell(
     fill: rgb("#3f4f45"),
+    align: align,
     text(fill: white, weight: "bold", size: 8pt, body),
   )
+
+  // One labelled line of the triple: a right-aligned tag in the gutter, the
+  // text itself on the full remaining width.
+  let field(name, body, tag: rgb("#9a8f82")) = (
+    text(size: 6.5pt, weight: "bold", tracking: 0.5pt, fill: tag)[#upper(name)],
+    body,
+  )
+
+  let strip-inset = (x: 6pt, top: 6pt, bottom: 2pt)
+
   let cells = rows.map(s => {
     let col = _outcome-color(s.outcome)
     let cond = {
@@ -329,35 +347,50 @@
       if s.feel != none { bits.push[#s.feel] }
       text(size: 7.5pt)[#bits.join[ · ]]
     }
-    let result = {
-      let d = if s.delivered != none {
-        text(size: 8pt, weight: "semibold", fill: col)[#s.delivered]
-      } else {
-        text(size: 8pt, fill: rgb("#9a9a9a"))[—]
-      }
-      stack(dir: ttb, spacing: 2pt,
-        d,
-        text(size: 7.5pt, fill: rgb("#4a4a4a"))[#s.verdict],
-      )
-    }
-    (
-      table.cell(text(size: 8pt)[#s.date.slice(5)]),
-      table.cell(text(size: 8pt)[#s.name]),
-      table.cell(text(size: 8pt, fill: rgb("#5a5a5a"))[
+    // The outcome colour rides on the Delivered tag, not on the paragraph it
+    // labels: these run to a dozen lines and a dozen bold coloured lines is a
+    // shout, not a signal.
+    let body = grid(
+      columns: (42pt, 1fr),
+      column-gutter: 7pt,
+      row-gutter: 3.5pt,
+      align: (right + top, left + top),
+      ..field("Asked", text(size: 8pt, fill: rgb("#5a5a5a"))[
         #if s.prescribed != none { s.prescribed } else { "—" }
       ]),
-      table.cell(cond),
-      table.cell(result),
+      ..field(
+        "Delivered",
+        tag: col,
+        if s.delivered != none {
+          text(size: 8pt, fill: col.darken(8%))[#s.delivered]
+        } else {
+          text(size: 8pt, fill: rgb("#9a9a9a"))[—]
+        },
+      ),
+      // A row can be logged before its verdict is written; an empty verdict
+      // drops the line rather than leaving a tag labelling nothing.
+      ..if s.verdict != none and s.verdict != "" {
+        field("Verdict", text(size: 7.5pt, fill: rgb("#4a4a4a"))[#s.verdict])
+      } else { () },
+    )
+    (
+      table.cell(inset: strip-inset, text(size: 8pt)[#s.date.slice(5)]),
+      table.cell(inset: strip-inset, text(size: 8pt, weight: "semibold")[#s.name]),
+      table.cell(inset: strip-inset, align: right, cond),
+      table.cell(colspan: 3, inset: (x: 6pt, top: 1pt, bottom: 7pt), body),
     )
   }).flatten()
 
   table(
-    columns: (auto, auto, auto, auto, 1fr),
+    columns: (auto, 1fr, auto),
     stroke: none,
-    fill: (_, y) => if calc.odd(y) { rgb("#f5f0eb") } else { white },
+    // Two rows to a session, so the zebra alternates on the session, not the row.
+    fill: (_, y) => if y > 0 and calc.even(calc.quo(y - 1, 2)) {
+      rgb("#f5f0eb")
+    } else { white },
     inset: (x: 6pt, y: 5pt),
     table.header(
-      hdr[Date], hdr[Session], hdr[Asked], hdr[°C · TSB · feel], hdr[Delivered],
+      hdr[Date], hdr[Session], hdr(align: right)[°C · TSB · feel],
     ),
     ..cells,
   )
