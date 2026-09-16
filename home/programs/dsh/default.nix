@@ -141,6 +141,45 @@ let
         ''
       );
 
+  # `pkgs/dsh/profiles.nix` composes each profile as: the web bundle if the
+  # profile needs the web GUI host, the tui bundle if it needs a terminal, the
+  # headless bundle if neither, and only then the profile's own bundles. The
+  # web test is an OR across `passthru.requiresWeb` of every bundle in the
+  # list, and both modsearch and dsh-context set it -- so either one alone
+  # dragged @deepseek-ai/dsh-web-app into nix-tui. That is why bare `dsh` also
+  # stood up an HTTP server on 127.0.0.1:3080 and why a second TUI died on
+  # EADDRINUSE: the port is the web face's, and the TUI was carrying it.
+  #
+  # Turning the requirement off rather than dropping the two bundles. The flag
+  # is about their *client* halves, which only the web app ever loads: both
+  # declare `dsh.client.platform = "web"`, and a terminal session cannot reach
+  # that UI whether or not the server runs. The host halves are unaffected --
+  # dsh-context injects `sessionProjections` and modsearch injects nothing,
+  # both base services -- and neither bundle patch targets a row that web-app
+  # alone inserts (dsh-context inserts one row; modsearch inserts one and
+  # patches `web`, which dsh-base provides). So the /context command and the
+  # modsearch tools survive in the TUI; only the browser dashboard goes, and
+  # it was never reachable from there.
+  #
+  # `overrideAttrs` rather than `//`: passthru carries the bundle protocol
+  # (`dshBundle`, `dshBundleHelper`, `runtimeDeps`) that composition.nix
+  # validates, so it has to be merged, not replaced. outPath does not move --
+  # nothing rebuilds, this only changes what profiles.nix reads.
+  #
+  # Overridden once and shared with the web profile below, NOT applied per
+  # profile: composeBundles unions the bundle lists of every profile, and a
+  # patched value next to an unpatched one would be two entries for one
+  # package. nix-web still gets the web host from its own
+  # `pkgs.dsh.bundles.web-app`, which keeps its requiresWeb.
+  withoutWebHost = bundle: bundle.overrideAttrs (prev: {
+    passthru = prev.passthru // {
+      requiresWeb = false;
+    };
+  });
+
+  modsearch = withoutWebHost pkgs.dsh.bundles.modsearch;
+  context = withoutWebHost pkgs.dsh.bundles.context;
+
   # dsh itself, rebuilt against the hook above.
   #
   # `pkgs.dsh.overrideScope` does NOT work here, which is why this is shaped the
@@ -453,8 +492,8 @@ in
           bundles = [
             pkgs.dsh.bundles.tui
             pkgs.dsh.bundles.graph-memory
-            pkgs.dsh.bundles.modsearch
-            pkgs.dsh.bundles.context
+            modsearch
+            context
             pkgs.dsh.bundles.billion-context
             dsh-usage
           ];
@@ -464,8 +503,8 @@ in
           bundles = [
             pkgs.dsh.bundles.web-app
             pkgs.dsh.bundles.graph-memory
-            pkgs.dsh.bundles.modsearch
-            pkgs.dsh.bundles.context
+            modsearch
+            context
             pkgs.dsh.bundles.billion-context
           ];
           patch = cordisPatch;
