@@ -13,6 +13,10 @@ let
   # harnesses and is imported here.
   coach = import ./coach { inherit pkgs; };
   pathe = import ./pathe { inherit pkgs; };
+  boxd = import ./boxd {
+    inherit pkgs;
+    inherit (config.apps.boxd) user;
+  };
 
   intervals-icu = pkgs.writeShellApplication {
     name = "intervals-icu";
@@ -80,6 +84,13 @@ in
             # moved here from ./pathe when that directory became the document
             # both harnesses read -- a document has no permissions of its own.
             "Bash(pathe:*)"
+
+            # Same reasoning as pathe above, and the CLI enforces it rather
+            # than promising it: boxd has no authenticated code path at all --
+            # no login, no POST -- so the worst a wrong call can do is read a
+            # public page. See ../boxd/boxd.py's module docstring.
+            "Bash(boxd:*)"
+
             "WebFetch"
           ];
           ask = [ ];
@@ -130,6 +141,7 @@ in
       commands = {
         coach = coach.commandText;
         pathe = pathe.commandText;
+        boxd = boxd.commandText;
       };
 
       plugins.superpowers = pkgs.fetchFromGitHub {

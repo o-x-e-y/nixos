@@ -70,6 +70,11 @@ let
   # imports as ../claude-code's, so both land on one derivation per output.
   coachSkills = (import ./../claude-code/coach { inherit pkgs; }).skills;
   patheSkills = (import ./../claude-code/pathe { inherit pkgs; }).skills;
+  boxdSkills =
+    (import ./../claude-code/boxd {
+      inherit pkgs;
+      inherit (config.apps.boxd) user;
+    }).skills;
 
   # The DeepSeek credit balance in the TUI status line -- `bal:$4.65 (2m)`,
   # and nothing else. Tokens, cache hit rate and context occupancy are already
@@ -189,6 +194,7 @@ let
         customSkillDirs:
           - ${coachSkills}
           - ${patheSkills}
+          - ${boxdSkills}
     - id: tool-skill
       disabled: false
 

@@ -3,6 +3,7 @@
     ./alacritty
     ./bash
     ./bat
+    ./boxd
     ./btop
     ./canvas
     ./claude-code
