@@ -82,11 +82,16 @@ in
 
     cacheDir = lib.mkOption {
       type = lib.types.nullOr lib.types.str;
-      default = null;
-      example = "/home/oxey/.cache/boxd";
+      default = "${config.home.homeDirectory}/.cache/boxd";
+      defaultText = lib.literalExpression ''"\${config.home.homeDirectory}/.cache/boxd"'';
+      example = "/var/tmp/boxd";
       description = ''
-        Where to cache fetched pages. Null uses $XDG_CACHE_HOME/boxd, which is
-        almost always what you want.
+        Where to cache fetched pages. Set to an absolute path by default rather
+        than left null: null means "whatever $BOXD_CACHE says", and a harness
+        that runs boxd as a tool may set that to a relative scratch name, which
+        used to resolve against the working directory and leave the cache in
+        whichever repository the tool was called from. Naming it here makes the
+        location a property of the configuration instead of the caller.
       '';
     };
   };

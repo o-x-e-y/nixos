@@ -46,22 +46,33 @@ BASE = "https://letterboxd.com"
 # with --set-default so a declarative value never blocks a one-off override.
 DEFAULT_USER = os.environ.get("BOXD_USER", "")
 
-CACHE_DIR = Path(os.environ.get("BOXD_CACHE", Path.home() / ".cache" / "boxd"))
+def _cache_dir() -> Path:
+    """Where fetched pages live.
+
+    $BOXD_CACHE wins, then $XDG_CACHE_HOME/boxd, then ~/.cache/boxd. A relative
+    $BOXD_CACHE resolves inside the cache root rather than against the cwd:
+    Path("x") would otherwise put the cache wherever boxd happened to be *run*
+    from, and an agent that sets BOXD_CACHE to a tidy-looking scratch name while
+    standing in a git repository drops tens of megabytes of fetched HTML into
+    it. The value is still honoured -- it just cannot follow the cwd around,
+    and a cache path stays in the cache.
+    """
+    base = Path(os.environ.get("XDG_CACHE_HOME") or (Path.home() / ".cache"))
+    raw = os.environ.get("BOXD_CACHE")
+    if not raw:
+        return base / "boxd"
+    path = Path(raw).expanduser()
+    return path if path.is_absolute() else base / path
+
+
+CACHE_DIR = _cache_dir()
 
 # Lists move (a watchlist changes weekly); film metadata does not. Splitting the
-# TTL is what makes `boxd taste` cheap on the second run: the ~19 genre pages
-# expire in hours, the per-film director lookups behind them last a month.
+# TTL is what makes a second `boxd taste` or `boxd deltas` cheap: the watched
+# list expires in hours, the per-film lookups behind it last a month.
 TTL_LIST = int(os.environ.get("BOXD_TTL", 6 * 60 * 60))
 TTL_FILM = 30 * 24 * 60 * 60
 
-# Letterboxd's own genre vocabulary, as used in /films/genre/<slug>/. Hardcoded
-# because the list is closed and changes about never; a wrong entry costs one
-# 404 and is skipped, not a crash.
-GENRES = [
-    "action", "adventure", "animation", "comedy", "crime", "documentary",
-    "drama", "family", "fantasy", "history", "horror", "music", "mystery",
-    "romance", "science-fiction", "thriller", "tv-movie", "war", "western",
-]
 
 MIN_INTERVAL = 0.3  # seconds between live requests; cache hits are free
 
@@ -310,27 +321,36 @@ def cmd_watchlist(args) -> dict:
 
 
 def _films_path(args) -> str:
-    """Build a watched-films URL, with Letterboxd's own filter segments.
+    """The watched-films URL. Always the unfiltered list.
 
-    The site chains these -- /films/genre/horror/decade/1990s/ is a real page --
-    so the two flags compose rather than competing.
+    Letterboxd's robots.txt disallows /*/genre/* and /*/decade/* for every user
+    agent, so this no longer builds those filter URLs even though the site
+    serves them. --decade is applied client-side instead (see _by_decade): the
+    release year is already in every grid entry, so filtering by it costs no
+    request at all and asks nothing of a disallowed path.
     """
-    path = f"/{args.user}/films/"
-    if getattr(args, "genre", None):
-        path += f"genre/{args.genre}/"
-    if getattr(args, "decade", None):
-        decade = str(args.decade)
-        path += f"decade/{decade if decade.endswith('s') else decade + 's'}/"
-    return path
+    return f"/{args.user}/films/"
+
+
+def _by_decade(films: list[dict], decade: str | None) -> list[dict]:
+    if not decade:
+        return films
+    text = str(decade).rstrip("s")
+    if not text.isdigit():
+        raise BoxdError(f"not a decade: {decade!r} (try 1990s)")
+    start = int(text) // 10 * 10
+    return [f for f in films if f["year"] and start <= f["year"] < start + 10]
 
 
 def cmd_films(args) -> dict:
     """Everything watched. Rated entries carry a rating; the rest are None."""
-    path = _films_path(args)
-    films = collect(path, ttl=TTL_LIST, refresh=args.refresh, limit=args.limit)
+    films = collect(_films_path(args), ttl=TTL_LIST, refresh=args.refresh)
+    films = _by_decade(films, getattr(args, "decade", None))
+    if args.limit is not None:
+        films = films[: args.limit]
     return {
         "user": args.user,
-        "filter": path,
+        "decade": getattr(args, "decade", None),
         "count": len(films),
         "films": films,
     }
@@ -483,6 +503,7 @@ def cmd_deltas(args) -> dict:
     everything = collect(
         _films_path(args), ttl=TTL_LIST, refresh=args.refresh, limit=None
     )
+    everything = _by_decade(everything, getattr(args, "decade", None))
     rated = [f for f in everything if f["rating"] is not None]
     if args.min_ratings < 0:
         raise BoxdError("--min-ratings cannot be negative")
@@ -532,10 +553,18 @@ def cmd_deltas(args) -> dict:
 def cmd_taste(args) -> dict:
     """The raw material for a viewer profile.
 
-    Decades come free -- the year is already in every grid entry -- so the only
-    requests this adds beyond the watched list are one per genre, plus a
-    director lookup for the films rated highly enough to say something. That
-    keeps a full taste pull at roughly 25 requests rather than 379.
+    Decades come free -- the year is already in every grid entry -- so beyond
+    the watched list this only adds a director lookup for the films rated highly
+    enough to say something.
+
+    There is no genre breakdown here, and that is deliberate rather than
+    missing: the only cheap source is /<user>/films/genre/<g>/, which
+    Letterboxd's robots.txt disallows for every user agent. The compliant
+    alternative is the per-film page at ~330 KB each, which for this account
+    would be some 126 MB against the 4 MB those filter pages cost -- roughly
+    thirty times the load on their servers to honour a rule written to stop
+    search engines crawling filter permutations. Neither is worth it for a
+    number, so the question is answered from the ratings themselves instead.
     """
     watched = collect(f"/{args.user}/films/", ttl=TTL_LIST, refresh=args.refresh)
     by_slug = {f["slug"]: f for f in watched}
@@ -557,25 +586,6 @@ def cmd_taste(args) -> dict:
         bucket["watched"] += 1
         if film["rating"] is not None:
             bucket["scores"].append(film["rating"])
-
-    genres: dict[str, dict] = {}
-    for genre in GENRES:
-        try:
-            films = collect(
-                f"/{args.user}/films/genre/{genre}/",
-                ttl=TTL_LIST,
-                refresh=args.refresh,
-            )
-        except BoxdError:
-            continue  # a genre this user has never watched 404s; that is data
-        scores = [f["rating"] for f in films if f["rating"] is not None]
-        if not films:
-            continue
-        genres[genre] = {
-            "watched": len(films),
-            "rated": len(scores),
-            "mean": round(sum(scores) / len(scores), 2) if scores else None,
-        }
 
     # Directors only for the films that carry an opinion worth generalising
     # from. Doing all 379 would be 379 requests to learn mostly nothing.
@@ -618,7 +628,6 @@ def cmd_taste(args) -> dict:
             }
             for decade, info in sorted(decades.items())
         },
-        "genres": dict(sorted(genres.items(), key=lambda kv: -kv[1]["watched"])),
         "directors": dict(sorted(repeat.items(), key=lambda kv: -kv[1]["mean"])),
         "sampled_directors_from_top": len(loved),
     }
@@ -726,11 +735,6 @@ def render(command: str, data: dict) -> str:
             bar = "#" * max(1, round(count / max(data["distribution"].values()) * 32))
             out.append(f"    {float(score):>4}  {count:>4}  {bar}")
         out.append("")
-        out.append("  Genres                 watched  mean")
-        for genre, info in data["genres"].items():
-            mean = f"{info['mean']:.2f}" if info["mean"] is not None else "   -"
-            out.append(f"    {genre:<20} {info['watched']:>7}  {mean}")
-        out.append("")
         out.append("  Decades                watched  mean")
         for decade, info in data["decades"].items():
             mean = f"{info['mean']:.2f}" if info["mean"] is not None else "   -"
@@ -817,12 +821,8 @@ def main(argv: list[str] | None = None) -> int:
         sub = add(name, help_text)
         sub.add_argument("--limit", type=int, default=None)
         sub.add_argument(
-            "--genre",
-            help="restrict to one Letterboxd genre, e.g. fantasy",
-        )
-        sub.add_argument(
             "--decade",
-            help="restrict to one decade, e.g. 1990s",
+            help="restrict to one decade, e.g. 1990s (filtered locally)",
         )
     add("diary", "recent viewings, with dates and reviews").add_argument(
         "--limit", type=int, default=None
@@ -837,13 +837,12 @@ def main(argv: list[str] | None = None) -> int:
         help="ignore films with fewer than this many Letterboxd ratings, whose "
         "average is too thin to disagree with (default: 1000)",
     )
-    deltas.add_argument("--genre")
     deltas.add_argument("--decade")
     deltas.add_argument(
         "--quiet", action="store_true", help="no progress on stderr"
     )
 
-    taste = add("taste", "genre, decade and director breakdown")
+    taste = add("taste", "rating, decade and director breakdown")
     taste.add_argument(
         "--director-limit",
         type=int,
