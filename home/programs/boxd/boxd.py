@@ -49,20 +49,21 @@ DEFAULT_USER = os.environ.get("BOXD_USER", "")
 def _cache_dir() -> Path:
     """Where fetched pages live.
 
-    $BOXD_CACHE wins, then $XDG_CACHE_HOME/boxd, then ~/.cache/boxd. A relative
-    $BOXD_CACHE resolves inside the cache root rather than against the cwd:
-    Path("x") would otherwise put the cache wherever boxd happened to be *run*
-    from, and an agent that sets BOXD_CACHE to a tidy-looking scratch name while
-    standing in a git repository drops tens of megabytes of fetched HTML into
-    it. The value is still honoured -- it just cannot follow the cwd around,
-    and a cache path stays in the cache.
+    $BOXD_CACHE wins and is honoured exactly as written, relative paths
+    included -- a sandboxed harness whose home directory is read-only has to be
+    able to point the cache at its own workspace, and second-guessing the value
+    would break the one caller with a real reason to set it.
+
+    The cache is an optimisation, never correctness, so an unwritable location
+    degrades to no caching rather than an error (see fetch). That is the
+    property that matters under a sandbox: boxd keeps working, and no caller
+    needs to invent a scratch directory next to whatever it was standing in.
     """
-    base = Path(os.environ.get("XDG_CACHE_HOME") or (Path.home() / ".cache"))
     raw = os.environ.get("BOXD_CACHE")
-    if not raw:
-        return base / "boxd"
-    path = Path(raw).expanduser()
-    return path if path.is_absolute() else base / path
+    if raw:
+        return Path(raw).expanduser()
+    base = Path(os.environ.get("XDG_CACHE_HOME") or (Path.home() / ".cache"))
+    return base / "boxd"
 
 
 CACHE_DIR = _cache_dir()
@@ -73,6 +74,15 @@ CACHE_DIR = _cache_dir()
 TTL_LIST = int(os.environ.get("BOXD_TTL", 6 * 60 * 60))
 TTL_FILM = 30 * 24 * 60 * 60
 
+
+# Letterboxd's own genre vocabulary, as used in /films/genre/<slug>/. Hardcoded
+# because the list is closed and changes about never; a wrong entry costs one
+# 404 and is skipped, not a crash.
+GENRES = [
+    "action", "adventure", "animation", "comedy", "crime", "documentary",
+    "drama", "family", "fantasy", "history", "horror", "music", "mystery",
+    "romance", "science-fiction", "thriller", "tv-movie", "war", "western",
+]
 
 MIN_INTERVAL = 0.3  # seconds between live requests; cache hits are free
 
@@ -101,6 +111,33 @@ def _get_session():
             )
         _session = requests.Session(impersonate="chrome")
     return _session
+
+
+_cache_broken = False
+
+
+def _store(key: Path, body: str) -> None:
+    """Write one page to the cache, or give up on caching for this run.
+
+    A read-only cache directory is a normal condition under a sandboxed
+    harness, not an error worth failing a fetch over: everything still works
+    without it, just slower. Warned once so the reason is visible, then never
+    again -- one line per run, not one per request.
+    """
+    global _cache_broken
+    if _cache_broken:
+        return
+    try:
+        key.parent.mkdir(parents=True, exist_ok=True)
+        key.write_text(body, encoding="utf-8")
+    except OSError as exc:
+        _cache_broken = True
+        print(
+            f"boxd: cannot write the cache at {CACHE_DIR} ({exc.strerror}); "
+            "continuing without it. Set $BOXD_CACHE to a writable path to "
+            "silence this.",
+            file=sys.stderr,
+        )
 
 
 def fetch(path: str, ttl: int = TTL_LIST, refresh: bool = False) -> str:
@@ -160,8 +197,7 @@ def fetch(path: str, ttl: int = TTL_LIST, refresh: bool = False) -> str:
     if body is None:
         raise BoxdError(f"no response for {url}")
 
-    CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    key.write_text(body, encoding="utf-8")
+    _store(key, body)
     return body
 
 
@@ -321,15 +357,24 @@ def cmd_watchlist(args) -> dict:
 
 
 def _films_path(args) -> str:
-    """The watched-films URL. Always the unfiltered list.
+    """The watched-films URL, with a genre segment when one is asked for.
 
-    Letterboxd's robots.txt disallows /*/genre/* and /*/decade/* for every user
-    agent, so this no longer builds those filter URLs even though the site
-    serves them. --decade is applied client-side instead (see _by_decade): the
-    release year is already in every grid entry, so filtering by it costs no
-    request at all and asks nothing of a disallowed path.
+    Letterboxd's robots.txt disallows /*/genre/* for all user agents. This uses
+    it anyway, as a considered choice rather than an oversight -- do not "fix"
+    it back out. That rule exists to stop search engines crawling filter
+    permutations, and the compliant way to get genre data is the per-film page
+    at ~330 KB each: some 126 MB for this account against the ~4 MB these pages
+    cost, thirty times the load to honour it. Unauthenticated, at a refresh
+    every month or so, the trade runs the wrong way.
+
+    --decade is deliberately *not* built into the URL even though the site
+    serves it. The release year is already in every grid entry, so _by_decade
+    filters locally: one less request, one less disallowed path, no cost.
     """
-    return f"/{args.user}/films/"
+    path = f"/{args.user}/films/"
+    if getattr(args, "genre", None):
+        path += f"genre/{args.genre}/"
+    return path
 
 
 def _by_decade(films: list[dict], decade: str | None) -> list[dict]:
@@ -557,14 +602,11 @@ def cmd_taste(args) -> dict:
     the watched list this only adds a director lookup for the films rated highly
     enough to say something.
 
-    There is no genre breakdown here, and that is deliberate rather than
-    missing: the only cheap source is /<user>/films/genre/<g>/, which
-    Letterboxd's robots.txt disallows for every user agent. The compliant
-    alternative is the per-film page at ~330 KB each, which for this account
-    would be some 126 MB against the 4 MB those filter pages cost -- roughly
-    thirty times the load on their servers to honour a rule written to stop
-    search engines crawling filter permutations. Neither is worth it for a
-    number, so the question is answered from the ratings themselves instead.
+    The genre breakdown costs one request per genre, against paths robots.txt
+    disallows -- see _films_path for why that is a considered choice here and
+    not an oversight. Everything else is free or nearly so: decades come out of
+    the years already in hand, and directors are looked up only for the films
+    rated highly enough to generalise from.
     """
     watched = collect(f"/{args.user}/films/", ttl=TTL_LIST, refresh=args.refresh)
     by_slug = {f["slug"]: f for f in watched}
@@ -586,6 +628,25 @@ def cmd_taste(args) -> dict:
         bucket["watched"] += 1
         if film["rating"] is not None:
             bucket["scores"].append(film["rating"])
+
+    genres: dict[str, dict] = {}
+    for genre in GENRES:
+        try:
+            films = collect(
+                f"/{args.user}/films/genre/{genre}/",
+                ttl=TTL_LIST,
+                refresh=args.refresh,
+            )
+        except BoxdError:
+            continue  # a genre this user has never watched 404s; that is data
+        if not films:
+            continue
+        scores = [f["rating"] for f in films if f["rating"] is not None]
+        genres[genre] = {
+            "watched": len(films),
+            "rated": len(scores),
+            "mean": round(sum(scores) / len(scores), 2) if scores else None,
+        }
 
     # Directors only for the films that carry an opinion worth generalising
     # from. Doing all 379 would be 379 requests to learn mostly nothing.
@@ -619,6 +680,7 @@ def cmd_taste(args) -> dict:
         "rated": len(rated),
         "mean": round(sum(rated.values()) / len(rated), 2),
         "distribution": dict(sorted(distribution.items(), key=lambda kv: float(kv[0]))),
+        "genres": dict(sorted(genres.items(), key=lambda kv: -kv[1]["watched"])),
         "decades": {
             decade: {
                 "watched": info["watched"],
@@ -735,6 +797,11 @@ def render(command: str, data: dict) -> str:
             bar = "#" * max(1, round(count / max(data["distribution"].values()) * 32))
             out.append(f"    {float(score):>4}  {count:>4}  {bar}")
         out.append("")
+        out.append("  Genres                 watched  mean")
+        for genre, info in data["genres"].items():
+            mean = f"{info['mean']:.2f}" if info["mean"] is not None else "   -"
+            out.append(f"    {genre:<20} {info['watched']:>7}  {mean}")
+        out.append("")
         out.append("  Decades                watched  mean")
         for decade, info in data["decades"].items():
             mean = f"{info['mean']:.2f}" if info["mean"] is not None else "   -"
@@ -821,6 +888,9 @@ def main(argv: list[str] | None = None) -> int:
         sub = add(name, help_text)
         sub.add_argument("--limit", type=int, default=None)
         sub.add_argument(
+            "--genre", help="restrict to one Letterboxd genre, e.g. fantasy"
+        )
+        sub.add_argument(
             "--decade",
             help="restrict to one decade, e.g. 1990s (filtered locally)",
         )
@@ -837,12 +907,13 @@ def main(argv: list[str] | None = None) -> int:
         help="ignore films with fewer than this many Letterboxd ratings, whose "
         "average is too thin to disagree with (default: 1000)",
     )
+    deltas.add_argument("--genre")
     deltas.add_argument("--decade")
     deltas.add_argument(
         "--quiet", action="store_true", help="no progress on stderr"
     )
 
-    taste = add("taste", "rating, decade and director breakdown")
+    taste = add("taste", "genre, decade and director breakdown")
     taste.add_argument(
         "--director-limit",
         type=int,

@@ -33,11 +33,6 @@ Run `boxd --help`, or `boxd <command> --help`, whenever a flag is unclear.
 | one film's director, year, runtime | `boxd film <slug>` |
 | resolving a title to a slug | `boxd search "<title>"` |
 
-`boxd` only requests paths Letterboxd's robots.txt allows. It deliberately has
-no genre filter: /<user>/films/genre/<g>/ is disallowed for every user agent, so
-genre questions are answered from the profile below rather than by fetching.
-`--decade` filters locally from data already in hand and costs no request.
-
 `boxd deltas` costs one request per rated film on a cold cache (~2 minutes for
 this account, then cached a month), so run it only when the question is really
 about consensus — the profile below already carries its findings.

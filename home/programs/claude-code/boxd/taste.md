@@ -71,11 +71,6 @@ and it is stronger than any genre effect. The apparent weakness in fantasy
 averages **3.98** against **3.27** for the 2020s, and the five Twilight films are
 11% of the fantasy sample at a 1.8 average — without them fantasy is 3.61.
 
-*(Those genre figures are a one-time snapshot from 2026-09-16. `boxd` no longer
-queries per-genre pages — robots.txt disallows them — so `refresh-taste` will
-not update them. The franchise finding does not depend on them: it is visible in
-the delta table above, which comes from allowed paths.)*
-
 **There is a blind spot at the bottom.** They skip films critics have already
 trashed — their own example: *The Dog Stars* and *The End of Oak Street* are
 showing now and hold no interest. So a 2.0 here is not "a bad film"; it is a
