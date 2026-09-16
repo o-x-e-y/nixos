@@ -383,11 +383,16 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # Nothing declared here at the moment. graph-memory, which replaced noema as
-    # the memory layer, configures through its Cordis schema (the `graph-memory`
-    # row in its bundle patch) rather than the settings service, so it needs no
-    # namespace here and no one-time setup in the web UI. The option stays
-    # because the next plugin may well go the other way.
+    # graph-memory, which replaced noema as the memory layer, is NOT here:
+    # it configures through its Cordis schema (the `graph-memory` row in its
+    # bundle patch) rather than the settings service, so it needs no namespace
+    # here and no one-time setup in the web UI.
+    apps.dsh.settings = {
+      agent-default-model = {
+        provider = "deepseek-official";
+        model = "deepseek-flash";
+      };
+    };
 
     programs.dsh = {
       enable = true;
