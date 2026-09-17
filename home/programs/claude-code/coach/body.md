@@ -325,6 +325,19 @@ descriptions say what each call does; they do not say the @CRON_COUNT@ things th
 - **`fuel.json` is the target, Cronometer is the outcome.** The comparison worth making
   is `get_daily_nutrition(date)` against `nutrition/fuel.json`'s `total_kcal` and
   `carb_g` for the same day. Nothing else closes that loop.
+- **Carbohydrate is compared on `net_carbs`, never on `carbs`.** The MCP's `carbs` is
+  Cronometer's **Total Carbs**, which includes fibre; `net_carbs` is total minus fibre and
+  sugar alcohols, and **that is the number the app shows the rider**. `fuel.py` prices
+  carbohydrate at 4 kcal/g inside an energy budget against protein at 4 and fat at 9
+  (`CARB_KCAL_PER_G`, `allocate()`), so its `carb_g` is a *digestible*-carbohydrate target
+  and `net_carbs` is what answers it. Reading `carbs` instead invents an overshoot the
+  size of the day's fibre, which on this rider runs **23–68 g/day** — enough to flip a
+  verdict. Established 16 Sep 2026, when 2026-09-16 was first scored at 743 g against a
+  670 g target (+11%) and is actually **674 g net (+0.6%)**, and the `2026-09-15` row's
+  seven-day audit was restated from *+328 g / +10%* to **+74 g / +2.2%**. This is a fifth
+  Cronometer caveat alongside partial days, the app's own target, the carry-forward
+  biometrics and the custom-recipe entry scaling. **Every carbohydrate comparison written
+  before that date used `carbs` and reads high**, the summer's 28-day audit included.
 - **Ignore Cronometer's own target.** The rider eats to `fuel.py`'s numbers and does not
   look at Cronometer's — `total_target_kcal` is an artifact of Cronometer's model, not a
   target anyone follows. It cannot be made to agree, either: the MCP has no target-setting
