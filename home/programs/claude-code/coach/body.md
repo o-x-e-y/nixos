@@ -114,14 +114,47 @@ first race. About 45 to 60 minutes each.
 
 ### The trainer
 
+**It is not in a heated room, and that changes what its numbers mean.** As of 18 Sep
+2026 it sits outdoors on the patio under a lean-to (*afdak*) and is packed up after
+every session; the plan is to move it into the garage once room is cleared — unheated,
+no car in it, with a car-sized closable door that makes airflow a dial rather than a
+fixture. So the trainer has weather, and both directions of it are live:
+
+- **Warm and still is the autumn failure mode.** The block's first trainer ride,
+  `2026-09-17`, ran with no fan, no wind and a roof overhead at 13 °C, and
+  matched-power HR came back **+10 bpm** above the `2026-09-03` reference on only
+  −4.0% decoupling. That is the no-airflow signature — not fitness, not fatigue.
+  **A fan is not optional.** The second point, same setup with the fan running, is
+  the test that closes it.
+- **Cold is the December failure mode, and it reverses.** An unheated garage at 2 °C
+  is a *cold* ride: *Cold replaces heat* applies in full, HR runs low rather than
+  high, and the fan becomes something to switch off. What the garage buys in December
+  is escape from ice and wind chill, **not** escape from the cold.
+- **Ventilate the long ones.** Hours of sweating into a closed garage saturates the
+  air, and once it is saturated sweat cannot evaporate and cooling stops outright. A
+  fan does not fix that — it moves saturated air over a rider who can no longer shed
+  heat. Cracking the door does, and winter air is bone dry, so it costs nothing. CO₂
+  is the slower, second reason to do the same thing.
+- **Neither heart-rate instrument transfers.** The `2026-09-03` Z2 curve and the
+  sub-5% decoupling guardrail were both built outdoors. Read against a trainer ride
+  they can show a rider who has lost fitness and is falling apart at hour two.
+  **Compare trainer against trainer, and say which environment a number came from.**
+- **Zwift records no temperature stream,** so ambient comes from the rider's own note
+  or a head unit recording alongside. Without it the variable this section turns on is
+  simply unmeasured.
+
 Ramped like everything else: start with the 60–90 minute fillers on Fontys evenings,
 and let the indoor long ride grow from 90 minutes toward 2.5 h over Base 2. The long
 ride stays outdoors above about 3 °C and dry, which is most of October and November
-here, so even the 16-hour December week has perhaps 8 indoor hours in it. Fan
-mandatory. ERG mode for the sweet-spot and low-cadence blocks, free ride for Z2 so you
-can move around on the bike. Indoor Z2 has no coasting — an hour on the trainer is
-roughly 75 minutes on the road, which is why the weekly ramp is judged on projected
-load rather than the hours column.
+here, so even the 16-hour December week has perhaps 8 indoor hours in it. ERG mode for
+the sweet-spot and low-cadence blocks, free ride for Z2 so you can move around on the
+bike. Indoor Z2 has no coasting — an hour on the trainer is roughly 75 minutes on the
+road, which is why the weekly ramp is judged on projected load rather than the hours
+column.
+
+**The plan's own trainer section still assumes a heated room** — *Fan mandatory*, and
+the long ride *moves indoors* below ~3 °C. The rider has asked for it to be rewritten
+**later**, once the garage is settled. Do not edit it until he says so.
 
 ### The HRV test — the one open experiment
 
@@ -222,6 +255,16 @@ straight from the API). One consequence to carry, and one that used to be there:
 Their record is otherwise the rider's note and a `log.json` row, and soreness is the only
 readout, so the useful question is what the *next ride* felt like, not the lift.
 
+**Zwift connects to intervals.icu directly** *(established 18 Sep 2026)*. Trainer rides
+arrive on their own once that connection is on, typed `VirtualRide` with `device_name`
+ZWIFT and the `trainer` flag set. They do **not** arrive via Garmin: that link forwards
+only activities recorded on a Garmin device and drops third-party uploads that merely
+land in Garmin Connect, which is why `2026-09-17` sat at `ctlLoad 0.0` until it was
+uploaded by hand. **Never say automatic upload to intervals.icu does not work, and never
+propose Garmin-side glue to fix it** — that claim was asserted without checking on 18
+Sep 2026 and sent a whole tooling proposal down a blind alley before the rider corrected
+it.
+
 ## Structured sessions: read the intent first
 
 Sessions pushed from this repo are named `STP <date> · <name>`. Match on that
@@ -276,7 +319,9 @@ and none of them bite below 20 °C. Cold does the opposite and needs its own rea
 - **Heart rate runs lower at the same watts in the cold**, so a low HR on a cold long
   ride is *not* evidence of freshness. Power stays the guardrail. Never compare a
   December HR curve against an August one without saying so.
-- **Below about 3 °C or on ice, the long ride moves indoors** at 2–2.5 h.
+- **Below about 3 °C or on ice, the long ride moves indoors** at 2–2.5 h — though
+  *indoors* is an unheated space that tracks the outside temperature, so the ride is
+  still a cold ride. See **The trainer**.
 - Long cold rides need **fuel and layers planned the evening before**, the way the
   heat rule used to ask for the forecast. Cold suppresses thirst and appetite; the
   fuelling failure mode in winter is under-eating on a four-hour ride, not a stitch.
