@@ -29,6 +29,7 @@ in
         "zed" = "${pkgs.zed-editor}/bin/zeditor";
         "code" = "${pkgs.vscodium}/bin/codium";
         "rebuild" = "sudo nixos-rebuild switch --flake ~/nixos#nixos";
+        "update" = "nix flake update --flake ~/nixos --commit-lock-file && rebuild";
         "garbage-collect" =
           "sudo nix-collect-garbage --delete-older-than 14d &&
           sudo nix-env --delete-generations --profile /nix/var/nix/profiles/system 14d &&
