@@ -27,10 +27,15 @@
       AC = {
         displayBrightness = 80;
         keyboardBrightness = 50;
+        whenLaptopLidClosed = "lockScreen";
       };
       battery = {
         displayBrightness = 80;
         keyboardBrightness = 0;
+        whenLaptopLidClosed = "sleep";
+      };
+      lowBattery = {
+        whenLaptopLidClosed = "sleep";
       };
     };
 

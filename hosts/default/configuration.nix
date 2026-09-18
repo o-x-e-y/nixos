@@ -52,6 +52,17 @@
     nix-index
   ];
 
+  # Backstop for lid handling. PowerDevil normally owns the lid switch -- it holds
+  # a logind "handle-lid-switch" inhibitor -- and applies the per-profile
+  # programs.plasma.powerdevil.*.whenLaptopLidClosed settings. If PowerDevil is
+  # ever not running, these logind settings apply instead, so keep both policies
+  # identical: suspend on battery, never suspend on mains power.
+  services.logind.settings.Login = {
+    HandleLidSwitch = "suspend";
+    HandleLidSwitchExternalPower = "ignore";
+    HandleLidSwitchDocked = "ignore";
+  };
+
   # systemd already caps the journal at 4G by default; this bounds it by age too.
   services.journald.extraConfig = "MaxRetentionSec=6month";
 
