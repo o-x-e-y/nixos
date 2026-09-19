@@ -29,7 +29,7 @@
 
   # `update.onActivation` is disabled because it crashes whenever the rebuild-switch restarts the
   # network, which disables it for updates. Right now it updates + installs new packages, but it
-  # won't reinstall packages that are for some reason manually deleted. 
+  # won't reinstall packages that are for some reason manually deleted.
   systemd.services.flatpak-managed-install.serviceConfig.ExecStartPre =
     "-${pkgs.flatpak}/bin/flatpak --system update --noninteractive";
 }

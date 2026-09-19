@@ -111,17 +111,15 @@ in
   # A directory, as dsh's tool-skill scanner expects: one SKILL.md per subdirectory.
   skills = pkgs.runCommand "dsh-skills" { } ''
     mkdir -p "$out/coach"
-    cp ${
-      pkgs.writeText "SKILL.md" ''
-        ---
-        name: coach
-        description: ${description} Use when asked about training, a ride just done, FTP, fuelling, the session log, or whether a quality session should go ahead.
-        ---
+    cp ${pkgs.writeText "SKILL.md" ''
+      ---
+      name: coach
+      description: ${description} Use when asked about training, a ride just done, FTP, fuelling, the session log, or whether a quality session should go ahead.
+      ---
 
-        # Coaching the winter training block
+      # Coaching the winter training block
 
-        ${dshBody}
-      ''
-    } "$out/coach/SKILL.md"
+      ${dshBody}
+    ''} "$out/coach/SKILL.md"
   '';
 }

@@ -89,17 +89,15 @@ in
   # harness has to the slash command above.
   skills = pkgs.runCommand "dsh-skills-boxd" { } ''
     mkdir -p "$out/boxd"
-    cp ${
-      pkgs.writeText "SKILL.md" ''
-        ---
-        name: boxd
-        description: ${description} Use when asked what to watch, what is on the watchlist, what they thought of a film, or for a film recommendation.
-        ---
+    cp ${pkgs.writeText "SKILL.md" ''
+      ---
+      name: boxd
+      description: ${description} Use when asked what to watch, what is on the watchlist, what they thought of a film, or for a film recommendation.
+      ---
 
-        # The user's Letterboxd
+      # The user's Letterboxd
 
-        ${dshBody}
-      ''
-    } "$out/boxd/SKILL.md"
+      ${dshBody}
+    ''} "$out/boxd/SKILL.md"
   '';
 }

@@ -14,37 +14,39 @@ let
   # dependency to fall back to -- see the module docstring in ./boxd.py.
   python = pkgs.python313.withPackages (ps: [ ps.curl-cffi ]);
 
-  boxd = pkgs.runCommand "boxd"
-    {
-      nativeBuildInputs = [ pkgs.makeWrapper ];
-      meta = {
-        description = "Read-only Letterboxd for a public profile";
-        mainProgram = "boxd";
-      };
-    }
-    ''
-      mkdir -p "$out/bin"
-      install -Dm755 ${./boxd.py} "$out/bin/boxd"
+  boxd =
+    pkgs.runCommand "boxd"
+      {
+        nativeBuildInputs = [ pkgs.makeWrapper ];
+        meta = {
+          description = "Read-only Letterboxd for a public profile";
+          mainProgram = "boxd";
+        };
+      }
+      ''
+        mkdir -p "$out/bin"
+        install -Dm755 ${./boxd.py} "$out/bin/boxd"
 
-      # The interpreter is named outright rather than left to patchShebangs:
-      # that hook only rewrites a shebang it can resolve on the build PATH, and
-      # nothing here puts a python there, so `#!/usr/bin/env python3` would
-      # survive into $out and fail at run time on a machine without one. This
-      # also guarantees the interpreter is the curl_cffi-carrying python above
-      # rather than whichever python happens to be first on PATH.
-      substituteInPlace "$out/bin/boxd" \
-        --replace-fail '#!/usr/bin/env python3' '#!${python}/bin/python3'
+        # The interpreter is named outright rather than left to patchShebangs:
+        # that hook only rewrites a shebang it can resolve on the build PATH, and
+        # nothing here puts a python there, so `#!/usr/bin/env python3` would
+        # survive into $out and fail at run time on a machine without one. This
+        # also guarantees the interpreter is the curl_cffi-carrying python above
+        # rather than whichever python happens to be first on PATH.
+        substituteInPlace "$out/bin/boxd" \
+          --replace-fail '#!/usr/bin/env python3' '#!${python}/bin/python3'
 
-      # --set-default, not --set: the declarative username is a default, not a
-      # cage. `BOXD_USER=someone boxd profile` still works, and so does --user,
-      # which is what makes looking at a friend's profile a one-off rather than
-      # a rebuild.
-      wrapProgram "$out/bin/boxd" \
-        --set-default BOXD_USER ${lib.escapeShellArg cfg.user} \
-        --set-default BOXD_TTL ${toString cfg.cacheTtl} \
-        ${lib.optionalString (cfg.cacheDir != null)
-          "--set-default BOXD_CACHE ${lib.escapeShellArg cfg.cacheDir}"}
-    '';
+        # --set-default, not --set: the declarative username is a default, not a
+        # cage. `BOXD_USER=someone boxd profile` still works, and so does --user,
+        # which is what makes looking at a friend's profile a one-off rather than
+        # a rebuild.
+        wrapProgram "$out/bin/boxd" \
+          --set-default BOXD_USER ${lib.escapeShellArg cfg.user} \
+          --set-default BOXD_TTL ${toString cfg.cacheTtl} \
+          ${lib.optionalString (
+            cfg.cacheDir != null
+          ) "--set-default BOXD_CACHE ${lib.escapeShellArg cfg.cacheDir}"}
+      '';
 in
 {
   # Shaped like ../pathe: the package lives here rather than under

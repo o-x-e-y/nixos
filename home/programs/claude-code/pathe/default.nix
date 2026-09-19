@@ -73,17 +73,15 @@ in
   # closest this harness has to the slash command above.
   skills = pkgs.runCommand "dsh-skills-pathe" { } ''
     mkdir -p "$out/pathe"
-    cp ${
-      pkgs.writeText "SKILL.md" ''
-        ---
-        name: pathe
-        description: ${description} Use when asked what is playing at Pathé, when a film plays, or about a strand like arthouse or Pride Night.
-        ---
+    cp ${pkgs.writeText "SKILL.md" ''
+      ---
+      name: pathe
+      description: ${description} Use when asked what is playing at Pathé, when a film plays, or about a strand like arthouse or Pride Night.
+      ---
 
-        # What is playing at Pathé
+      # What is playing at Pathé
 
-        ${dshBody}
-      ''
-    } "$out/pathe/SKILL.md"
+      ${dshBody}
+    ''} "$out/pathe/SKILL.md"
   '';
 }
