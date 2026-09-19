@@ -74,7 +74,7 @@
             };
 
             claudeCodeOverride = {
-              enable = true;
+              enable = false;
               version = "2.1.258";
               hash = "sha256-cE8TNKxl0+ieHGwddmMpOteGphZq/bcbUHUzffYw+XY=";
             };
