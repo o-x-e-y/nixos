@@ -72,5 +72,20 @@ and flat at 20:15. If asked "is it in IMAX", read the rows, not the header.
 **If a title isn't found**, run `pathe search` to resolve it before reporting
 that it isn't playing; the catalogue title often differs from the spoken one.
 
+**How far ahead times exist.** Pathé publishes one playing week at a time,
+Thursday through Wednesday, and puts it online on the Monday afternoon or
+evening before it starts. So regular screenings are only ever visible up to
+Wednesday of next week — beyond that the schedule genuinely does not exist yet.
+Strand programming is the exception and sits in the catalogue much further out:
+sneak preview, mystery classic, In the Picture, Film+, opera and ballet.
+
+This is the usual reason a long `--days` window comes back thin, and it changes
+what an empty result means. A film with no times past next Wednesday is not a
+film that isn't playing — it is a week that hasn't been published. Say that,
+and say when the next batch lands (the coming Monday), rather than reporting it
+as absent. It matters most for a title that is about to be released: before its
+release week goes online, a `where` over all 31 cinemas can legitimately show
+nothing but voorpremières.
+
 **Never invent a screening.** If the output has no times, say there are none in
 that window rather than reasoning about what is likely showing.
