@@ -64,7 +64,9 @@
   };
 
   # systemd already caps the journal at 4G by default; this bounds it by age too.
-  services.journald.extraConfig = "MaxRetentionSec=6month";
+  services.journald.settings.Journal = {
+    MaxRetentionSec = "6month";
+  };
 
   # Leave at the release version of the first install; read the docs before changing.
   system.stateVersion = "24.11";
