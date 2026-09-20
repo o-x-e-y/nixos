@@ -275,6 +275,26 @@ in
                 fi
               }
 
+              # local-build.sh links the game with the nixpkgs clang of the
+              # day, which bakes that day's glibc store path in as the ELF
+              # interpreter and leaves the binary with no RPATH. Nothing else
+              # resolves its libraries: a nixpkgs ld.so searches only its own
+              # lib directory and the ld.so.cache sitting at its own store
+              # path, and buildFHSEnv shims the sandbox's generated cache into
+              # whichever glibc *it* was built from. Those are the same file
+              # only until nixpkgs moves glibc -- after that an already
+              # compiled game dies on "libz.so.1: cannot open shared object
+              # file", and once the old glibc is garbage collected it cannot
+              # even exec. /lib64 inside the sandbox always resolves to the
+              # current FHS glibc, so an interpreter pointed there survives
+              # both, and the game never has to be recompiled for either.
+              fix_interpreter() {
+                local binary=$1 interp=/lib64/ld-linux-x86-64.so.2
+                if [ "$(${prev.patchelf}/bin/patchelf --print-interpreter "$binary")" != "$interp" ]; then
+                  ${prev.patchelf}/bin/patchelf --set-interpreter "$interp" "$binary"
+                fi
+              }
+
               command=''${1:-}
               shift || true
 
@@ -307,6 +327,7 @@ in
                     echo "  wiicompiled-setup install --game /path/to/RMCP01.wbfs" >&2
                     exit 1
                   fi
+                  fix_interpreter "$binary"
                   exec "$binary" "$@"
                   ;;
                 *)
