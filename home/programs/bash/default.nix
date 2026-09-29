@@ -32,7 +32,7 @@ in
         "update" = "nix flake update --flake ~/nixos --commit-lock-file && rebuild";
         "garbage-collect" =
           "sudo nix-collect-garbage --delete-older-than 14d &&
-          sudo nix-env --delete-generations --profile /nix/var/nix/profiles/system 14d &&
+          sudo nix-env --delete-generations --profile /nix/var/nix/profiles/system +5 &&
           sudo nixos-rebuild boot --flake ~/nixos#nixos";
         "edit-sops" = "EDITOR=\"codium --wait\" sops ~/nixos/secrets/secrets.yaml";
       };
