@@ -35,6 +35,7 @@ in
   # harnesses, and the settings that used to come with them live here.
   imports = [
     ./cronometer
+    ./github
     ./intervals-icu
     ./weather
   ];
@@ -56,14 +57,21 @@ in
         statusLine = status-line;
 
         model = "opus";
+
         effortLevel = "xhigh";
+        modelSettings = {
+          "claude-opus-5".effortLevel = "xhigh";
+          "claude-opus-5-5".effortLevel = "xhigh";
+        };
+
         tui = "fullscreen";
+
+        autoMode = import ./auto-mode.nix;
 
         permissions = {
           allow = [
             "Bash(git diff:*)"
             "Bash(ls:*)"
-            "Bash(bun run:*)"
             "Bash(* --version)"
             "Bash(* --help:*)"
             "Bash(grep:*)"
