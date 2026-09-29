@@ -337,32 +337,6 @@
   body
 }
 
-#let image_right(
-  path: str,
-  caption: none,
-  reference: none,
-  doc,
-) = {
-  let label = if reference != none {
-    label(reference)
-  } else {
-    none
-  }
-
-  let f = [#figure(
-      image(
-        path,
-      ),
-      caption: caption,
-    ) #label]
-
-  grid(
-    columns: (1fr, 1fr),
-    gutter: 2em,
-    doc, f,
-  )
-}
-
 #let image_cols(
   img: image,
   caption: none,
