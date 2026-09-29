@@ -14,6 +14,7 @@
     ./ghostty
     ./git
     ./konsole
+    ./ledger
     ./libreoffice
     ./mimeapps
     ./minecraft
