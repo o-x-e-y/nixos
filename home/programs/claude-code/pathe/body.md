@@ -89,3 +89,6 @@ nothing but voorpremières.
 
 **Never invent a screening.** If the output has no times, say there are none in
 that window rather than reasoning about what is likely showing.
+
+**Calendar entries.** When a screening goes into the calendar, colour the event
+Banana. Google Calendar takes the number, not the name: `colorId: "5"`.
