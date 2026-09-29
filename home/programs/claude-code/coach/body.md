@@ -10,12 +10,19 @@ crits in the first week of April 2027* — Wieler Federatie Amateursport Nederla
 whose 2026 season ran 8 Apr to 5 Aug, nearest NWB opener Someren-Heide 12 Apr. What
 that asks for by April: a bigger aerobic base than the summer had, **FTP 293 held or
 better**, legs that repeat surges, and a sprint. **The base comes first, because it
-is the one thing that cannot be built in February.**
+is the one thing that cannot be built in February.** The one race on record shows the
+rest: at the Ospel crit on 22 Jul the season-best 1-, 3- and 5-minute powers (461 /
+374 / 339 W) all began at minute 3, and the drop came after. The summer trained almost
+nothing like it.
 
 It starts from the summer block's close on Tue 1 Sep 2026 — **309.0 W for 20 min →
-FTP 293**, up from 275 in ten weeks, 4.15 → 4.39 W/kg at 66.7 kg. The curve moved as
-a block from 3 min upward and was flat from 5 to 15 min, which is a threshold shift
-rather than a good day. That summer block is **closed and archived** in
+FTP 293**, up from 275 in ten weeks, 4.12 → 4.39 W/kg at 66.7 kg. It is a threshold
+shift rather than a good day because it is test against test on the same protocol,
+**not** because of the curve's shape *(corrected 23 Sep 2026; this read the curve
+"moving as a block from 3 min, flat from 5 to 15" as the evidence)*. Those windows sit
+inside two paced 20-minute efforts, where flat from 5 to 15 min is what pacing
+produces, and the season's 3- and 5-minute bests came from the Ospel crit and never
+moved. That summer block is **closed and archived** in
 `~/Documents/summer-training`; its plan, session log and frozen FTP 275 live there,
 and **nothing in this block rescales it.** Read it for the rows the carried rules
 stand on, never to plan from.
@@ -31,7 +38,13 @@ twenty hours a week available, but the summer's loading weeks ran 8.6–13.6 h a
 400–650 TSS and the roster carries more shifts this winter. Twenty is a ceiling for
 the odd free week, not a target. About an hour a week inside a block, one or two
 between blocks, one 16 h peak in December, 12–15 otherwise. **The ramp is tracked in
-load, not hours** — an hour on the trainer is denser than an hour on the road.
+load, not hours** — load is what the body pays in, and it prices an indoor hour and a
+road hour at the same watts the same. Two cautions on comparing weeks *(23 Sep 2026)*:
+that **400–650 TSS was priced at FTP 260 and 275; at today's 293 it is 362–573**, and
+Base 1 week 1 (14–20 Sep) already ran **603**, above every summer week like for like,
+and the rider called it brutal.
+And **commutes add about 4 h and ~100 TSS a week in every phase** — know whether a
+number includes them before comparing it with another.
 
 **The holidays are the recovery weeks.** Cinema shifts are dense in the school
 holidays, so block boundaries follow the regio-zuid calendar: herfst **17–25 Oct**,
@@ -52,11 +65,21 @@ shifts across both), mei 24 Apr – 2 May. See *Down weeks follow the roster*.
 | *Build* (sketch) | 15 Feb – 4 Apr | 7 | 12–15 | Crit-specific intensity. Not planned. |
 | *Season* | from 5 Apr | | 10–13 | WVAN Wednesday is the hard day. |
 
-**CTL ramp:** 68 on 2 Sep · ~60 on 14 Sep (the deload costs about eight points and
-buys the gym introduction) · ~72 on 17 Oct, back to where the summer ended · ~85 on
-18 Dec. The projection is coarse; the intervals.icu calendar prices every pushed day
-and projects it forward, and that is the number to steer by once a fortnight is on
-the calendar.
+**CTL ramp:** 68 on 2 Sep · ~60 on 14 Sep · ~72 on 17 Oct · ~85 on 18 Dec, as
+intervals.icu prints it. **Those numbers straddle two FTP scales** *(corrected 23 Sep
+2026; this called 72 "back to where the summer ended" and the deload "about eight
+points")*. intervals.icu prices each ride against the FTP set that day — 260 to 8 Jul,
+275 to 1 Sep, 293 since — so summer CTL reads high against winter CTL. On one scale at
+293 the summer peaked at **62.5** (26 Aug; icu shows 72.7) and ended at 59.3; the
+deload cost ~6 and 14 Sep started from 53.0. An icu 72 on 17 Oct still carries ~3
+points of summer inflation, so it is ~69 on one scale: **~10% above anything carried so
+far, and 85 on 18 Dec ~35% above — new ground, not a return**, climbed at ~3.4 a week
+from 53 rather than the ~2.5 that 60 → 72 suggests. That may be exactly the intent (the
+goal is a bigger base than the summer had), but it was never decided as such; **whether
+72 and 85 stand is open**, and it is the rider's call. The projection is coarse; the
+intervals.icu calendar prices every pushed day at 293 and projects it forward, and that
+is the number to steer by once a fortnight is on the calendar. Never set it against a
+summer CTL without rescaling — `review/audit-2026-09-23/verify/v6_ctl_exact.py`.
 
 ### Zones at FTP 293
 
@@ -70,9 +93,12 @@ Z3 209–250 · Z4 250–292 · Z5 292–333 · Z6 333–415 · Z7 >415 W.
 
 **One test all winter — Tue 16 Feb 2027**, after carnaval, on the summer's protocol:
 one 20-minute step, an openable band taken from the evidence (Sep 1's second quarter
-says **303–307 W**), a lift at minute 12. Until then intervals.icu's eFTP drifts
-upward as sweet-spot volume accumulates. Watch it; it moves nothing. See *Hold the
-FTP*.
+says **303–307 W**), a lift at minute 12. Until then intervals.icu's eFTP **decays**
+*(corrected 23 Sep 2026; this said it drifts upward as sweet-spot volume
+accumulates)*: it jumps only on a maximal effort — 277 on Aug 24, 294 on Sep 1 — and
+otherwise slides, 275.0 → 272.8 through ten summer threshold sessions and 294 → 289
+since Sep 1. Expect it to keep sliding until February; that is the model ageing out
+its best efforts, not detraining. Watch it; it moves nothing. See *Hold the FTP*.
 
 ### The week — slots, not days
 
@@ -122,10 +148,13 @@ fixture. So the trainer has weather, and both directions of it are live:
 
 - **Warm and still is the autumn failure mode.** The block's first trainer ride,
   `2026-09-17`, ran with no fan, no wind and a roof overhead at 13 °C, and
-  matched-power HR came back **+10 bpm** above the `2026-09-03` reference on only
-  −4.0% decoupling. That is the no-airflow signature — not fitness, not fatigue.
-  **A fan is not optional.** The second point, same setup with the fan running, is
-  the test that closes it.
+  matched-power HR came back **+10 bpm** above the `2026-09-03` reference and kept
+  climbing: 128.2 → 134.9 → 133.8 → 139.5 → 137.2 bpm in five-minute blocks at
+  184–194 W, **+4% decoupling in 31 minutes** *(sign corrected 23 Sep 2026; it was
+  logged as −4.0%)*. No airflow is the leading explanation, not a proven one — the
+  watts were Zwift's rather than the 4iiii's, and it came the evening after a 147-load
+  day. **A fan is not optional** either way. The second point, same setup with the fan
+  running, is the test that closes it.
 - **Cold is the December failure mode, and it reverses.** An unheated garage at 2 °C
   is a *cold* ride: *Cold replaces heat* applies in full, HR runs low rather than
   high, and the fan becomes something to switch off. What the garage buys in December
@@ -148,9 +177,10 @@ and let the indoor long ride grow from 90 minutes toward 2.5 h over Base 2. The 
 ride stays outdoors above about 3 °C and dry, which is most of October and November
 here, so even the 16-hour December week has perhaps 8 indoor hours in it. ERG mode for
 the sweet-spot and low-cadence blocks, free ride for Z2 so you can move around on the
-bike. Indoor Z2 has no coasting — an hour on the trainer is roughly 75 minutes on the
-road, which is why the weekly ramp is judged on projected load rather than the hours
-column.
+bike. **An indoor hour is about a road hour, not 75 minutes** *(corrected 23 Sep 2026)*:
+outdoor Z2 here coasts only 1–5% of moving time at 41–45 TSS/h, and the one trainer
+ride ran 40. So an indoor 2–2.5 h long ride is a smaller day than a 4 h outdoor one —
+roughly 40% less load — not an equivalent; projected load prices that honestly.
 
 **The plan's own trainer section still assumes a heated room** — *Fan mandatory*, and
 the long ride *moves indoors* below ~3 °C. The rider has asked for it to be rewritten
@@ -166,6 +196,14 @@ weekly mean of morning HRV and RHR against the rolling four-week mean. A week th
 sits about 10% below with normal sleep and no external cause is flagged. **The score
 is what the *following* week's Q1 and Q2 deliver** — completion, watts and feel, not
 how the next morning felt. Judge at the end of Base 2.
+
+Three things the summer says about the protocol *(23 Sep 2026)*. The −10% flag was
+crossed in **1 of 16** summer weeks, which had an external cause and was followed by a
+good week, so eight weeks may yield one flag or none. Morning HRV runs **~3.6 ms lower
+after a late night**, so "normal bedtime" needs the roster's late shifts, not just the
+sleep score. And **19–23 Sep already shows the pattern** — five-day HRV 44.2, RHR 54.6,
+the worst since late June, in the biggest load week of the season and the first
+working-load gym week. Record it as a dry run; it gates nothing.
 
 ## Where everything lives
 
@@ -194,6 +232,8 @@ nutrition/fuel.py ─▶ nutrition/fuel.json ─▶ the plan's per-day Fuel badg
   ISO date. **Edit workouts here, never downstream.**
 - `review/` — `log.json` holds only the two things an API cannot know: what was
   prescribed and the one-clause verdict. Everything objective is pulled.
+  `review/audit-2026-09-23/` is the blind re-analysis behind every *23 Sep 2026*
+  correction: its own rules, the claim-by-claim comparison, tables and check scripts.
 - `nutrition/` — `fuel.py` builds daily kcal/carb targets from planned watts, the
   `work:` shift hours, and intervals.icu. It prescribes; it never sees intake.
 - `docs/superpowers/` — design docs and implementation plans for the tooling.
@@ -225,15 +265,16 @@ structured workout and sync through with the activity — `icu_rpe` (1–10) and
 `activities <days>` summary, which is why they look absent; that is the only reason
 to reach for the full activity JSON on a normal review. `review/sessions.py` already
 harvests both, so a session logged and re-run carries them without anyone being asked.
-**Unstructured rides carry neither** — an ad-hoc Z2 hour gets no watch prompt, so the
+Reminder rides pushed from `notes` are one-step workouts and do get the prompt
+(`2026-09-13` carried both). **Ad-hoc rides carry neither** — no watch prompt, so the
 rider's own free-text note is the only feel channel there, and it is worth more than
 either.
 
 **Gym sessions reach intervals.icu, but only half of it** *(corrected 14 Sep 2026;
 this said they do not sync at all)*. They sync and carry load — 36 on Sep 8, 14 on Sep
-12 — and intervals.icu counts that into ATL while excluding it from CTL. Those are the
-only two days in the block where `ctlLoad` and `atlLoad` diverge, and the gap is the
-lift's load exactly.
+12 — and intervals.icu counts that into ATL while excluding it from CTL. Gym days are
+the only days in the block where `ctlLoad` and `atlLoad` diverge (8, 12, 16, 20 Sep so
+far), and the gap is the lift's load exactly.
 
 **Follow that precedent; do not re-derive CTL here.** The rider's read — lifting should
 cost freshness without buying aerobic fitness — is what the split already does, and
@@ -264,6 +305,15 @@ uploaded by hand. **Never say automatic upload to intervals.icu does not work, a
 propose Garmin-side glue to fix it** — that claim was asserted without checking on 18
 Sep 2026 and sent a whole tooling proposal down a blind alley before the rider corrected
 it.
+
+**Two power meters, plus the trainer** *(found 23 Sep 2026)*. `power_meter_serial` on
+the full activity JSON: 4iiii `2346444000` is the commute bike (fenix; 183 rides, and
+every ride the Z2 heart-rate reference rests on); 4iiii `1718582398` is the road bike
+(Edge 840; 40 rides — all three tests, every structured summer session, the 16 and 20
+Sep long rides); Zwift's trainer power is a third. **Their offset has never been
+measured.** HR runs 1.3–2.8 bpm lower at the same displayed watts on the commute meter,
+which fits it reading 4–9 W high, but position and terrain confound that. **Say which
+meter a number came from** whenever a comparison crosses bikes.
 
 ## Structured sessions: read the intent first
 
@@ -298,23 +348,32 @@ falling HR alongside falling power is a deliberate ease-off, not a failure. Use
 
 The rider reads Z2 heart rate as a fitness signal and **it is the wrong channel** —
 `2026-09-03` in the winter log is the reference row that settles it, and every later
-claim about the curve should cite it. Matched-power HR runs **~123 / ~127 / ~130 bpm
-at ~175 / ~195 / ~217 W**, and has since June (Jun 12: 122.3 / 123.5 / 124.7 ·
-Aug 11: 124.4 / 124.6 / 124.5 · Sep 3: 124.6 / 127.0 / 128.5 · Sep 6: 122.9 / 126.8 /
-130.9). The summer's +18 W landed at threshold, where the curve moved from 3 min
-upward; submaximal Z2 heart rate is not the channel that shows it.
+claim about the curve should cite it. Matched-power HR runs **~122–124 / ~124–128 /
+~128–131 bpm at ~175 / ~195 / ~217 W**, and has since June (Jun 12: 121.6 / 124.2 /
+128.1 · Aug 11: 123.9 / 125.2 / 127.6 and 125.8 / 128.6 / 131.6, two rides · Aug 19:
+122.0 / 124.2 / 129.0 · Sep 3: 123.7 / 128.1 / 130.9 · Sep 6: 122.9 / 126.8 / 130.9)
+*(corrected 23 Sep 2026: the earlier summer and Sep 3 figures did not reproduce under
+any binning, while the method below reproduces Sep 6 exactly. Sep 3's top bin was
+~2.5 bpm low, so every winter "+X vs Sep 3" in that bin written before this date is
+overstated by about that much)*. If anything the curve rose 1–3 bpm while threshold
+rose 7%. The summer's +18 W landed at threshold; submaximal Z2 heart rate is not the
+channel that shows it. **Day-to-day scatter is ±4–5 bpm**, so a change needs about
+five comparable rides, not one — and the whole reference is on the commute meter.
 
 Method, when a claim needs testing: take `streams <id> watts,heartrate`, roll power
 over 30 s, drop the first 600 s of warm-up, bin by rolled power and average HR in each
 bin. Two caveats — **hilly rides inflate the top bin** with surge-recovery HR (check
 `total_elevation_gain` and the time above Z2 first), and one ride off a fresh morning
-cannot separate fitness from freshness anyway. **Decoupling is the better within-ride
-read:** under about 5% over a long Z2 ride is the base doing its job.
+cannot separate fitness from freshness anyway. **Decoupling has never failed here**
+*(23 Sep 2026)*: every pure Z2 ride of 2 h or more since June came in under about 5%,
+July heat included. Under 5% says the ride stayed a Z2 ride; it has not yet had a bad
+ride to catch. intervals.icu's `decoupling` is positive when HR climbs against power.
 
 ## Cold: the winter's environmental variable
 
-**The summer's heat rule is dormant** — its gates were built from reps at 26.9–30.7 °C
-and none of them bite below 20 °C. Cold does the opposite and needs its own reading:
+**The summer's heat rule is dormant outdoors** — its gates were built from reps at
+26.9–30.7 °C and none of them bite below 20 °C. Indoors it is in season all winter;
+see **The trainer**. Cold does the opposite and needs its own reading:
 
 - **Heart rate runs lower at the same watts in the cold**, so a low HR on a cold long
   ride is *not* evidence of freshness. Power stays the guardrail. Never compare a
@@ -326,8 +385,9 @@ and none of them bite below 20 °C. Cold does the opposite and needs its own rea
   heat rule used to ask for the forecast. Cold suppresses thirst and appetite; the
   fuelling failure mode in winter is under-eating on a four-hour ride, not a stitch.
 - Temperature over the reps is still carried in the session log for continuity with
-  the summer, and **out of season it is not a candidate explanation for a bad
-  session.**
+  the summer, and **outdoors, out of season, it is not a candidate explanation for a
+  bad session.** On the trainer it is the first candidate *(23 Sep 2026; this said
+  temperature was never a candidate, against The trainer's own warm-and-still case)*.
 
 ## `weather` — forecasting the window before the session
 
@@ -345,10 +405,10 @@ ERA5 archive, today and later from the forecast. **They are not interchangeable*
 measured on Aug 13 2026 they disagree by ~1.4 °C, so never quote the forecast
 endpoint's `past_days` for a ride that already happened.
 
-**Air temperature predicts head-unit temperature almost directly** — measured offsets
-of +0.5 and +0.6 °C on two summer sessions, against an old assumption that radiant
-load made the head unit read far higher. The `window` summary adds a flat **+1 °C**,
-so it prints about half a degree hot; err with it, not against it. In winter the
+**Air temperature predicts head-unit temperature almost directly** — a median
+**+1.1 °C** over 41 rides (IQR +0.4 to +1.7), so the `window` summary's flat **+1 °C**
+is right *(corrected 23 Sep 2026; this said it printed half a degree hot, from two
+sessions)*. In winter the
 questions the tool answers are different: **is it above 3 °C, is the road wet or icy,
 and how hard is the wind.** Flat exposed roads plus gusts make a steady 200 W
 materially harder to hold, and rain below about 8 °C is the combination that ends long
@@ -477,7 +537,9 @@ The plan's `How to Adjust` carries all fourteen under these names. **Cite a rule
 name, never by number** — the list has been inserted into repeatedly, so the numbers
 have moved and a stale "rule 7" now points at the wrong rule. Where a rule rests on
 evidence, that evidence is a row in a session log — the summer plan's for the carried
-rules, this block's for the new ones. **Cite the row; don't retell it.**
+rules, this block's for the new ones. **Cite the row; don't retell it.** The 23 Sep
+2026 corrections below come from `review/audit-2026-09-23/`, and the plan's How to
+Adjust still carries the earlier wording until it is brought in line.
 
 - **Hold the FTP.** 293 from 2 Sep, from a clean 20-minute test. **One test all
   winter, 16 Feb**, and a new band only if it moves the number. Targets are ridden as
@@ -489,24 +551,36 @@ rules, this block's for the new ones. **Cite the row; don't retell it.**
 - **Time-in-zone before watts.** The sweet-spot progression adds minutes at the same
   watts before it adds watts — **30 → 40 → 45 → 60 → 75 → 80** minutes in zone at
   258–275, and only then a threshold touch. This is the only lever this document pulls
-  on the threshold, and it is what moved the number in the summer (48 min at 273 W →
-  45 at 275.6 → 55.5 at 277.1, then +20 W on the test). *Amended 4 Sep 2026: the
+  on the threshold, and the summer's number rose alongside it (48 min at 273 W → 45 at
+  275.6 → 55.5 at 277.1, then +20 W on the test) — **alongside, not provably because
+  of**: the same weeks held five VO2 sessions, the Ospel crit and +13 CTL, and two
+  tests cannot credit one lever *(softened 23 Sep 2026)*. *Amended 4 Sep 2026: the
   ceiling was 60 and is now 80* — time-in-zone scales with **relative** intensity, and
   258–275 is 88–94% of 293 where the summer's best session was 55.5 min at 100.8% of
   275, so 60 minutes was a maintenance dose dressed as a progression.
-- **Progress the total, not the target.** Long reps need a number, not feel: every
-  long-rep session that broke in the summer did so because rep 1 drifted up, and the
-  two that went cleanly were ridden to a hard ceiling. Prefer 3×15 over 2×22, 3×20
-  over 2×30, **4×20 over 2×40**.
+- **Progress the total, not the target.** Long reps need a number, not feel, and the
+  two that went cleanly were ridden to a hard ceiling. **But rep 1 did not drift up in
+  the ones that broke** *(corrected 23 Sep 2026)*: it averaged 271.0 W on Jul 15 and
+  270.3 on Aug 3, the same as the clean Jul 30, Aug 13 and Aug 17 (269.9–271.7). What
+  separated them was **heart rate ten minutes into rep 1 — 174 and 178 bpm against
+  155–167** — at 27.8 and 30.7 °C against 20.5–24.1. **Watch rep-1 HR as the early
+  warning** and shorten the reps rather than wait for the break. The summer's line was
+  ~170 at 272–275 W, about 100% of the FTP then; at winter sweet spot it sits lower and
+  has no data yet. Five sessions, confounded with heat, so a flag, not a gate. Prefer
+  3×15 over 2×22, 3×20 over 2×30, **4×20 over 2×40** — a choice, not a finding: rep
+  length itself has not separated a good session from a bad one.
 - **Watts are the guardrail on endurance days; heart rate tracks drift.** 165–215 W
   **held** — a target, not a ceiling to drift under. The measured curve is far looser
   than the watts and cannot set the ceiling: 160–180 W → 119–121 bpm, 200–220 W →
-  128–132. Three hours at 200 W is ~160 TSS against ~115 at 170. **Commutes are Z1
-  transport, real and worth keeping, and *not* the endurance day** — budgeting them as
-  one is the error that cost the summer its aerobic base in weeks 5–7 (22 min of Z2 on
-  Jul 29 against 135 min on Aug 11), and with twenty hours on the table it is the
-  easiest error to repeat. Read HR for drift: more than ~8 bpm at the same power and
-  the ride changed.
+  128–132. Three hours at 200 W is ~140 TSS against ~100 at 170 at FTP 293. **Commutes
+  are Z1 transport, real and worth keeping, and *not* the endurance day** — budgeting
+  them as one is the error that cost the summer its aerobic base, and not only in
+  weeks 5–7 *(widened 23 Sep 2026)*: 5 of 16 prescribed endurance days were ridden as
+  prescribed, and time at 150–230 W inside rides of 75 min or more ran 2.0–3.3 h a
+  week against 6.7 in Base 1. Jul 29 (22 min of Z2) is the worst day, week 5 the worst
+  week. With twenty hours on the table it is the easiest error to repeat. Read HR for
+  drift, but **+8–10 bpm late in a 3 h ride is normal here** — 16 and 20 Sep did it
+  on 4.0–4.4% decoupling and were good rides.
 - **Fit quality to the work calendar, not the other way round.** Fontys days are easy
   days. Hard sessions on a free day, or in the morning before an evening shift;
   all-day shifts easy or rest; never a hard session the day before a day that cannot
@@ -526,12 +600,15 @@ rules, this block's for the new ones. **Cite the row; don't retell it.**
   next quality day is 72 hours out. If the roster forces Q1 into a morning before a
   shift, both gym sessions move to the weekend, after the rides. **Gym counts as a
   hard day for placement.**
-- **Indoor hours are load, not hours** *(new, 3 Sep)*. Trainer Z2 has no coasting, so
-  an hour indoors is roughly 75 road minutes. Judge the weekly ramp on intervals.icu's
-  projected load, not the hours column. Fan mandatory; ERG for the blocks, free ride
+- **Indoor hours are load, not hours** *(new, 3 Sep)*. Judge the weekly ramp on
+  intervals.icu's projected load, not the hours column. An indoor hour is about a road
+  hour, since outdoor Z2 here coasts only 1–5%, so a long ride moved indoors is a
+  smaller day, not an equivalent *(corrected 23 Sep 2026; this said an indoor hour is
+  ~75 road minutes)*. Fan mandatory; ERG for the blocks, free ride
   for Z2. A long ride moves indoors, at 2–2.5 h, when it is below ~3 °C or the road is
   icy.
-- **Cold replaces heat** *(new, 3 Sep)*. The summer's heat rule is dormant — reps ran
+- **Cold replaces heat** *(new, 3 Sep)*. Outdoors, the summer's heat rule is dormant;
+  on the trainer it is not (see *The trainer*). Reps ran
   26.9–30.7 °C in July and none of its gates bite below 20 °C. Cold does the opposite:
   **heart rate runs lower at the same watts, so a low HR on a cold long ride is not
   evidence of freshness**, and power stays the guardrail. Below ~3 °C or on ice,
@@ -540,15 +617,21 @@ rules, this block's for the new ones. **Cite the row; don't retell it.**
   at the wrong watts teaches nothing. Trade it for Z2 rather than digging a hole the
   week pays for.
 - **Trust feel; ignore RPE.** Feel runs 1–5 with **1 strongest** and ordered the
-  summer almost perfectly: the three sessions marked 1 were the three best in the log,
-  and nothing else in the record separated them — not RPE, not TSB, not HRV, not
-  sleep. **RPE read 10 on both the void test and the best twenty minutes on record**;
-  it is a default, not a signal. Write the one-line note on every quality session; it
+  summer almost perfectly: **every session marked 4 or 5 went wrong** (Jul 15, Aug 3,
+  Aug 10, Aug 24); four were marked 1, not three, and the log calls one of them, Jul
+  27's 5×5, flat-to-fading *(corrected 23 Sep 2026)*. No readiness marker separated
+  them — not TSB, not HRV, not sleep — but rep temperature (28.3 vs 23.4 °C) and rep-1
+  HR did; see *Progress the total*. Feel is written afterwards, so it labels a session
+  and cannot gate one. **RPE read 10 on both the void test and the best twenty minutes
+  on record**; it tracks peak strain (ρ 0.86 with max HR), not success, so it is a
+  default, not a signal. Write the one-line note on every quality session; it
   is the only channel no sensor can reconstruct, and on unstructured rides and every
   gym session it is the *only* channel at all.
 - **Nothing hypertonic inside 15 minutes of hard work.** Two summer sessions, nine
   days apart, broke on a concentrated carbohydrate bolus taken close to the effort —
-  one of them the block's headline test. At test intensity splanchnic flow drops
+  one of them the block's headline test. That cause is the rider's account, not the
+  activity notes, and Aug 24 had a second: power was already fading 306 → 290 W before
+  the stitch *(23 Sep 2026)*. At test intensity splanchnic flow drops
   60–80% and gastric emptying effectively halts, so the bolus is still in the stomach
   at minute 15. Take it early, chased with water, or don't take it. **On a test,
   nothing at all** — breakfast already puts the fuel on board. If a stitch starts
@@ -557,7 +640,8 @@ rules, this block's for the new ones. **Cite the row; don't retell it.**
 - **Set the target from the evidence, not from the goal.** The summer's void test was
   paced to a number reverse-engineered from the goal and broke at minute 14; the clean
   one nine days later opened from the record and negative-split to **+21.9 W** on the
-  same protocol. Quarters are the proof: 303.9 / 305.3 / 271.9 / 267.3 against 299.6 /
+  same protocol — against a test the stitch also broke, so that overstates what pacing
+  alone bought. Quarters are the proof: 303.9 / 305.3 / 271.9 / 267.3 against 299.6 /
   305.9 / 313.0 / 317.3. Every number in this document, including the February opening
   band, comes from something the rider has done. **When a goal number and an evidence
   number disagree, write the evidence number down** — and note that the failure mode
@@ -567,7 +651,9 @@ rules, this block's for the new ones. **Cite the row; don't retell it.**
   the best acute markers of the week, and it broke. **Sep 1**: TSB +7.6, HRV 42, RHR
   56, 5.9 h of sleep after a 03:00 bedtime — the worst acute markers of the week, and
   the best twenty minutes on record. Three of the block's best sessions ran at
-  negative TSB. **Do not gate a session, a test or a race on morning HRV, RHR or sleep
+  negative TSB — but so did 13 of the 19 rated, so that is the base rate, and TSB did
+  not separate good sessions from bad; the *chronic* half rests on one taper, Sep 1
+  *(23 Sep 2026)*. **Do not gate a session, a test or a race on morning HRV, RHR or sleep
   score — record it and ride.** The *week-on-week* case is the rider's hypothesis and
   is untested; Base 2 is what tests it, see *The HRV test*.
 
@@ -584,7 +670,11 @@ rules, this block's for the new ones. **Cite the row; don't retell it.**
 - **Corrections are first-class.** Several conclusions across these two blocks were
   wrong and were overturned by re-reading the data: Jul 3 was not a failure; rep
   length was standing in for heat; a partial Cronometer day read as a deficit was
-  actually a surplus; the 60-minute sweet-spot ceiling was a maintenance dose. **Say
+  actually a surplus; the 60-minute sweet-spot ceiling was a maintenance dose. On 23
+  Sep 2026 a blind re-analysis of June–September, run without these rules
+  (`review/audit-2026-09-23/`), found the CTL targets on a mixed FTP scale, no rep-1
+  drift in the broken sessions, an unmeasured 75-minute indoor hour, and Z2 reference
+  numbers that did not reproduce. **Say
   so plainly in the document when it happens.** And when the rider corrects a verdict
   about what he actually did or why he did it, that correction wins — he was there and
   the API was not.
