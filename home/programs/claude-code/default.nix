@@ -65,6 +65,7 @@ in
         };
 
         tui = "fullscreen";
+        remoteControlAtStartup = true;
 
         autoMode = import ./auto-mode.nix;
 
@@ -73,7 +74,6 @@ in
             "Bash(git diff:*)"
             "Bash(ls:*)"
             "Bash(* --version)"
-            "Bash(* --help:*)"
             "Bash(grep:*)"
             "Bash(cat:*)"
             "Bash(cargo:*)"
@@ -81,7 +81,6 @@ in
             "Bash(find:*)"
             "Bash(typst compile:*)"
             "Bash(wasm-pack:*)"
-            "Bash(git * log:*)"
             "Grep(*)"
             "Glob(*)"
             "Bash(curl:*)"
