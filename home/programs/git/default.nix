@@ -28,7 +28,7 @@ in
         };
         init.defaultBranch = "main";
         core.editor = "codium --wait";
-        merge.ff = false;
+        merge.ff = true;
         url."git@github.com:".insteadOf = "https://github.com/";
         credential."https://git.fhict.nl".helper = ''!f() { test "$1" = get && cat ${
           osConfig.sops.templates."git-credentials-fhict".path
