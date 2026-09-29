@@ -1,8 +1,3 @@
----
-description: Use when writing, editing or compiling Typst (.typ) documents, reports or documentation, including requirement tables and PlantUML diagrams in them.
-allowed-tools: Bash(typst:*), Bash(plantuml:*)
----
-
 Typst documents use a custom template. Every `.typ` file you create or edit must use this template and follow these rules strictly. After editing, run `typst compile <file>.typ` and fix every error before calling the document done.
 
 # Template Setup

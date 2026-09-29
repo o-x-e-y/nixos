@@ -40,7 +40,7 @@
     "### User-specific"
     "**Primary use of Claude Code**: mixed — the NixOS config at ~/nixos, hobby software projects under ~/Repos, study documents, and personal-service integrations (training platform, nutrition log, calendar) through the MCP tools and CLIs this config installs"
     "**Trusted repo**: the user's own repos under github.com/o-x-e-y, o-x-e-y/nixos foremost — the session's own work is fine to commit/push there; content ported from outside the session's repo is not its own work even if directed to port it; secrets and sensitive data are never cleared into them by virtue of visibility"
-    "**Org-specific CLIs**: None organizational. Personal tools this config installs: `pathe` and `boxd` (read-only lookups of public pages), `intervals-icu` (authenticated client for the user's training calendar), and the Nix toolchain (`nix`, `nix-shell`, `nixos-rebuild`, `nixfmt`, `home-manager`) — routine for the user's own config"
+    "**Org-specific CLIs**: None organizational. Personal tools this config installs: `pathe` and `boxd` (read-only lookups of public pages), `intervals-icu` (authenticated client for the user's training calendar), `ledger` (a jrnl wrapper holding the user's work journal; `ledger --json` only reads it), and the Nix toolchain (`nix`, `nix-shell`, `nixos-rebuild`, `nixfmt`, `home-manager`) — routine for the user's own config"
   ];
 
   allow = [
@@ -51,5 +51,6 @@
   soft_deny = [
     "$defaults"
     "Nix Generation Deletion: `nix-collect-garbage -d` or `--delete-older-than`, `nix-env --delete-generations`, `nix-store --delete`, or `home-manager expire-generations` delete old system or home-manager generations and store paths, which removes rollback targets for good. Block unless the user asked for it in this session."
+    "Ledger Writes: `ledger` or `jrnl` with entry text, `--edit`, `--delete`, `--change-time`, `--import`, `--encrypt` or `--decrypt` adds to or rewrites the user's personal work journal, which is their own record. `ledger --json` is read-only and not covered. Block unless the user asked for that exact change in this session."
   ];
 }

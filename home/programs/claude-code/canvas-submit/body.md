@@ -1,8 +1,3 @@
----
-description: Use when the user wants to create an assignment on Canvas or hand in a document, usually a compiled Typst PDF, on Canvas.
-argument-hint: [assignment name] [path to file]
----
-
 `canvas-assignment` creates an assignment in the user's own FHICT Canvas course, adds it to the course module, and optionally uploads a file and submits it as the user. The user decides what goes in; you run the command.
 
 # Usage

@@ -1,3 +1,19 @@
+# Read-only: jrnl never writes with --format set, and only filters get through.
+# Claude's permissions allow this form and nothing else.
+if [[ ${1-} == --json ]]; then
+  shift
+  for arg in "$@"; do
+    case $arg in
+      -on | -today-in-history | -month | -day | -year | -from | -to | -until | -contains | -and | -starred | -tagged | -n | -not | -[0-9]*) ;;
+      -*)
+        echo "ledger --json only takes filters, not $arg" >&2
+        exit 1
+        ;;
+    esac
+  done
+  exec jrnl --format json "$@"
+fi
+
 # Anything starting with -, @ or + is a query or flag, not an entry
 if [[ $# -gt 0 && $1 == [-@+]* ]]; then
   exec jrnl "$@"

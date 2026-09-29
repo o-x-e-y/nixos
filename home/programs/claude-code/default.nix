@@ -17,6 +17,10 @@ let
     inherit pkgs;
     inherit (config.apps.boxd) user;
   };
+  ledger = import ./ledger { inherit pkgs; };
+  fontys = import ./fontys { inherit pkgs; };
+  typst-writer = import ./typst-writer { inherit pkgs; };
+  canvas-submit = import ./canvas-submit { inherit pkgs; };
 
   intervals-icu = pkgs.writeShellApplication {
     name = "intervals-icu";
@@ -98,6 +102,12 @@ in
             # public page. See ../boxd/boxd.py's module docstring.
             "Bash(boxd:*)"
 
+            # Only the read path into the journal. The wrapper rejects every
+            # flag but jrnl's filters after --json, and jrnl never writes with
+            # --format set, so this cannot add, edit or delete an entry. Plain
+            # `ledger` writes, and falls to the soft_deny in ./auto-mode.nix.
+            "Bash(ledger --json:*)"
+
             "WebFetch"
           ];
           ask = [ ];
@@ -152,8 +162,10 @@ in
         coach = coach.commandText;
         pathe = pathe.commandText;
         boxd = boxd.commandText;
-        typst-writer = ./commands/typst-writer.md;
-        canvas-submit = ./commands/canvas-submit.md;
+        ledger = ledger.commandText;
+        fontys = fontys.commandText;
+        typst-writer = typst-writer.commandText;
+        canvas-submit = canvas-submit.commandText;
       };
 
       plugins.superpowers = pkgs.fetchFromGitHub {
