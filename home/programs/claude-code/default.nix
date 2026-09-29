@@ -152,6 +152,8 @@ in
         coach = coach.commandText;
         pathe = pathe.commandText;
         boxd = boxd.commandText;
+        typst-writer = ./commands/typst-writer.md;
+        canvas-submit = ./commands/canvas-submit.md;
       };
 
       plugins.superpowers = pkgs.fetchFromGitHub {
