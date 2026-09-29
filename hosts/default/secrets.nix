@@ -29,6 +29,9 @@ in
           "justwatch-email"
           "justwatch-password"
           "git_fhict_token"
+          # fine-grained PAT for gh, scoped to the repos Claude may touch
+          "github_token"
+          "github_innergames_token"
         ]
         (_: {
           owner = user;
