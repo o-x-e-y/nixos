@@ -123,6 +123,10 @@
           path = ./templates/rust;
           description = "Rust template with flake and .envrc";
         };
+        bun = {
+          path = ./templates/bun;
+          description = "Bun template with flake and .envrc";
+        };
       };
     };
 }
