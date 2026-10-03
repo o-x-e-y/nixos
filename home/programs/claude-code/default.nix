@@ -61,11 +61,13 @@ in
         statusLine = status-line;
 
         model = "opus";
-
         effortLevel = "xhigh";
+
         modelSettings = {
           "claude-opus-5".effortLevel = "xhigh";
-          "claude-opus-5-5".effortLevel = "xhigh";
+          "claude-opus-5-5".effortLevel = "high";
+          "claude-sonnet-5-5".effortLevel = "high";
+          "claude-haiku-5-5".effortLevel = "high";
         };
 
         tui = "fullscreen";
