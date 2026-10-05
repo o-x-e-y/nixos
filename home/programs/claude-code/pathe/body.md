@@ -47,7 +47,9 @@ Stappegoor. Only pass `-c` when the request names cinemas, and then pass them
 comma-separated: `-c helmond,eindhoven`. Short names work; `pathe cinemas` has
 the full list.
 
-**Dates.** `today`, `tomorrow`, `+N`, or `JJJJ-MM-DD`. Work out relative phrases
+**Dates.** `today`, `tomorrow`, `+N`, `JJJJ-MM-DD`, or the short `MM-DD` and `DD`,
+which mean the next such date (this year or month, or the next one once it has
+passed). Work out relative phrases
 yourself from the date above — "this weekend", "next Friday", "over two weeks"
 — and pass a concrete date or `--days` window. Default window is 60 days, so
 say `--days 7` when the request is clearly about the near term.
