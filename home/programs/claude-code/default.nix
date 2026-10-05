@@ -88,6 +88,7 @@ in
             "Bash(find:*)"
             "Bash(typst compile:*)"
             "Bash(wasm-pack:*)"
+            "Bash(trash-put:*)"
             "Grep(*)"
             "Glob(*)"
             "Bash(curl:*)"
@@ -124,7 +125,14 @@ in
             "Bash(git reset --hard:*)"
             "Bash(git clean -f:*)"
 
-            "Bash(rm -rf:*)"
+            # All of rm, since a pattern per recursive flag spelling (-rf, -fr,
+            # -vrf, a trailing -r) either leaks or also catches `rm -f file`,
+            # and trash-put covers every deletion. find is allowed above, so
+            # its deleting forms are denied here.
+            "Bash(rm *)"
+            "Bash(find * -delete*)"
+            "Bash(find * -exec rm *)"
+            "Bash(find * -execdir rm *)"
 
             "Read(./.env)"
             "Read(**/.env)"
@@ -159,6 +167,9 @@ in
         For jobs that are mostly reading or searching (lots of files, logs or
         docs to answer one question), use a subagent with model sonnet and ask
         it for a short answer. Do everything else yourself.
+
+        To delete files or directories, use `trash-put` rather than `rm`, so
+        they can be restored with `trash-restore`.
       '';
 
       commands = {
@@ -181,6 +192,7 @@ in
 
     home.packages = [
       pkgs.claude-monitor
+      pkgs.trash-cli
       intervals-icu
     ];
   };
