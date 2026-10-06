@@ -77,6 +77,7 @@ let
     }).skills;
   ledgerSkills = (import ./../claude-code/ledger { inherit pkgs; }).skills;
   fontysSkills = (import ./../claude-code/fontys { inherit pkgs; }).skills;
+  fontysCoachSkills = (import ./../claude-code/fontys-coach { inherit pkgs; }).skills;
   typstWriterSkills = (import ./../claude-code/typst-writer { inherit pkgs; }).skills;
 
   # Unlike Claude Code, nothing here asks before `canvas-assignment` runs, so
@@ -207,6 +208,7 @@ let
           - ${boxdSkills}
           - ${ledgerSkills}
           - ${fontysSkills}
+          - ${fontysCoachSkills}
           - ${typstWriterSkills}
           - ${canvasSubmitSkills}
     - id: tool-skill

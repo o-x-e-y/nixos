@@ -19,6 +19,7 @@ let
   };
   ledger = import ./ledger { inherit pkgs; };
   fontys = import ./fontys { inherit pkgs; };
+  fontys-coach = import ./fontys-coach { inherit pkgs; };
   typst-writer = import ./typst-writer { inherit pkgs; };
   canvas-submit = import ./canvas-submit { inherit pkgs; };
 
@@ -178,6 +179,7 @@ in
         boxd = boxd.commandText;
         ledger = ledger.commandText;
         fontys = fontys.commandText;
+        fontys-coach = fontys-coach.commandText;
         typst-writer = typst-writer.commandText;
         canvas-submit = canvas-submit.commandText;
       };
