@@ -477,6 +477,10 @@ in
       };
     };
 
+    # The user-global file agent-instructions loads ahead of each project's
+    # chain, so this is Claude Code's global CLAUDE.md under dsh's name.
+    home.file."${dshHome}/AGENTS.md".source = ../claude-code/context.md;
+
     programs.dsh = {
       enable = true;
 
