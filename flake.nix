@@ -75,8 +75,8 @@
 
             claudeCodeOverride = {
               enable = true;
-              version = "2.1.289";
-              hash = "sha256-ZvcqhopCyhDlRiq3ioj9n1V2SG9ZsyoK/FkQq0tzt2U=";
+              version = "2.1.293";
+              hash = "sha256-JXhto0fDBkHcbFBzPQkNd8tUDxBaYa9+mJW1bjn+FqU=";
             };
 
             wheelwizardOverride = {
