@@ -19,6 +19,7 @@ in
           # minecraft server addresses
           "grahp-city"
           "grahp-survival"
+          "discord-thingy-token"
           "deepseek-api-key"
           "dashscope-api-key"
           "cronometer-email"
