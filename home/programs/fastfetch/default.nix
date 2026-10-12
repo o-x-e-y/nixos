@@ -65,6 +65,7 @@ in
             type = "gpu";
             driverSpecific = true;
             temp = true;
+            format = "{name} ({core-count}) @ {frequency} - {temperature} ({dedicated-used} / {dedicated-total}, {dedicated-percentage-num})";
           }
           {
             type = "memory";
