@@ -20,7 +20,7 @@ in
       enable = true;
       settings = {
         logo = {
-          source = ./../../../public/fastfetch-dofsmie.ans;
+          source = ./../../../public/ansi-23/dofblush.ansi;
         };
         display = {
           separator = ": ";
