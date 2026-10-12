@@ -433,6 +433,47 @@ let
         trustedHosts: !!js ctx.webStartup.trustedHosts
   '';
 
+  # dsh refuses to load a bundle whose declared peerDependencies do not cover the
+  # running kernel, and two of the bundles below declare the previous channel:
+  # dsh-TUI 0.14.0 stops at 0.2.0-rc.2, billion-context 0.2.26 at <0.1.6-0.
+  # Neither is actually incompatible -- mk-dsh-bundle builds every one of them
+  # against this exact kernel (linkKernelNodeModules) -- but the refusal costs
+  # the whole TUI layer, and with it `tuiStatus`, which is why dsh-usage sat at
+  # "pending (waiting for service: tuiStatus)" while the rest of the profile
+  # booted, and why bare `dsh` printed only the web URL.
+  #
+  # The grant is profile metadata, not a manifest edit: compatibility.json sits
+  # beside package.json and holds exact `name@version` keys mapped to exact
+  # runtime versions. Managed mode owns three files -- package.json,
+  # cordis.patch.yml, pnpm-workspace.yaml -- and this is not one of them, so a
+  # re-sync leaves it alone and its fingerprint never sees it. Permission is
+  # also never inherited: a new kernel or a new bundle version invalidates the
+  # old pair, which is why both sides are interpolated from the store rather
+  # than written out here. Move the kernel and the next activation grants the
+  # new pair instead of leaving behind a grant that quietly stops matching.
+  #
+  # The keys are npm names, not Nix attribute names: pkgs.dsh.bundles.tui
+  # installs itself as @deepseek-harness-tui/dsh-tui.
+  bundleVersionExemptions = {
+    nix-tui = {
+      "@deepseek-harness-tui/dsh-tui" = pkgs.dsh.bundles.tui.version;
+      "billion-context-dsh" = pkgs.dsh.bundles.billion-context.version;
+    };
+    nix-web = {
+      "billion-context-dsh" = pkgs.dsh.bundles.billion-context.version;
+    };
+  };
+
+  exemptionFile =
+    grants:
+    pkgs.writeText "dsh-version-exemptions.json" (
+      builtins.toJSON (
+        lib.mapAttrs' (
+          name: version: lib.nameValuePair "${name}@${version}" [ pkgs.dsh.dsh.version ]
+        ) grants
+      )
+    );
+
 in
 {
   options.apps.dsh = {
@@ -667,6 +708,43 @@ in
           $DRY_RUN_CMD install -m 0644 ${settingsFile} "$dsh_settings"
         fi
       ''
+    );
+
+    # Writes the exemptions above. `dsh plugin allow-version` produces this same
+    # file, but that is a one-off write into a directory Nix otherwise owns, and
+    # the command refuses to rewrite a file it could not parse -- so a typo in a
+    # hand-edit would take the CLI path out of action exactly when it is needed.
+    # Declaring the content as a merge source keeps the grants a function of the
+    # config; merging rather than replacing is what leaves a grant made by hand
+    # (or by the web plugin manager) for a plugin not listed above, the same way
+    # dshSettings leaves settings nobody declared alone.
+    #
+    # entryAfter "dsh" is load-bearing twice over. That entry is what materializes
+    # the profile directories, and creating one here instead would defeat the
+    # seeder, whose managed branch refuses to adopt a profile directory it did
+    # not install. It is also why a profile with no exemption (nix-headless)
+    # needs no branch of its own.
+    #
+    # A file that no longer parses is replaced rather than failing the whole
+    # activation: dsh's own reader treats an unreadable compatibility.json as
+    # authorizing nothing, so the declared grants are all that is at stake, and
+    # they are right here. That is the one place this differs from dshSettings,
+    # where a corrupt settings.yaml does abort.
+    home.activation.dshBundleExemptions = lib.hm.dag.entryAfter [ "writeBoundary" "dsh" ] (
+      lib.concatStringsSep "\n" (
+        lib.mapAttrsToList (
+          profile: grants: ''
+            compat=${lib.escapeShellArg "${dshHome}/profiles/${profile}/compatibility.json"}
+            if [ -e "$compat" ] && $DRY_RUN_CMD ${lib.getExe pkgs.yq-go} -e '.' "$compat" >/dev/null 2>&1; then
+              $DRY_RUN_CMD ${lib.getExe pkgs.yq-go} eval-all --inplace \
+                'select(fileIndex == 0) + select(fileIndex == 1)' \
+                "$compat" ${exemptionFile grants}
+            else
+              $DRY_RUN_CMD install -m 0644 ${exemptionFile grants} "$compat"
+            fi
+          ''
+        ) bundleVersionExemptions
+      )
     );
 
     # The coach skill drives weather/intervals-icu through the bash tool, which
