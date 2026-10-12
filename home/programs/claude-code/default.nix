@@ -74,6 +74,7 @@ in
         tui = "fullscreen";
         remoteControlAtStartup = true;
         cleanupPeriodDays = 180;
+        autoContinueAtUsageLimit = true;
 
         autoMode = import ./auto-mode.nix;
 
