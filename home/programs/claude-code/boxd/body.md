@@ -50,8 +50,8 @@ does not already state, or when the profile looks out of date against `diary`.
 not pass `--user` unless the request is explicitly about somebody else.
 
 **Ratings are in stars, 0.5 to 5.** The CLI converts Letterboxd's internal 1–10
-half-star scale for you. A 4.0 from this user is a good film, not a mediocre one
-— see the distribution in the profile before calling any number "low".
+half-star scale for you. A 4.0 from this user is a great film and a 3.0 a fine
+one — see the scale in the profile before calling any number "low".
 
 **Never recommend a film they have already seen.** This is the one rule that
 makes recommendations worth anything. `boxd similar` knows nothing about this
