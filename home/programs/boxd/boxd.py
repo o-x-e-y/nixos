@@ -649,13 +649,20 @@ def cmd_taste(args) -> dict:
         }
 
     # Directors only for the films that carry an opinion worth generalising
-    # from. Doing all 379 would be 379 requests to learn mostly nothing.
-    loved = sorted(rated.items(), key=lambda kv: -kv[1])[: args.director_limit]
+    # from. Doing all 379 would be 379 requests to learn mostly nothing. A
+    # rating floor rather than a top-N count: a count lands inside a tie, and
+    # the films list orders ties by recency, so older 4.5s were cut arbitrarily.
+    loved = sorted(
+        ((s, r) for s, r in rated.items() if r >= args.director_floor),
+        key=lambda kv: -kv[1],
+    )
     directors: dict[str, dict] = {}
+    failed: list[str] = []
     for slug, score in loved:
         try:
             data = fetch_json(f"/film/{slug}/json/", refresh=args.refresh)
         except BoxdError:
+            failed.append(by_slug[slug]["title"])
             continue
         for person in data.get("directors", []):
             name = person.get("name")
@@ -692,6 +699,8 @@ def cmd_taste(args) -> dict:
         },
         "directors": dict(sorted(repeat.items(), key=lambda kv: -kv[1]["mean"])),
         "sampled_directors_from_top": len(loved),
+        "director_floor": args.director_floor,
+        "director_lookups_failed": failed,
     }
 
 
@@ -809,10 +818,16 @@ def render(command: str, data: dict) -> str:
         if data["directors"]:
             out.append("")
             out.append(
-                f"  Directors returned to (within top {data['sampled_directors_from_top']})"
+                f"  Directors returned to (within the {data['sampled_directors_from_top']}"
+                f" films rated {data['director_floor']:g}+)"
             )
             for name, info in data["directors"].items():
                 out.append(f"    {info['mean']:>4}  {name}  --  {', '.join(info['films'])}")
+        if data["director_lookups_failed"]:
+            out.append(
+                f"  ! {len(data['director_lookups_failed'])} director lookups failed"
+                " and are missing above; run again later to fill them in"
+            )
 
     return "\n".join(out)
 
@@ -915,10 +930,10 @@ def main(argv: list[str] | None = None) -> int:
 
     taste = add("taste", "genre, decade and director breakdown")
     taste.add_argument(
-        "--director-limit",
-        type=int,
-        default=60,
-        help="how many top-rated films to look up directors for (default: 60)",
+        "--director-floor",
+        type=float,
+        default=4.5,
+        help="look up directors for films rated at least this (default: 4.5)",
     )
 
     film = add("film", "details for one film", needs_user=False)
