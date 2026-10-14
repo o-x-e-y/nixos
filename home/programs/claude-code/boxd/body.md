@@ -92,9 +92,11 @@ usual shape when the request is open-ended, and label it as such.
 ## Refreshing the profile
 
 If the request is `refresh-taste` (or otherwise asks to update the profile
-above), run `boxd taste --refresh --json`, `boxd ratings --refresh --json` and
-`boxd diary --refresh --json`, then rewrite
-`home/programs/claude-code/boxd/taste.md` in the repo from what they return —
-same shape as what is there, every claim traceable to a number or a quote in the
-output. Leave the file committed for the user; the new profile only reaches
-either harness on the next rebuild.
+above), run `boxd taste --refresh --json`, `boxd ratings --refresh --json`,
+`boxd diary --refresh --json` and `boxd watchlist --refresh --json`, then
+rewrite `home/programs/claude-code/boxd/taste.md` in the repo from what they
+return — same shape as what is there, every claim traceable to a number or a
+quote in the output. Claims marked "by their own account" come from the user,
+not the data. Carry them over unless the new numbers contradict them, and say
+so if they do. Leave the file committed for the user; the new profile only
+reaches either harness on the next rebuild.

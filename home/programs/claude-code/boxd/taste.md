@@ -3,6 +3,8 @@
 From `boxd taste`, `boxd ratings`, `boxd diary` and `boxd deltas` on 2026-09-16,
 corrected against the user's own account of how they watch. 379 films watched,
 378 rated, 513 on the watchlist. Regenerate with `/boxd refresh-taste`.
+Franchise section rewritten 2026-10-14 against `boxd ratings` and the user's
+correction that "no sequels" was a bad guide.
 
 ### The one thing to understand first
 
@@ -53,7 +55,7 @@ useful thing in this file.
 | Anora (2024) | 5.0 | 3.77 |
 | The Dark Knight Rises (2012) | 5.0 | 3.83 |
 
-**Where they go low — almost entirely recent franchise and event cinema:**
+**Where they go low — recent big-budget event cinema, franchise or not:**
 
 | | their rating | average |
 |---|---|---|
@@ -65,11 +67,21 @@ useful thing in this file.
 | The War of the Rohirrim (2024) | 1.5 | 3.05 |
 | Bad Boys: Ride or Die (2024) | 1.5 | 3.18 |
 
-**Legacy-IP continuations are the one reliable negative signal in the dataset**,
-and it is stronger than any genre effect. The apparent weakness in fantasy
-(3.41), adventure (3.50) and action (3.51) is mostly this: pre-2020 action
-averages **3.98** against **3.27** for the 2020s, and the five Twilight films are
-11% of the fantasy sample at a 1.8 average — without them fantasy is 3.61.
+Three of those seven — *Magellan*, *F1*, *Urchin* — are not franchise films,
+and three of the seven high deltas above are (*Sisu 2*, *The Dark Knight
+Rises*, *SpongeBob*). Being a sequel predicts nothing. **Who made it does:**
+
+| | |
+|---|---|
+| a director's film inside a franchise | *Dune: Part Two* 5.0, *Across the Spider-Verse* 5.0, *The Dark Knight Rises* 5.0, *Furiosa* 4.5, *Dune* 4.5, *Batman Begins* 4.5, the *Lord of the Rings* films 4.5, *Superman* (2025) 4.0 |
+| recent Marvel | *Guardians 3* 3.5, *Spider-Man: Brand New Day* 3.5, *Thunderbolts\** 3.0, *The Fantastic 4: First Steps* 3.0, *No Way Home* 3.0 |
+| a continuation assembled by committee | the *Twilight* films 1.0–2.5, *The War of the Rohirrim* 1.5, *Bad Boys: Ride or Die* 1.5, *Avatar: Fire and Ash* 2.0, *The Mandalorian and Grogu* 2.0, *Mission: Impossible – The Final Reckoning* 2.5, *Alien: Romulus* 2.5 |
+
+This is "craft is the axis" (below) applied to franchises. It also explains the
+apparent weakness in fantasy (3.41), adventure (3.50) and action (3.51):
+pre-2020 action averages **3.98** against **3.27** for the 2020s, and the five
+Twilight films are 11% of the fantasy sample at a 1.8 average — without them
+fantasy is 3.61.
 
 **There is a blind spot at the bottom.** They skip films critics have already
 trashed — their own example: *The Dog Stars* and *The End of Oak Street* are
@@ -110,7 +122,19 @@ screen is nearly always a good bet. A streaming-only pick is the weaker one.
 1990s–2010s, 78 from before 1990. That backlog is where the films they mean to
 get to already live; prefer it to inventing suggestions.
 
-**Never pitch a franchise sequel or legacy-IP continuation.**
+**Rank by who made it, not by whether it is a sequel.** By their own account
+they prefer "the more artistically outspoken auteurs and interesting unique
+stories, but if it's good I wanna go see it." Lead with auteur work; a
+director-led franchise film is a real recommendation; a committee-made
+continuation should come with its track record. Sequels that stand alone are
+easiest. Say so when one needs the earlier film first, especially if that film
+is unseen on the watchlist.
+
+**Marvel and Star Wars are social, not solo.** By their own account a friend
+loves those films, and going with them in Eindhoven is fun either way, even for
+entries they would not rate highly. So mention a big Marvel or Star Wars release
+as an outing, priced at the 3.0–3.5 those films usually get, rather than
+dropping it.
 
 ### Register
 

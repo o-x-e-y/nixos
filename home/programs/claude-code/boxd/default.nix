@@ -22,8 +22,9 @@
 }:
 
 let
-  # ./taste.md is a generated artefact, not a hand-written one: `/boxd
-  # refresh-taste` re-runs `boxd taste` and `boxd ratings` and rewrites it. It
+  # ./taste.md is generated, plus the user's own corrections: `/boxd
+  # refresh-taste` re-runs taste, ratings, diary and watchlist and rewrites it,
+  # carrying over the lines marked "by their own account". It
   # is interpolated into the body rather than fetched at invocation time so that
   # every /boxd starts already knowing this viewer at zero request cost -- which
   # is the whole point of committing it. Regenerate it when it drifts from the
