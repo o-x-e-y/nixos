@@ -81,17 +81,17 @@
 
             wheelwizardOverride = {
               enable = true;
-              version = "2.5.3";
-              hash = "sha256-yh0kRPfs/g47Hrn+T3MHR2/Vyf7aPTWsszUQNBfw0W4=";
+              version = "2.6.2";
+              hash = "sha256-FAPl0ZcFYgk4VR6EUROQlc6ZcJNCH+K4xYPzvhI3k2E=";
 
               dolphin = {
-                version = "2606a";
-                hash = "sha256-TAIxBEGbbYvoOi+dukr2Hij0J/NL9Iy6pcgf2bhEgI8=";
+                version = "2609a";
+                hash = "sha256-0yQVW7Q3EKqfGihVA9I8Ucs0Hn/QVGVXuZ8ePbCZ5TQ=";
               };
 
               wiicompiled = {
-                version = "0.2.27";
-                hash = "sha256-QYIxF9KkXZZcRGrPLnze22hG7NeJVwyBtnRTMUSBGvs=";
+                version = "0.2.34";
+                hash = "sha256-fOrUVcom55bQ8xK/TGvYA3w9a2Ob/uf48GMuI52Hcmg=";
               };
             };
 

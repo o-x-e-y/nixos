@@ -157,10 +157,10 @@ in
             };
           };
 
-        # 2606a is a security release: it hardens Dolphin against malicious game
-        # files and NetPlay peers -- two GHSA advisories plus bounds checks in
-        # the GCZ, DOL and ELF readers and the NetPlay LZO decompressor. Version
-        # and hash are the whole of nixpkgs' own 2606 -> 2606a bump, so unlike
+        # 2609a is a fix release: it rejects oversized NetPlay input buffers and
+        # Wii save banners, validates restored FIFO pointers and fixes the
+        # NetPlay GC adapter config. Nixpkgs is on 2609, and like its own
+        # earlier 2606 -> 2606a bump only version and hash change, so unlike
         # wheelwizard above this stays a plain overrideAttrs and still builds
         # from source; drop the pin once the flake's nixpkgs catches up.
         dolphin-emu = prev.dolphin-emu.overrideAttrs (_old: {
