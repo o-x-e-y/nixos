@@ -13,6 +13,10 @@ let
       BASE_URL="https://fhict.instructure.com"
       API_KEY="$(cat /run/secrets/canvas-api-key)"
 
+      if [[ "$(date +%F)" > "2026-10-16" ]]; then
+        echo "Warning: $BASE_URL is deprecated since 2026-10-16 and stops working in February 2027. Switch BASE_URL to https://fontysict.instructure.com in home/programs/canvas/default.nix." >&2
+      fi
+
       NAME=""
       DESCRIPTION=""
       DOC_PATH=""

@@ -23,6 +23,7 @@ Run `boxd --help`, or `boxd <command> --help`, whenever a flag is unclear.
 | the request is about | run |
 |---|---|
 | what's on the watchlist, what to watch tonight | `boxd watchlist` |
+| one of their lists, e.g. `/oxey/list/2026-ranked/` | `boxd list <slug>` |
 | what they thought of a film, their ratings | `boxd ratings` |
 | whether they have seen something | `boxd films` |
 | what they've watched lately, recent reviews | `boxd diary --limit N` |
@@ -53,11 +54,15 @@ not pass `--user` unless the request is explicitly about somebody else.
 half-star scale for you. A 4.0 from this user is a great film and a 3.0 a fine
 one — see the scale in the profile before calling any number "low".
 
-**Never recommend a film they have already seen.** This is the one rule that
-makes recommendations worth anything. `boxd similar` knows nothing about this
+**At home, never recommend a film they have already seen.** This is the one rule
+that makes recommendations worth anything. `boxd similar` knows nothing about this
 user, so its output *will* contain films they have watched and even loved. Cross
 -reference against `boxd films --json` before you recommend anything off the
 watchlist, and say when a suggestion is a rewatch you are proposing deliberately.
+
+The cinema is different. A favourite back on a big screen — a re-release, an
+anniversary run, a classics slot — is a fair recommendation. Label it as a
+rewatch and give their rating, rather than dropping it as already seen.
 
 **The watchlist is 500+ films and unordered.** Never dump it. Filter it against
 whatever the request actually constrains — mood, runtime, decade, genre — and if

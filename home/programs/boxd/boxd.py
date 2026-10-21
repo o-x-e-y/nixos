@@ -213,10 +213,11 @@ def fetch_json(path: str, ttl: int = TTL_FILM, refresh: bool = False) -> dict:
 # parsing
 # --------------------------------------------------------------------------
 
-_GRIDITEM = re.compile(r'<li class="griditem".*?</li>', re.S)
+_GRIDITEM = re.compile(r'<li class="(?:griditem|posteritem)\b.*?</li>', re.S)
 _SLUG = re.compile(r'data-item-slug="([^"]+)"')
 _NAME = re.compile(r'data-item-name="([^"]*)"')
 _RATED = re.compile(r'class="rating[^"]*\brated-(\d+)\b')
+_OWNER_RATED = re.compile(r'data-owner-rating="(\d+)"')
 _TITLE_YEAR = re.compile(r"^(.*?)\s*\((\d{4})\)\s*$")
 _PAGINATE = re.compile(r'<div class="paginate-pages">(.*?)</div>', re.S)
 _PAGE_NUM = re.compile(r"/page/(\d+)/")
@@ -227,8 +228,10 @@ def parse_grid(page: str, *, where: str) -> list[dict]:
 
     Every grid on the site -- watchlist, watched films, genre filters, similar
     films -- is the same <li class="griditem">, carrying the slug and display
-    name as data attributes and the viewer's rating in a sibling span. Chunking
-    on the <li> first is what keeps a rating attached to its own film.
+    name as data attributes and the viewer's rating in a sibling span. Lists
+    are the exception: <li class="posteritem">, with the list owner's rating as
+    data-owner-rating on the <li> itself and 0 meaning unrated. Chunking on the
+    <li> first is what keeps a rating attached to its own film.
     """
     films = []
     for chunk in _GRIDITEM.findall(page):
@@ -243,7 +246,9 @@ def parse_grid(page: str, *, where: str) -> list[dict]:
         if matched:
             title, year = matched.group(1), int(matched.group(2))
 
-        rated = _RATED.search(chunk)
+        rated = _RATED.search(chunk) or _OWNER_RATED.search(chunk)
+        if rated and rated.group(1) == "0":
+            rated = None
         films.append(
             {
                 "slug": slug.group(1),
@@ -354,6 +359,13 @@ def cmd_watchlist(args) -> dict:
         f"/{args.user}/watchlist/", ttl=TTL_LIST, refresh=args.refresh, limit=args.limit
     )
     return {"user": args.user, "count": len(films), "films": films}
+
+
+def cmd_list(args) -> dict:
+    films = collect(
+        f"/{args.user}/list/{args.slug}/", ttl=TTL_LIST, refresh=args.refresh, limit=args.limit
+    )
+    return {"user": args.user, "list": args.slug, "count": len(films), "films": films}
 
 
 def _films_path(args) -> str:
@@ -737,6 +749,10 @@ def render(command: str, data: dict) -> str:
         out.append(f"{data['count']} films {label[command]} -- {data['user']}")
         out.extend(film_line(f) for f in data["films"])
 
+    elif command == "list":
+        out.append(f"{data['count']} films on the list {data['list']} -- {data['user']}")
+        out.extend(film_line(f) for f in data["films"])
+
     elif command == "diary":
         out.append(f"{data['count']} recent entries -- {data['user']}")
         for entry in data["entries"]:
@@ -909,6 +925,9 @@ def main(argv: list[str] | None = None) -> int:
             "--decade",
             help="restrict to one decade, e.g. 1990s (filtered locally)",
         )
+    lst = add("list", "everything on one of their lists, in list order")
+    lst.add_argument("slug", help="the list's slug, e.g. 2026-ranked from /oxey/list/2026-ranked/")
+    lst.add_argument("--limit", type=int, default=None)
     add("diary", "recent viewings, with dates and reviews").add_argument(
         "--limit", type=int, default=None
     )
@@ -958,6 +977,7 @@ def main(argv: list[str] | None = None) -> int:
     handlers = {
         "profile": cmd_profile,
         "watchlist": cmd_watchlist,
+        "list": cmd_list,
         "films": cmd_films,
         "ratings": cmd_ratings,
         "diary": cmd_diary,

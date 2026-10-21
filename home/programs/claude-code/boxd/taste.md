@@ -111,7 +111,9 @@ filmmaker and an idea does very well, even when it gets gruesome: *Strange
 Darling* 5.0, *Sinners* 4.5, *Talk to Me* 4.5, *The Substance* 4.5, *Bring Her
 Back* 4.0, *Longlegs* 4.0, Eggers 4.0–4.5. Where a film sits isn't always clear
 beforehand, so a horror title that leans nasty, extreme or jumpscare-heavy gets
-a plain warning saying how, and they decide.
+a plain warning saying how, and they decide. For a classic the warning can be
+lighter: its reputation is part of why they would go, and they know roughly
+what they are in for.
 
 ### What actually holds
 
@@ -191,7 +193,12 @@ screen is nearly always a good bet. A streaming-only pick is the weaker one.
 
 **The watchlist is 513 films and skews older than their history** — 239 from the
 1990s–2010s, 78 from before 1990. That backlog is where the films they mean to
-get to already live; prefer it to inventing suggestions.
+get to already live; prefer it to inventing suggestions. **A watchlist title
+that is actually showing always gets mentioned**, whatever else in this file
+would argue against it. They put it there themselves. Attach any warning that
+applies, but recommend it anyway. Check the watchlist against the whole
+programme, not just the films that look like an obvious fit: *Club Kid*, one of
+their most anticipated films of 2026, was nearly missed that way.
 
 **Auteurs first, but nothing is off the table.** In their own words they prefer
 "the more artistically outspoken auteurs and interesting unique stories, but if
