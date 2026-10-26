@@ -27,6 +27,10 @@
       extraArgs = "--keep-since 30d --keep 5";
     };
   };
+  # The profile rather than /run/current-system, so a pending `nixos-rebuild
+  # boot` generation stays the default entry.
+  systemd.services.nh-clean.serviceConfig.ExecStartPost =
+    "/nix/var/nix/profiles/system/bin/switch-to-configuration boot";
 
   nixpkgs.config.allowUnfree = true;
 }
