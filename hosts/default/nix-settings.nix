@@ -17,5 +17,16 @@
 
   nix.settings.nix-path = [ "nixpkgs=${inputs.nixpkgs}" ];
 
+  # Instead of nix.gc: it also drops direnv and `result` roots untouched for 30
+  # days, which nix-direnv keeps fresh by touching them on every load.
+  programs.nh = {
+    enable = true;
+    clean = {
+      enable = true;
+      dates = "Mon 12:00";
+      extraArgs = "--keep-since 30d --keep 5";
+    };
+  };
+
   nixpkgs.config.allowUnfree = true;
 }
