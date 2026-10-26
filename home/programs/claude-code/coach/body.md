@@ -108,7 +108,7 @@ placed against the roster when it lands, two weeks ahead.
 | Slot | Default placement | Base 1 | Base 2 |
 |---|---|---|---|
 | **Q1** | Wed, or Tue if Wed has a shift; **gym A** that evening | Sweet spot 2×15 → 2×20 → 3×15, 4×15 if it is going well, @258–275 | 2×20 → 3×20 → 3×25 → 4×20 @258–275, then threshold 2×20 @278–285 |
-| **Q2** | Sat, 72 h after gym A | Low cadence 2×20 → 3×15 → 2×25 @235–260, 55–65 rpm seated | 3×15 → 3×20 → 2×30 @245–260 |
+| **Q2** | Sat, 72 h after gym A | Low cadence 2×20 → 3×15 → 2×25 @235–260, 55–65 rpm seated | 3×15 → 3×20 → 2×30 @245–260, 50–60 rpm (metronome 110 bpm) |
 | **Long** | Sun, the free weekend day; **gym B** after the ride | 2.5 → 3.5–4 h Z2 | 3.5 → 4.5 h Z2; indoor 2–2.5 h below ~3 °C or icy |
 | **E2** | Tue, or the other weekend day | 1.5–2.5 h Z2 | 2–2.5 h Z2 |
 | **Fill** | Any free evening, Mon and Thu included | 60–90 min indoor Z2 | 60–90 min indoor Z2 |
@@ -134,7 +134,7 @@ first race. About 45 to 60 minutes each.
   and 20–40 g of protein in the gap. The ride comes first because it is the priority.
 - **Gym B** is the lighter one, upper-body emphasis with single-leg and hip work,
   after the long ride. It tolerates tired legs.
-- **Low cadence is the on-bike half** — 55–65 rpm seated at 235–260 W, the Q2 slot
+- **Low cadence is the on-bike half** — 50–60 rpm seated (55–65 in Base 1; *changed 25 Oct 2026* to spare the knees, ridden at 55 on a 110 bpm metronome) at 235–260 W, the Q2 slot
   every base week, and it does well on the trainer where holding a cadence is easy.
   **Hold the cadence, not the watts,** if the two conflict.
 
