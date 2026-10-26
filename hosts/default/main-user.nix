@@ -27,7 +27,6 @@ in
       extraGroups = [
         "networkmanager"
         "wheel"
-        "docker"
         "video"
         "render"
       ];
