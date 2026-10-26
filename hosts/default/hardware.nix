@@ -18,4 +18,7 @@
   hardware.wooting.enable = true;
 
   virtualisation.docker.enable = true;
+  virtualisation.docker.enableOnBoot = false;
+
+  zramSwap.enable = true;
 }
