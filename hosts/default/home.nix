@@ -65,7 +65,6 @@ in
     clang-tools
     signal-desktop
     mold
-    postman
     sqlite
     glow
     bat
@@ -73,7 +72,6 @@ in
     git-filter-repo
     speedtest-cli
     qbittorrent
-    riseup-vpn
     haruna
     obs-studio
     claude-monitor
