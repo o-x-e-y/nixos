@@ -31,10 +31,9 @@ let
   # diary, not on a schedule.
   taste = builtins.readFile ./taste.md;
 
-  body = builtins.replaceStrings
-    [ "@USER@" "@TASTE@" ]
-    [ user taste ]
-    (builtins.readFile ./body.md);
+  template = builtins.readFile ./body.md;
+
+  body = builtins.replaceStrings [ "@USER@" "@TASTE@" ] [ user taste ] template;
 
   render =
     tokens: builtins.replaceStrings (builtins.attrNames tokens) (builtins.attrValues tokens) body;

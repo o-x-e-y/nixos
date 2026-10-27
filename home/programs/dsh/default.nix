@@ -26,6 +26,8 @@ let
 
   settingsFile = settingsFormat.generate "dsh-settings.yaml" cfg.settings;
 
+  yq = lib.getExe pkgs.yq-go;
+
   # Built from ../claude-code's scripts rather than relying on that module
   # having put them on PATH. Same name, same inputs, same text, so Nix resolves
   # these to the very store paths apps.claude-code already builds -- the coach
@@ -701,7 +703,7 @@ in
         dsh_settings=${lib.escapeShellArg "${dshHome}/settings.yaml"}
         $DRY_RUN_CMD mkdir -p "$(dirname "$dsh_settings")"
         if [ -e "$dsh_settings" ]; then
-          $DRY_RUN_CMD ${lib.getExe pkgs.yq-go} eval-all --inplace \
+          $DRY_RUN_CMD ${yq} eval-all --inplace \
             'select(fileIndex == 0) * select(fileIndex == 1)' \
             "$dsh_settings" ${settingsFile}
         else
@@ -732,18 +734,16 @@ in
     # where a corrupt settings.yaml does abort.
     home.activation.dshBundleExemptions = lib.hm.dag.entryAfter [ "writeBoundary" "dsh" ] (
       lib.concatStringsSep "\n" (
-        lib.mapAttrsToList (
-          profile: grants: ''
-            compat=${lib.escapeShellArg "${dshHome}/profiles/${profile}/compatibility.json"}
-            if [ -e "$compat" ] && $DRY_RUN_CMD ${lib.getExe pkgs.yq-go} -e '.' "$compat" >/dev/null 2>&1; then
-              $DRY_RUN_CMD ${lib.getExe pkgs.yq-go} eval-all --inplace \
-                'select(fileIndex == 0) + select(fileIndex == 1)' \
-                "$compat" ${exemptionFile grants}
-            else
-              $DRY_RUN_CMD install -m 0644 ${exemptionFile grants} "$compat"
-            fi
-          ''
-        ) bundleVersionExemptions
+        lib.mapAttrsToList (profile: grants: ''
+          compat=${lib.escapeShellArg "${dshHome}/profiles/${profile}/compatibility.json"}
+          if [ -e "$compat" ] && $DRY_RUN_CMD ${yq} -e '.' "$compat" >/dev/null 2>&1; then
+            $DRY_RUN_CMD ${yq} eval-all --inplace \
+              'select(fileIndex == 0) + select(fileIndex == 1)' \
+              "$compat" ${exemptionFile grants}
+          else
+            $DRY_RUN_CMD install -m 0644 ${exemptionFile grants} "$compat"
+          fi
+        '') bundleVersionExemptions
       )
     );
 
