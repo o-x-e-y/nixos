@@ -31,10 +31,9 @@ let
   # diary, not on a schedule.
   taste = builtins.readFile ./taste.md;
 
-  body = builtins.replaceStrings
-    [ "@USER@" "@TASTE@" ]
-    [ user taste ]
-    (builtins.readFile ./body.md);
+  template = builtins.readFile ./body.md;
+
+  body = builtins.replaceStrings [ "@USER@" "@TASTE@" ] [ user taste ] template;
 
   render =
     tokens: builtins.replaceStrings (builtins.attrNames tokens) (builtins.attrValues tokens) body;
@@ -67,7 +66,21 @@ let
   # The one string both frontmatters share, and the summary dsh's catalog shows.
   # It is what decides whether this document is the right one to load, so it
   # names the three things it is actually for.
-  description = "The user's Letterboxd -- their watchlist, their ratings, what they have seen, and recommendations built on a profile of their taste. Read-only from public pages; it cannot rate, review, or add to a watchlist.";
+  description = builtins.replaceStrings [ "\n" ] [ " " ] ''
+    The user's Letterboxd -- their watchlist, their ratings, what they have seen, and
+    recommendations built on a profile of their taste. Read-only from public pages; it
+    cannot rate, review, or add to a watchlist.'';
+
+  skillDescription = builtins.replaceStrings [ "\n" ] [ " " ] ''
+    ${description} Use when asked what to watch, what is on the watchlist, what they
+    thought of a film, or for a film recommendation.'';
+
+  argumentHint = builtins.concatStringsSep " | " [
+    "what should I watch tonight"
+    "is <film> on my watchlist"
+    "recommend me something"
+    "what did I think of <film>"
+  ];
 in
 {
   # A string, not a path: home-manager's claude-code module routes `commands`
@@ -76,7 +89,7 @@ in
   commandText = ''
     ---
     description: ${description}
-    argument-hint: [what should I watch tonight | is <film> on my watchlist | recommend me something | what did I think of <film>]
+    argument-hint: [${argumentHint}]
     allowed-tools: Bash(boxd:*), Bash(date:*)
     ---
 
@@ -93,7 +106,7 @@ in
     cp ${pkgs.writeText "SKILL.md" ''
       ---
       name: boxd
-      description: ${description} Use when asked what to watch, what is on the watchlist, what they thought of a film, or for a film recommendation.
+      description: ${skillDescription}
       ---
 
       # The user's Letterboxd
