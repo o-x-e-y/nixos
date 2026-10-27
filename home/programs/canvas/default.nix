@@ -20,6 +20,7 @@ let
       NAME=""
       DESCRIPTION=""
       DOC_PATH=""
+      RUBRIC=""
       USE_EDITOR=true
 
       while [[ $# -gt 0 ]]; do
@@ -27,6 +28,7 @@ let
           --name) NAME="$2"; USE_EDITOR=false; shift 2 ;;
           --desc) DESCRIPTION="$2"; shift 2 ;;
           --doc)  DOC_PATH="$2"; shift 2 ;;
+          --rubric) RUBRIC="$2"; shift 2 ;;
           *) echo "Unknown argument: $1" >&2; exit 1 ;;
         esac
       done
@@ -82,6 +84,37 @@ TEMPLATE
         exit 1
       fi
 
+      if [ -n "$RUBRIC" ]; then
+        LINKS=""
+        page=1
+        while :; do
+          batch="$(curl -sf \
+            -H "Authorization: Bearer $API_KEY" \
+            "$BASE_URL/api/v1/courses/$COURSE_ID/outcome_group_links?outcome_style=full&per_page=100&page=$page")"
+          [ "$(echo "$batch" | jq length)" -eq 0 ] && break
+          LINKS+="$batch"
+          page=$((page + 1))
+        done
+
+        CRITERIA="$(echo "$LINKS" | jq -n \
+          --arg wanted "$RUBRIC" \
+          'def trim: gsub("^\\s+|\\s+$"; "");
+          [inputs[].outcome] as $outcomes
+          | [$wanted | split(",")[] | trim] as $titles
+          | [$titles[] as $t | {title: $t, outcome: (first($outcomes[] | select(.title | trim == $t)) // null)}]
+          | if any(.outcome == null) then
+              error("unknown outcome(s): " + ([.[] | select(.outcome == null).title] | join(", ")))
+            else . end
+          | to_entries | map({key: (.key | tostring), value: {
+              description: .value.title,
+              long_description: (.value.outcome.description | gsub("<link[^>]*>"; "")),
+              points: .value.outcome.points_possible,
+              learning_outcome_id: .value.outcome.id,
+              mastery_points: .value.outcome.mastery_points,
+              ratings: (.value.outcome.ratings | to_entries | map({key: (.key | tostring), value: .value}) | from_entries)
+            }}) | from_entries')"
+      fi
+
       PUBLISH=false
       [ -n "$DOC_PATH" ] && PUBLISH=true
 
@@ -113,6 +146,24 @@ TEMPLATE
         "$BASE_URL/api/v1/courses/$COURSE_ID/modules/$MODULE_ID/items" > /dev/null
 
       echo "Done! Assignment \"$NAME\" added to module."
+
+      if [ -n "$RUBRIC" ]; then
+        echo "Adding rubric: $RUBRIC"
+
+        curl -sf \
+          -X POST \
+          -H "Authorization: Bearer $API_KEY" \
+          -H "Content-Type: application/json" \
+          -d "$(jq -n \
+            --arg title "$NAME" \
+            --argjson criteria "$CRITERIA" \
+            --argjson id "$ASSIGNMENT_ID" \
+            '{"rubric":{"title":$title,"criteria":$criteria},"rubric_association":{"association_type":"Assignment","association_id":$id,"purpose":"grading","use_for_grading":false}}'
+          )" \
+          "$BASE_URL/api/v1/courses/$COURSE_ID/rubrics" > /dev/null
+
+        echo "Rubric added."
+      fi
 
       if [ -n "$DOC_PATH" ]; then
         echo "Uploading and submitting: $DOC_PATH"
