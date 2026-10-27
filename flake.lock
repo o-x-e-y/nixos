@@ -210,11 +210,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793131986,
-        "narHash": "sha256-FdPMfXJI142vfLKf+Q3ByA6DS60vNyPu0E/lyoQ5x50=",
+        "lastModified": 1793134984,
+        "narHash": "sha256-/Yx5L4gEPrw23J0PuXRrsd4/Q9KmXkRYpKq6Y33MFoY=",
         "owner": "o-x-e-y",
         "repo": "ortec-mcp",
-        "rev": "c3cfdb17ac2889170b0bf421fd22b8ac1f51fac8",
+        "rev": "342c4375086ba65b97ae546f1ef531dacabf5618",
         "type": "github"
       },
       "original": {
