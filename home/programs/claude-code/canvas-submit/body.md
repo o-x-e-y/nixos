@@ -11,7 +11,7 @@ canvas-assignment --name "<name>" [--desc "<html>"] [--rubric "<outcomes>"] [--d
 - `--rubric`: comma-separated HBO-i learning outcomes, one rubric criterion each, named as Canvas titles them: `<Activity>-<Domain><Level>` such as `Analysis-S2`, `Advise-U1` or `Manage&Control-I3` (activities Analysis, Advise, Design, Realise, Manage&Control; domains S Software, U User Interaction, I Infrastructure, O Organisational processes, H Hardware), plus `PS-<Level>` and `PL-<Level>` for Professional Standard and Personal Leadership. Points, ratings and text come from the outcome. An unknown name stops the script before anything is created. Optional.
 - `--doc`: the file to upload and submit. With it the assignment is published and the file handed in; without it the assignment is created unpublished and nothing is submitted.
 
-There is no `--help`; any other flag exits with `Unknown argument`.
+Any other flag exits with `unrecognized arguments`.
 
 # Running it
 
@@ -30,11 +30,11 @@ canvas-assignment --name "Assignment name" --desc "$DESC" --rubric "Analysis-S2,
 
 # When it fails
 
-The script stops silently at the first failed request, so the last line it printed tells you how far it got:
+The script stops at the first failed request and prints the Canvas error (`Error: POST … returned <status>: …`). The line before it tells you how far it got:
 
-| Last line | State on Canvas |
+| Last progress line | State on Canvas |
 |---|---|
-| `unknown outcome(s): …` | Nothing was created. Fix the outcome name and rerun. |
+| `Error: unknown outcome(s): …` | Nothing was created. Fix the outcome name and rerun. |
 | `Creating assignment: …` | Nothing was created. Usually an expired API key (`/run/secrets/canvas-api-key`) or a course ID that no longer exists. |
 | `Assignment created (id: N), adding to module...` | The assignment exists but is not in the module. |
 | `Adding rubric: …` | The assignment exists and is in the module, but has no rubric. |
@@ -42,4 +42,4 @@ The script stops silently at the first failed request, so the last line it print
 
 Once an assignment exists, do not rerun the command: that creates a duplicate. Tell the user what state it is in so they can finish or delete it in Canvas.
 
-The course and module IDs are hardcoded in `~/nixos/home/programs/canvas/default.nix` and change every course year.
+The course and module IDs are hardcoded in `~/nixos/home/programs/canvas/canvas-assignment.py` and change every course year.
