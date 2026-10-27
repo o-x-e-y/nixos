@@ -19,6 +19,7 @@
     ./mimeapps
     ./minecraft
     ./okular
+    ./ortec
     ./osu-lazer
     ./pathe
     ./plasma

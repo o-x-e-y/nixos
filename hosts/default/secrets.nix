@@ -29,6 +29,8 @@ in
           "garmin-connect-password"
           "justwatch-email"
           "justwatch-password"
+          "ortec-email"
+          "ortec-password"
           "git_fhict_token"
           # fine-grained PAT for gh, scoped to the repos Claude may touch
           "github_token"

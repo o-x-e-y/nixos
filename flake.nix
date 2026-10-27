@@ -37,6 +37,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    ortec-mcp = {
+      url = "github:o-x-e-y/ortec-mcp";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     deepseek-harness = {
       url = "github:moraxyc/deepseek-harness.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -54,6 +59,7 @@
       sops-nix,
       oxeylyzer,
       pathe-cli,
+      ortec-mcp,
       deepseek-harness,
       ...
     }@inputs:
@@ -99,6 +105,7 @@
               zed-extensions.overlays.default
               oxeylyzer.overlays.default
               pathe-cli.overlays.default
+              ortec-mcp.overlays.default
               deepseek-harness.overlays.default
             ];
 
@@ -107,6 +114,7 @@
               zed-extensions.homeManagerModules.default
               deepseek-harness.homeModules.default
               pathe-cli.homeManagerModules.default
+              ortec-mcp.homeManagerModules.default
             ];
           }
 

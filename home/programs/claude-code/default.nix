@@ -13,6 +13,7 @@ let
   # harnesses and is imported here.
   coach = import ./coach { inherit pkgs; };
   pathe = import ./pathe { inherit pkgs; };
+  ortec = import ./ortec { inherit pkgs; };
   boxd = import ./boxd {
     inherit pkgs;
     inherit (config.apps.boxd) user;
@@ -108,6 +109,16 @@ in
             # public page. See ../boxd/boxd.py's module docstring.
             "Bash(boxd:*)"
 
+            # The read commands only. The writes (swap-request, swap-accept,
+            # swap-decline, leave) print a preview unless given --yes, but a
+            # prefix cannot see the flag, so they ask; see ./auto-mode.nix.
+            "Bash(ortec shifts:*)"
+            "Bash(ortec swaps:*)"
+            "Bash(ortec swap-candidates:*)"
+            "Bash(ortec leaves:*)"
+            "Bash(ortec leave-types:*)"
+            "Bash(ortec working-with:*)"
+
             # Only the read path into the journal. The wrapper rejects every
             # flag but jrnl's filters after --json, and jrnl never writes with
             # --format set, so this cannot add, edit or delete an entry. Plain
@@ -160,6 +171,7 @@ in
       commands = {
         coach = coach.commandText;
         pathe = pathe.commandText;
+        ortec = ortec.commandText;
         boxd = boxd.commandText;
         ledger = ledger.commandText;
         fontys = fontys.commandText;
