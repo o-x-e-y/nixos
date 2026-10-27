@@ -167,13 +167,6 @@ in
         typst-writer = typst-writer.commandText;
         canvas-submit = canvas-submit.commandText;
       };
-
-      plugins.superpowers = pkgs.fetchFromGitHub {
-        owner = "obra";
-        repo = "superpowers";
-        rev = "6fd4507659784c351abbd2bc264c7162cfd386dc";
-        sha256 = "sha256-P/FD8HTQO+QzvMe3A/B2v2vjs8T6ZmIYH3MPp79dSzo=";
-      };
     };
 
     home.packages = [
