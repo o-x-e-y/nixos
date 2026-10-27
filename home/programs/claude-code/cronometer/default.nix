@@ -37,34 +37,5 @@ in
         };
       };
     };
-
-    # Lists merge across modules, so these append to the allow/deny lists in
-    # ../default.nix rather than replacing them.
-    programs.claude-code.settings.permissions = {
-      # The read half of Cronometer: what was logged, and the weight
-      # series fuel.py calibrates against.
-      allow = [
-        "mcp__cronometer__get_food_log"
-        "mcp__cronometer__get_daily_nutrition"
-        "mcp__cronometer__get_nutrition_scores"
-        "mcp__cronometer__get_macro_targets"
-        "mcp__cronometer__search_foods"
-        "mcp__cronometer__get_food_details"
-        "mcp__cronometer__list_biometrics"
-        "mcp__cronometer__get_biometrics"
-        "mcp__cronometer__get_fasting_history"
-        "mcp__cronometer__get_fasting_stats"
-      ];
-
-      # Cronometer is an evidence base, not something to edit. Reading
-      # the log is the coaching use; writing to it is not.
-      deny = [
-        "mcp__cronometer__add_food_entry"
-        "mcp__cronometer__remove_food_entry"
-        "mcp__cronometer__add_custom_food"
-        "mcp__cronometer__copy_day"
-        "mcp__cronometer__mark_day_complete"
-      ];
-    };
   };
 }

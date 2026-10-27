@@ -215,7 +215,7 @@ workouts/workouts.json ──┬──▶ winter-training-plan.typ  (the plan PD
 review/log.json  ─▶ review/sessions.py ─▶ review/sessions.json ─▶ the plan's session log
 nutrition/fuel.py ─▶ nutrition/fuel.json ─▶ the plan's per-day Fuel badge
                           ▲
-      what was eaten ─────┘  Cronometer, via the `cronometer` MCP (read-only)
+      what was eaten ─────┘  Cronometer, via the `cronometer` MCP
 ```
 
 - `winter-training-plan.typ` — the plan. Overview & Principles, the calendar, zones,
@@ -417,10 +417,10 @@ ride.
 
 ## Cronometer — what was actually eaten
 
-Logged intake comes from the **`cronometer` MCP** (`mcp__cronometer__*`). The tool
-descriptions say what each call does; they do not say the @CRON_COUNT@ things that matter.
+Logged intake comes from the **`cronometer` MCP**. The tool descriptions say what each
+call does; they do not say the things that matter.
 
-@CRON_WRITE@- **Never score a day's intake before the day is over.** A diary pulled in the evening
+- **Never score a day's intake before the day is over.** A diary pulled in the evening
   is a partial day, and reading it as a total turns unlogged dinner into a deficit. This
   has produced one wrong conclusion already: Aug 19 2026 was recorded at 17:02 as *1279
   kcal and 135 g carb short*, with energy availability at a supposed ~19 kcal/kg FFM, and
@@ -460,7 +460,10 @@ descriptions say what each call does; they do not say the @CRON_COUNT@ things th
 Pull a day when the question turns on fuelling — a session that TSB does not explain,
 the day before a headline session, or a long cold ride that fell apart late.
 Under-carbing before quality is a real finding; one day's total on an easy week is
-noise.@CRON_TAIL@
+noise.
+
+The diary is the rider's own record: read it freely, and only add to or change it when
+they ask.
 
 # The tooling
 
