@@ -74,7 +74,7 @@ in
       editor = "zeditor --wait";
       encrypt = false;
       template = false;
-      default_hour = 9;
+      default_hour = 14;
       default_minute = 0;
       timeformat = "%F %R";
       tagsymbols = "@+";
