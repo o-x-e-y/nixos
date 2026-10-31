@@ -421,6 +421,9 @@ def cmd_ratings(args) -> dict:
 
 
 _ITEM = re.compile(r"<item>(.*?)</item>", re.S)
+_GUID = re.compile(r"<guid[^>]*>letterboxd-\w+-(\d+)</guid>")
+# A rewatch links to /<user>/film/<slug>/<n>/, so the slug is not the last segment.
+_FEED_FILM = re.compile(r"/film/([^/]+)/")
 
 
 def _tag(chunk: str, name: str) -> str | None:
@@ -430,22 +433,19 @@ def _tag(chunk: str, name: str) -> str | None:
     return htmllib.unescape(found.group(1)).strip()
 
 
-def cmd_diary(args) -> dict:
-    """Recent activity, from the official RSS feed rather than the diary page.
-
-    The feed is the one part of Letterboxd with a documented shape, and it
-    carries what the HTML diary makes you reassemble: watch date, rating,
-    rewatch and like flags, and the review text.
-    """
+def _feed_entries(args) -> dict[str, dict]:
+    """The RSS feed's viewings, keyed by viewing id, newest first."""
     feed = fetch(f"/{args.user}/rss/", ttl=TTL_LIST, refresh=args.refresh)
 
-    entries = []
+    entries = {}
     for chunk in _ITEM.findall(feed):
         title = _tag(chunk, "letterboxd:filmTitle")
         if not title:
             continue  # a list or a story, not a viewing
         rating = _tag(chunk, "letterboxd:memberRating")
         link = _tag(chunk, "link") or ""
+        viewing = _GUID.search(chunk)
+        film = _FEED_FILM.search(link)
         review = re.search(r"<!\[CDATA\[(.*?)\]\]>", chunk, re.S)
         text = None
         if review:
@@ -457,21 +457,91 @@ def cmd_diary(args) -> dict:
             body = [p for p in body if p and not _AUTO_REVIEW.match(p)]
             text = " ".join(body) or None
 
-        entries.append(
-            {
-                "title": title,
-                "year": int(_tag(chunk, "letterboxd:filmYear") or 0) or None,
-                "slug": link.rstrip("/").split("/")[-1],
-                "watched": _tag(chunk, "letterboxd:watchedDate"),
-                "rating": float(rating) if rating else None,
-                "rewatch": _tag(chunk, "letterboxd:rewatch") == "Yes",
-                "liked": _tag(chunk, "letterboxd:memberLike") == "Yes",
-                "review": text,
-            }
+        entries[viewing.group(1) if viewing else link] = {
+            "title": title,
+            "year": int(_tag(chunk, "letterboxd:filmYear") or 0) or None,
+            "slug": film.group(1) if film else None,
+            "watched": _tag(chunk, "letterboxd:watchedDate"),
+            "rating": float(rating) if rating else None,
+            "rewatch": _tag(chunk, "letterboxd:rewatch") == "Yes",
+            "liked": _tag(chunk, "letterboxd:memberLike") == "Yes",
+            "review": text,
+            "has_review": text is not None,
+        }
+    return entries
+
+
+_DIARY_ROW = re.compile(r'<tr class="diary-entry-row\b.*?</tr>', re.S)
+_VIEWING_ID = re.compile(r'data-viewing-id="(\d+)"')
+_DAYDATE = re.compile(r'href="/[^/]+/diary/films/for/(\d{4})/(\d{2})/(\d{2})/"')
+_RELEASE_YEAR = re.compile(r'class="col-releaseyear[^"]*"><span>(\d{4})</span>')
+
+
+def _diary_year(args) -> list[dict]:
+    """Every viewing dated in one year, from the HTML diary.
+
+    The feed stops at the latest 50 viewings, so a whole year has to come from
+    the diary pages: 50 rows each, about three requests for a year of this
+    account. The rows carry no review text, only whether there is one, so the
+    text is filled in from the feed for the viewings it still covers.
+    """
+    path = f"/{args.user}/films/diary/for/{args.year}/"
+    first = fetch(path, ttl=TTL_LIST, refresh=args.refresh)
+    pages = [first]
+    for number in range(2, last_page(first) + 1):
+        if args.limit and len(pages) * 50 >= args.limit:
+            break
+        pages.append(fetch(f"{path}page/{number}/", ttl=TTL_LIST, refresh=args.refresh))
+
+    feed = _feed_entries(args)
+    entries = []
+    for page in pages:
+        for row in _DIARY_ROW.findall(page):
+            viewing = _VIEWING_ID.search(row).group(1)
+            display = htmllib.unescape(_NAME.search(row).group(1))
+            matched = _TITLE_YEAR.match(display)
+            year = _RELEASE_YEAR.search(row)
+            rated = _RATED.search(row)
+            has_review = "js-td-review icon-status-off" not in row
+            entries.append(
+                {
+                    "title": matched.group(1) if matched else display,
+                    "year": int(year.group(1)) if year else None,
+                    "slug": _SLUG.search(row).group(1),
+                    "watched": "-".join(_DAYDATE.search(row).groups()),
+                    "rating": int(rated.group(1)) / 2 if rated else None,
+                    "rewatch": "js-td-rewatch icon-status-off" not in row,
+                    "liked": "icon-liked" in row,
+                    "review": feed[viewing]["review"] if viewing in feed else None,
+                    "has_review": has_review,
+                }
+            )
+
+    # Unlike a watchlist, an empty year is ordinary, so "nothing parsed" alone
+    # proves nothing. Viewing ids on the page with no rows around them do.
+    if not entries and _VIEWING_ID.search(first):
+        raise BoxdError(
+            f"parsed 0 diary entries from {path}, but the page carries viewing "
+            "ids -- Letterboxd has changed the diary row markup."
         )
+    return entries
+
+
+def cmd_diary(args) -> dict:
+    """Recent activity from the official RSS feed, or one year from the diary.
+
+    The feed is the one part of Letterboxd with a documented shape, and it
+    carries what the HTML diary makes you reassemble: watch date, rating,
+    rewatch and like flags, and the review text. It only holds the latest 50
+    viewings, which is what --year is for.
+    """
+    if args.year:
+        entries = _diary_year(args)
+    else:
+        entries = list(_feed_entries(args).values())
 
     entries = entries[: args.limit] if args.limit else entries
-    return {"user": args.user, "count": len(entries), "entries": entries}
+    return {"user": args.user, "year": args.year, "count": len(entries), "entries": entries}
 
 
 def cmd_film(args) -> dict:
@@ -754,7 +824,8 @@ def render(command: str, data: dict) -> str:
         out.extend(film_line(f) for f in data["films"])
 
     elif command == "diary":
-        out.append(f"{data['count']} recent entries -- {data['user']}")
+        span = f"entries in {data['year']}" if data["year"] else "recent entries"
+        out.append(f"{data['count']} {span} -- {data['user']}")
         for entry in data["entries"]:
             flags = "".join(
                 [" (rewatch)" if entry["rewatch"] else "", " <3" if entry["liked"] else ""]
@@ -928,8 +999,13 @@ def main(argv: list[str] | None = None) -> int:
     lst = add("list", "everything on one of their lists, in list order")
     lst.add_argument("slug", help="the list's slug, e.g. 2026-ranked from /oxey/list/2026-ranked/")
     lst.add_argument("--limit", type=int, default=None)
-    add("diary", "recent viewings, with dates and reviews").add_argument(
-        "--limit", type=int, default=None
+    diary = add("diary", "recent viewings, with dates and reviews")
+    diary.add_argument("--limit", type=int, default=None)
+    diary.add_argument(
+        "--year",
+        type=int,
+        help="every viewing dated in this year, from the HTML diary rather than "
+        "the feed, which only holds the latest 50",
     )
 
     deltas = add("deltas", "where their ratings part from the Letterboxd average")

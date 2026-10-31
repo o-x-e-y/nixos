@@ -27,6 +27,7 @@ Run `boxd --help`, or `boxd <command> --help`, whenever a flag is unclear.
 | what they thought of a film, their ratings | `boxd ratings` |
 | whether they have seen something | `boxd films` |
 | what they've watched lately, recent reviews | `boxd diary --limit N` |
+| everything they logged in a given year | `boxd diary --year YYYY` |
 | their stats, favourites | `boxd profile` |
 | genre/decade/director shape of their taste | `boxd taste` |
 | where they disagree with the consensus | `boxd deltas` |
@@ -37,6 +38,12 @@ Run `boxd --help`, or `boxd <command> --help`, whenever a flag is unclear.
 `boxd deltas` costs one request per rated film on a cold cache (~2 minutes for
 this account, then cached a month), so run it only when the question is really
 about consensus — the profile below already carries its findings.
+
+Plain `boxd diary` reads the RSS feed, which only holds the latest 50 viewings.
+`--year` pages the HTML diary instead, at about three requests a year. Its
+entries carry review text only where the feed still has it; an older entry with
+`"has_review": true` and `"review": null` has a review that was not fetched, not
+an empty one.
 
 Add `--json` when you need to filter or cross-reference in your head; the plain
 output is nicer to read but the JSON carries the same fields.
