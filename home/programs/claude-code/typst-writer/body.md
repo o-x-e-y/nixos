@@ -149,6 +149,20 @@ The argument is the label itself, not a string. `#prio-for(<us3>)` resolves to a
 
 For a priority badge that is not tied to a specific requirement, use the prio helpers directly: `#must`, `#high`, `#med`, `#low`, or `#prio("must")` for the general form.
 
+# Skeletons
+
+When a document is a skeleton (structure and notes, no finished prose), import the skeleton helpers under the template import. Never define `note` or `placeholder` in the document itself.
+
+```typ
+#import "@local/template:0.1.0": *
+#import "@local/skeleton:0.1.0": *
+```
+
+- `#note[ ... ]`: a grey box with what belongs in a section and the sources that back it. It is deleted once the section is written.
+- `#placeholder[caption] <label>`: a dashed box standing in for a figure, with a caption saying what the figure will show. Optional `height:` (default `4cm`). Label it like the figure that will replace it.
+
+Once a document has no notes or placeholders left, remove the skeleton import.
+
 # Other Template Utilities
 
 Use these when relevant:
