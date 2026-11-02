@@ -5,14 +5,13 @@ import shlex
 import subprocess
 import sys
 import tempfile
-from datetime import date
 from pathlib import Path
 
 import requests
 
 COURSE_ID = 14809
 MODULE_ID = 126437
-BASE_URL = "https://fhict.instructure.com"
+BASE_URL = "https://fontysict.instructure.com"
 API_KEY_PATH = "/run/secrets/canvas-api-key"
 
 TEMPLATE = """\
@@ -134,15 +133,6 @@ def submit(assignment_id, doc):
 
 
 def main():
-    if date.today() > date(2026, 10, 16):
-        print(
-            f"Warning: {BASE_URL} is deprecated since 2026-10-16 and stops "
-            "working in February 2027. Switch BASE_URL to "
-            "https://fontysict.instructure.com in "
-            "home/programs/canvas/canvas-assignment.py.",
-            file=sys.stderr,
-        )
-
     parser = argparse.ArgumentParser(
         description="Create an assignment in the personal Canvas course. "
         "Without --name, opens $CANVAS_EDITOR for a form."
