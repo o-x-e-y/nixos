@@ -11,6 +11,7 @@ canvas-assignment --course "<course>" --name "<assignment>" --doc <path>
 - `--desc`: the description, as HTML. On an existing assignment it replaces the description. Optional.
 - `--rubric`: comma-separated HBO-i learning outcomes, one rubric criterion each, named as Canvas titles them: `<Activity>-<Domain><Level>` such as `Analysis-S2`, `Advise-U1` or `Manage&Control-I3` (activities Analysis, Advise, Design, Realise, Manage&Control; domains S Software, U User Interaction, I Infrastructure, O Organisational processes, H Hardware), plus `PS-<Level>` and `PL-<Level>` for Professional Standard and Personal Leadership. Points, ratings and text come from the outcome. An unknown name stops the script before anything is created. An existing assignment that already has a rubric keeps it. Optional.
 - `--doc`: the file to upload and submit. With it the assignment is published and the file handed in; without it a new assignment is created unpublished and nothing is submitted.
+- `--publish`: publish the assignment without handing anything in, for work that is not ready yet. Optional.
 
 - `--course`: a course name or id. The assignment must already exist there under exactly that name, and only `--doc` is handed in; nothing else about it can be changed. A course name that repeats across semesters means this semester's course. If the name is off, the error lists the course's assignments, so run it once with the user's wording and take the exact name from that list.
 

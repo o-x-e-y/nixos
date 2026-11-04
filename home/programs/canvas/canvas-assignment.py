@@ -180,6 +180,11 @@ def main():
         "--doc", help="file to upload and submit; publishes the assignment"
     )
     parser.add_argument(
+        "--publish",
+        action="store_true",
+        help="publish the assignment without submitting anything",
+    )
+    parser.add_argument(
         "--delete",
         metavar="ID_OR_NAME",
         help="delete this assignment from the personal course instead",
@@ -192,7 +197,7 @@ def main():
     args = parser.parse_args()
 
     if args.delete:
-        if args.name or args.desc or args.rubric or args.doc or args.course:
+        if args.name or args.desc or args.rubric or args.doc or args.publish or args.course:
             sys.exit("Error: --delete takes no other options.")
         delete_assignment(f"/courses/{personal_course()['id']}", args.delete)
         return
@@ -204,11 +209,12 @@ def main():
     doc = Path(doc).expanduser() if doc else None
 
     if args.course:
-        if not doc or desc or args.rubric:
+        if not doc or desc or args.rubric or args.publish:
             sys.exit("Error: --course takes --name and --doc, and nothing else.")
         hand_in(find_course(args.course), name, doc)
         return
 
+    publish = args.publish or doc is not None
     course_url = f"/courses/{personal_course()['id']}"
     module = get_all(f"{course_url}/modules", per_page=100)[0]
 
@@ -236,7 +242,7 @@ def main():
                     "name": name,
                     "description": desc,
                     "submission_types": ["online_upload"],
-                    "published": doc is not None,
+                    "published": publish,
                 }
             },
         )
@@ -274,13 +280,14 @@ def main():
         )
         print("Rubric added.")
 
+    if publish and not assignment["published"]:
+        put(
+            f"{course_url}/assignments/{assignment_id}",
+            {"assignment": {"published": True}},
+        )
+        print("Assignment published.")
+
     if doc:
-        if not assignment["published"]:
-            put(
-                f"{course_url}/assignments/{assignment_id}",
-                {"assignment": {"published": True}},
-            )
-            print("Assignment published.")
         print(f"Uploading and submitting: {doc}")
         submit(course_url, assignment_id, doc)
         print("File submitted!")
