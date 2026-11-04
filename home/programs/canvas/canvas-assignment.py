@@ -9,7 +9,7 @@ from pathlib import Path
 
 import requests
 
-from canvas_api import check, get, get_all, personal_course, post, put
+from canvas_api import BASE_URL, check, delete, get, get_all, personal_course, post, put
 
 TEMPLATE = """\
 # Canvas Assignment — fill in below, then save and close the editor.
@@ -98,6 +98,20 @@ def find_assignment(course_url, name):
     return matches[0] if matches else None
 
 
+def delete_assignment(course_url, wanted):
+    if wanted.isdigit():
+        assignment = get(f"{course_url}/assignments/{wanted}")
+    else:
+        assignment = find_assignment(course_url, wanted)
+        if not assignment:
+            sys.exit(f'Error: no assignment named "{wanted}".')
+    delete(f"{course_url}/assignments/{assignment['id']}")
+    print(
+        f"Deleted assignment: {assignment['name']} (id: {assignment['id']}). "
+        f"Restore it at {BASE_URL}{course_url}/undelete"
+    )
+
+
 def find_course(wanted):
     courses = get_all(
         "/courses", enrollment_state="active", per_page=100, **{"include[]": "term"}
@@ -166,11 +180,22 @@ def main():
         "--doc", help="file to upload and submit; publishes the assignment"
     )
     parser.add_argument(
+        "--delete",
+        metavar="ID_OR_NAME",
+        help="delete this assignment from the personal course instead",
+    )
+    parser.add_argument(
         "--course",
         help="hand --doc in to an existing assignment in this course instead, "
         "by name or id",
     )
     args = parser.parse_args()
+
+    if args.delete:
+        if args.name or args.desc or args.rubric or args.doc or args.course:
+            sys.exit("Error: --delete takes no other options.")
+        delete_assignment(f"/courses/{personal_course()['id']}", args.delete)
+        return
 
     if args.name:
         name, desc, doc = args.name, args.desc, args.doc

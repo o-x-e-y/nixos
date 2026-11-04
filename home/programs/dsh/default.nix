@@ -84,9 +84,10 @@ let
 
   # Unlike Claude Code, nothing here asks before `canvas-assignment` runs, so
   # the skill's own "show the command and wait for confirmation" is the only
-  # thing between a request and a new assignment on Canvas. The same holds for
-  # plain `ledger`, which writes: Claude Code's permissions and auto-mode rule
-  # keep it to `ledger --json`, here only ../claude-code/ledger's text does.
+  # thing between a request and a new, changed or deleted assignment on
+  # Canvas. The same holds for plain `ledger`, which writes: Claude Code's
+  # permissions and auto-mode rule keep it to `ledger --json`, here only
+  # ../claude-code/ledger's text does.
   canvasSubmitSkills = (import ./../claude-code/canvas-submit { inherit pkgs; }).skills;
 
   # The DeepSeek credit balance in the TUI status line -- `bal:$4.65 (2m)`,

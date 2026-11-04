@@ -14,6 +14,8 @@ canvas-assignment --course "<course>" --name "<assignment>" --doc <path>
 
 - `--course`: a course name or id. The assignment must already exist there under exactly that name, and only `--doc` is handed in; nothing else about it can be changed. A course name that repeats across semesters means this semester's course. If the name is off, the error lists the course's assignments, so run it once with the user's wording and take the exact name from that list.
 
+`canvas-assignment --delete "<id or name>"` deletes an assignment from the personal course, with any submission on it, and takes no other options. Use it only when the user asks to remove one, such as a duplicate or a mistake, and show the command and wait for confirmation like any other run. Several assignments sharing a name can only be deleted by id; the ambiguous-name error lists them. A deleted assignment can be restored from the course's undelete page, which the script prints.
+
 Any other flag exits with `unrecognized arguments`.
 
 # Running it
