@@ -42,4 +42,4 @@ The script stops at the first failed request and prints the Canvas error (`Error
 
 Once an assignment exists, do not rerun the command: that creates a duplicate. Tell the user what state it is in so they can finish or delete it in Canvas.
 
-The course and module IDs are hardcoded in `~/nixos/home/programs/canvas/canvas-assignment.py` and change every course year.
+The course and module IDs are hardcoded in `~/nixos/home/programs/canvas/canvas-assignment.py` (the course ID also in `canvas-outcomes.py`) and change every course year.
