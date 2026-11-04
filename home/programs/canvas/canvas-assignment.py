@@ -9,7 +9,7 @@ from pathlib import Path
 
 import requests
 
-from canvas_api import check, get_all, personal_course, post
+from canvas_api import check, get, get_all, personal_course, post, put
 
 TEMPLATE = """\
 # Canvas Assignment — fill in below, then save and close the editor.
@@ -83,6 +83,21 @@ def rubric_criteria(course_url, wanted):
     return criteria
 
 
+def find_assignment(course_url, name):
+    matches = [
+        assignment
+        for assignment in get_all(f"{course_url}/assignments", per_page=100)
+        if assignment["name"] == name
+    ]
+    if len(matches) > 1:
+        ids = ", ".join(str(a["id"]) for a in matches)
+        sys.exit(
+            f'Error: {len(matches)} assignments are named "{name}" '
+            f"(ids: {ids}). Delete or rename the extras first."
+        )
+    return matches[0] if matches else None
+
+
 def submit(course_url, assignment_id, doc):
     upload = post(
         f"{course_url}/assignments/{assignment_id}/submissions/self/files",
@@ -104,8 +119,10 @@ def submit(course_url, assignment_id, doc):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Create an assignment in the personal Canvas course. "
-        "Without --name, opens $CANVAS_EDITOR for a form."
+        description="Create an assignment in the personal Canvas course, or "
+        "continue one with the same name: add what it is missing and submit "
+        "--doc as a new attempt. Without --name, opens $CANVAS_EDITOR for a "
+        "form."
     )
     parser.add_argument("--name", help="assignment title")
     parser.add_argument("--desc", default="", help="description, as HTML")
@@ -133,30 +150,47 @@ def main():
             course_url, [title.strip() for title in args.rubric.split(",")]
         )
 
-    print(f"Creating assignment: {name}")
-    assignment_id = post(
-        f"{course_url}/assignments",
-        {
-            "assignment": {
-                "name": name,
-                "description": desc,
-                "submission_types": ["online_upload"],
-                "published": doc is not None,
-            }
-        },
-    )["id"]
+    assignment = find_assignment(course_url, name)
+    if assignment:
+        print(f"Found existing assignment: {name} (id: {assignment['id']})")
+        if desc and desc != assignment["description"]:
+            put(
+                f"{course_url}/assignments/{assignment['id']}",
+                {"assignment": {"description": desc}},
+            )
+            print("Description updated.")
+    else:
+        print(f"Creating assignment: {name}")
+        assignment = post(
+            f"{course_url}/assignments",
+            {
+                "assignment": {
+                    "name": name,
+                    "description": desc,
+                    "submission_types": ["online_upload"],
+                    "published": doc is not None,
+                }
+            },
+        )
+        print(f"Assignment created (id: {assignment['id']}).")
+    assignment_id = assignment["id"]
 
-    print(
-        f"Assignment created (id: {assignment_id}), "
-        f"adding to module {module['name']}..."
-    )
-    post(
-        f"{course_url}/modules/{module['id']}/items",
-        {"module_item": {"type": "Assignment", "content_id": assignment_id, "indent": 1}},
-    )
-    print(f'Done! Assignment "{name}" added to module.')
+    in_module = get(
+        f"{course_url}/module_item_sequence",
+        asset_type="Assignment",
+        asset_id=assignment_id,
+    )["items"]
+    if not in_module:
+        print(f"Adding to module {module['name']}...")
+        post(
+            f"{course_url}/modules/{module['id']}/items",
+            {"module_item": {"type": "Assignment", "content_id": assignment_id, "indent": 1}},
+        )
+        print("Added to module.")
 
-    if criteria:
+    if criteria and assignment.get("rubric"):
+        print("The assignment already has a rubric; leaving it as is.")
+    elif criteria:
         print(f"Adding rubric: {args.rubric}")
         post(
             f"{course_url}/rubrics",
@@ -173,6 +207,12 @@ def main():
         print("Rubric added.")
 
     if doc:
+        if not assignment["published"]:
+            put(
+                f"{course_url}/assignments/{assignment_id}",
+                {"assignment": {"published": True}},
+            )
+            print("Assignment published.")
         print(f"Uploading and submitting: {doc}")
         submit(course_url, assignment_id, doc)
         print("File submitted!")
