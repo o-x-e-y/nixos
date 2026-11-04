@@ -98,6 +98,38 @@ def find_assignment(course_url, name):
     return matches[0] if matches else None
 
 
+def find_course(wanted):
+    courses = get_all(
+        "/courses", enrollment_state="active", per_page=100, **{"include[]": "term"}
+    )
+    matches = [c for c in courses if wanted in (str(c["id"]), c["name"])]
+    if not matches:
+        names = "\n  ".join(sorted({c["name"] for c in courses}))
+        sys.exit(f'Error: no active course "{wanted}". Your courses:\n  {names}')
+    # Course names repeat every semester, so take the newest term
+    return max(matches, key=lambda c: (c.get("term") or {}).get("start_at") or "")
+
+
+def hand_in(course, name, doc):
+    course_url = f"/courses/{course['id']}"
+    assignment = find_assignment(course_url, name)
+    if not assignment:
+        names = "\n  ".join(
+            a["name"] for a in get_all(f"{course_url}/assignments", per_page=100)
+        )
+        sys.exit(
+            f'Error: {course['name']} has no assignment named "{name}". '
+            f"Its assignments:\n  {names}"
+        )
+    if "online_upload" not in assignment["submission_types"]:
+        types = ", ".join(assignment["submission_types"])
+        sys.exit(f'Error: "{name}" takes {types}, not a file upload.')
+
+    print(f"Uploading and submitting to {course['name']}: {doc}")
+    submit(course_url, assignment["id"], doc)
+    print("File submitted!")
+
+
 def submit(course_url, assignment_id, doc):
     upload = post(
         f"{course_url}/assignments/{assignment_id}/submissions/self/files",
@@ -133,6 +165,11 @@ def main():
     parser.add_argument(
         "--doc", help="file to upload and submit; publishes the assignment"
     )
+    parser.add_argument(
+        "--course",
+        help="hand --doc in to an existing assignment in this course instead, "
+        "by name or id",
+    )
     args = parser.parse_args()
 
     if args.name:
@@ -140,6 +177,12 @@ def main():
     else:
         name, desc, doc = from_editor()
     doc = Path(doc).expanduser() if doc else None
+
+    if args.course:
+        if not doc or desc or args.rubric:
+            sys.exit("Error: --course takes --name and --doc, and nothing else.")
+        hand_in(find_course(args.course), name, doc)
+        return
 
     course_url = f"/courses/{personal_course()['id']}"
     module = get_all(f"{course_url}/modules", per_page=100)[0]
