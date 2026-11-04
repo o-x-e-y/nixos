@@ -82,7 +82,7 @@ let
   fontysCoachSkills = (import ./../claude-code/fontys-coach { inherit pkgs; }).skills;
   typstWriterSkills = (import ./../claude-code/typst-writer { inherit pkgs; }).skills;
 
-  # Unlike Claude Code, nothing here asks before `canvas-assignment` runs, so
+  # Unlike Claude Code, nothing here asks before `canvas assignment` runs, so
   # the skill's own "show the command and wait for confirmation" is the only
   # thing between a request and a new, changed or deleted assignment on
   # Canvas. The same holds for plain `ledger`, which writes: Claude Code's

@@ -1,10 +1,11 @@
-`canvas-assignment` creates an assignment in the user's own FHICT Canvas course, adds it to the course module, optionally attaches a rubric, and optionally uploads a file and submits it as the user. When an assignment with that exact name already exists, it continues that one instead: it adds whatever is missing (module, rubric, description) and submits the file as a new attempt, which keeps the earlier versions. With `--course` it hands a file in to an existing assignment in one of the user's other courses, such as OLBCDFG-CMK. The user decides what goes in; you run the command.
+`canvas assignment` creates an assignment in the user's own FHICT Canvas course, adds it to the course module, optionally attaches a rubric, and optionally uploads a file and submits it as the user. When an assignment with that exact name already exists, it continues that one instead: it adds whatever is missing (module, rubric, description) and submits the file as a new attempt, which keeps the earlier versions. `canvas hand-in` hands a file in to an existing assignment in one of the user's other courses, such as OLBCDFG-CMK. The user decides what goes in; you run the command.
 
 # Usage
 
 ```bash
-canvas-assignment --name "<name>" [--desc "<html>"] [--rubric "<outcomes>"] [--doc <path>]
-canvas-assignment --course "<course>" --name "<assignment>" --doc <path>
+canvas assignment --name "<name>" [--desc "<html>"] [--rubric "<outcomes>"] [--doc <path>] [--publish]
+canvas hand-in --course "<course>" --name "<assignment>" --doc <path>
+canvas delete "<id or name>"
 ```
 
 - `--name`: the assignment title. Always pass it. Without it the script opens `codium --wait` for an interactive form, which hangs when run from here.
@@ -13,11 +14,11 @@ canvas-assignment --course "<course>" --name "<assignment>" --doc <path>
 - `--doc`: the file to upload and submit. With it the assignment is published and the file handed in; without it a new assignment is created unpublished and nothing is submitted.
 - `--publish`: publish the assignment without handing anything in, for work that is not ready yet. Optional.
 
-- `--course`: a course name or id. The assignment must already exist there under exactly that name, and only `--doc` is handed in; nothing else about it can be changed. A course name that repeats across semesters means this semester's course. If the name is off, the error lists the course's assignments, so run it once with the user's wording and take the exact name from that list.
+`hand-in` takes all three of `--course`, `--name` and `--doc`. The course is a name or id, and the assignment must already exist there under exactly that name; only the file is handed in, and nothing else about the assignment can be changed. A course name that repeats across semesters means this semester's course. If the name is off, the error lists the course's assignments, so run it once with the user's wording and take the exact name from that list.
 
-`canvas-assignment --delete "<id or name>"` deletes an assignment from the personal course, with any submission on it, and takes no other options. Use it only when the user asks to remove one, such as a duplicate or a mistake, and show the command and wait for confirmation like any other run. Several assignments sharing a name can only be deleted by id; the ambiguous-name error lists them. A deleted assignment can be restored from the course's undelete page, which the script prints.
+`canvas delete` deletes an assignment from the personal course, with any submission on it. Use it only when the user asks to remove one, such as a duplicate or a mistake, and show the command and wait for confirmation like any other run. Several assignments sharing a name can only be deleted by id; the ambiguous-name error lists them. A deleted assignment can be restored from the course's undelete page, which the script prints.
 
-Any other flag exits with `unrecognized arguments`.
+Any other flag exits with `unrecognized arguments`. `canvas <command> --help` lists what each command takes.
 
 # Running it
 
@@ -31,7 +32,7 @@ DESC=$(cat <<'EOF'
 <p>Second paragraph.</p>
 EOF
 )
-canvas-assignment --name "Assignment name" --desc "$DESC" --rubric "Analysis-S2,PL-1" --doc "/home/oxey/Documents/fontys/report.pdf"
+canvas assignment --name "Assignment name" --desc "$DESC" --rubric "Analysis-S2,PL-1" --doc "/home/oxey/Documents/fontys/report.pdf"
 ```
 
 # When it fails

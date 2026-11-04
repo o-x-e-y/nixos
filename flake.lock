@@ -8,11 +8,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793825617,
-        "narHash": "sha256-6djgsnzMbsusNGrTtGVF9aq2nWN9V7Hy8EE5CTeePT4=",
+        "lastModified": 1793826974,
+        "narHash": "sha256-WXO2T/X6sQYHrNrNkpo6TGj1GLhUpLHVY4oEtHmvVxk=",
         "ref": "refs/heads/main",
-        "rev": "b112aed9cea30c986006f553000ca1f90867348d",
-        "revCount": 19,
+        "rev": "eeb668b9bbe1802c51614355dbeaeb0a6f76e41d",
+        "revCount": 20,
         "type": "git",
         "url": "ssh://git@github.com/o-x-e-y/canvas-cli"
       },

@@ -53,7 +53,7 @@ The documents make up the portfolio, and the study plan (this semester `~/Docume
 
 Do not edit it; tell the user what to update.
 
-`canvas-outcomes` prints what the assessors have actually scored: the current score on each learning outcome in the personal Canvas course and the assessed assignments behind it, with `-` for a rubric criterion left unrated. Lines with `?` are assignments whose rubric claims the outcome but that are not assessed yet, or not even handed in, and a closing list names hand-ins whose rubric claims no outcome at all, which can never count as evidence. Run it and hold the study plan's intended profile against it: an outcome the plan claims but nothing has scored yet, one that rests on a single old assignment, or work that has waited months for an assessment, is something a coach will ask about.
+`canvas outcomes` prints what the assessors have actually scored: the current score on each learning outcome in the personal Canvas course and the assessed assignments behind it, with `-` for a rubric criterion left unrated. Lines with `?` are assignments whose rubric claims the outcome but that are not assessed yet, or not even handed in, and a closing list names hand-ins whose rubric claims no outcome at all, which can never count as evidence. Run it and hold the study plan's intended profile against it: an outcome the plan claims but nothing has scored yet, one that rests on a single old assignment, or work that has waited months for an assessment, is something a coach will ask about.
 
 ## Semester calendar
 
