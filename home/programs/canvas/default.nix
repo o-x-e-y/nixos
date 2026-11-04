@@ -1,49 +1,30 @@
-{ pkgs, ... }:
+{
+  config,
+  lib,
+  ...
+}:
 let
-  python = pkgs.python3;
-
-  canvas-api = python.pkgs.toPythonModule (
-    pkgs.runCommand "canvas-api" { } ''
-      install -Dm644 ${./canvas_api.py} $out/${python.sitePackages}/canvas_api.py
-    ''
-  );
-
-  canvasScript =
-    name:
-    pkgs.writers.writePython3Bin name {
-      libraries = [
-        python.pkgs.requests
-        canvas-api
-      ];
-      flakeIgnore = [ "E501" ];
-    } (builtins.readFile ./${name}.py);
-
-  canvas-feedback = canvasScript "canvas-feedback";
+  cfg = config.apps.canvas;
 in
 {
-  home.packages = [
-    (canvasScript "canvas-assignment")
-    (canvasScript "canvas-outcomes")
-    canvas-feedback
-  ];
-
-  systemd.user.services.canvas-feedback = {
-    Unit.Description = "Notify about new feedback on Canvas submissions";
-    Service = {
-      Type = "oneshot";
-      Environment = "PATH=${pkgs.libnotify}/bin";
-      ExecStart = "${pkgs.lib.getExe canvas-feedback} --notify";
+  options.apps.canvas = {
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable the Canvas CLIs";
     };
   };
 
-  systemd.user.timers.canvas-feedback = {
-    Unit.Description = "Check Canvas for new feedback every hour";
-    Timer = {
-      OnCalendar = "hourly";
-      Persistent = true;
+  # The options come from the canvas-cli flake's home-manager module, loaded in
+  # ../../../flake.nix; this only sets the values. Same split as ../pathe: the
+  # skills that drive it stay in ../claude-code.
+  config = lib.mkIf cfg.enable {
+    programs.canvas = {
+      enable = true;
+      url = "https://fontysict.instructure.com";
+      apiKeyFile = "/run/secrets/canvas-api-key";
+      editor = "codium --wait";
+      feedback.enable = true;
     };
-    Install.WantedBy = [ "timers.target" ];
   };
-
-  home.sessionVariables.CANVAS_EDITOR = "codium --wait";
 }

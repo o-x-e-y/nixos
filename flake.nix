@@ -37,6 +37,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    canvas-cli = {
+      url = "git+ssh://git@github.com/o-x-e-y/canvas-cli";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     ortec-mcp = {
       url = "github:o-x-e-y/ortec-mcp";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -60,6 +65,7 @@
       oxeylyzer,
       pathe-cli,
       ortec-mcp,
+      canvas-cli,
       deepseek-harness,
       ...
     }@inputs:
@@ -106,6 +112,7 @@
               oxeylyzer.overlays.default
               pathe-cli.overlays.default
               ortec-mcp.overlays.default
+              canvas-cli.overlays.default
               deepseek-harness.overlays.default
             ];
 
@@ -115,6 +122,7 @@
               deepseek-harness.homeModules.default
               pathe-cli.homeManagerModules.default
               ortec-mcp.homeManagerModules.default
+              canvas-cli.homeManagerModules.default
             ];
           }
 
