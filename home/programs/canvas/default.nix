@@ -1,9 +1,20 @@
 { pkgs, ... }:
 let
+  python = pkgs.python3;
+
+  canvas-api = python.pkgs.toPythonModule (
+    pkgs.runCommand "canvas-api" { } ''
+      install -Dm644 ${./canvas_api.py} $out/${python.sitePackages}/canvas_api.py
+    ''
+  );
+
   canvasScript =
     name:
     pkgs.writers.writePython3Bin name {
-      libraries = [ pkgs.python3Packages.requests ];
+      libraries = [
+        python.pkgs.requests
+        canvas-api
+      ];
       flakeIgnore = [ "E501" ];
     } (builtins.readFile ./${name}.py);
 in

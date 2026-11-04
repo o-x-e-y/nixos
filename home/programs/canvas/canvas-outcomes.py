@@ -1,33 +1,12 @@
 import argparse
-import sys
 from collections import defaultdict
-from pathlib import Path
 
-import requests
-
-COURSE_ID = 14809
-BASE_URL = "https://fontysict.instructure.com"
-API_KEY_PATH = "/run/secrets/canvas-api-key"
-
-session = requests.Session()
-session.headers["Authorization"] = (
-    "Bearer " + Path(API_KEY_PATH).read_text().strip()
-)
-course_url = f"{BASE_URL}/api/v1/courses/{COURSE_ID}"
+from canvas_api import api_url, check, get, personal_course, session
 
 
-def check(response):
-    if not response.ok:
-        sys.exit(
-            f"Error: {response.request.method} {response.url} returned "
-            f"{response.status_code}: {response.text}"
-        )
-    return response
-
-
-def outcome_results():
+def outcome_results(course_url):
     results, outcomes, assignments = [], {}, {}
-    url = course_url + "/outcome_results"
+    url = f"{api_url}{course_url}/outcome_results"
     params = {
         "user_ids[]": "self",
         "include[]": ["outcomes", "alignments"],
@@ -46,12 +25,10 @@ def outcome_results():
     return results, outcomes, assignments
 
 
-def rollup_scores():
-    rollups = check(
-        session.get(
-            course_url + "/outcome_rollups", params={"user_ids[]": "self"}
-        )
-    ).json()["rollups"]
+def rollup_scores(course_url):
+    rollups = get(f"{course_url}/outcome_rollups", **{"user_ids[]": "self"})[
+        "rollups"
+    ]
     if not rollups:
         return {}
     return {s["links"]["outcome"]: s["score"] for s in rollups[0]["scores"]}
@@ -74,8 +51,9 @@ def main():
         "personal Canvas course, and the assessed assignments behind it."
     ).parse_args()
 
-    results, outcomes, assignments = outcome_results()
-    scores = rollup_scores()
+    course_url = f"/courses/{personal_course()['id']}"
+    results, outcomes, assignments = outcome_results(course_url)
+    scores = rollup_scores(course_url)
     by_outcome = defaultdict(list)
     for result in results:
         if not result["hidden"]:

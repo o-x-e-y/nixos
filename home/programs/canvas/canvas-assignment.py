@@ -9,10 +9,7 @@ from pathlib import Path
 
 import requests
 
-COURSE_ID = 14809
-MODULE_ID = 126437
-BASE_URL = "https://fontysict.instructure.com"
-API_KEY_PATH = "/run/secrets/canvas-api-key"
+from canvas_api import check, get_all, personal_course, post
 
 TEMPLATE = """\
 # Canvas Assignment — fill in below, then save and close the editor.
@@ -29,35 +26,6 @@ TEMPLATE = """\
 #   /home/user/documents/reflection.pdf
 
 """
-
-session = requests.Session()
-session.headers["Authorization"] = (
-    "Bearer " + Path(API_KEY_PATH).read_text().strip()
-)
-course_url = f"{BASE_URL}/api/v1/courses/{COURSE_ID}"
-
-
-def check(response):
-    if not response.ok:
-        sys.exit(
-            f"Error: {response.request.method} {response.url} returned "
-            f"{response.status_code}: {response.text}"
-        )
-    return response
-
-
-def post(path, body):
-    return check(session.post(course_url + path, json=body)).json()
-
-
-def get_all(path):
-    items = []
-    url = course_url + path
-    while url:
-        response = check(session.get(url))
-        items += response.json()
-        url = response.links.get("next", {}).get("url")
-    return items
 
 
 def from_editor():
@@ -90,10 +58,12 @@ def from_editor():
     return name, desc, doc
 
 
-def rubric_criteria(wanted):
+def rubric_criteria(course_url, wanted):
     by_title = {
         link["outcome"]["title"].strip(): link["outcome"]
-        for link in get_all("/outcome_group_links?outcome_style=full&per_page=100")
+        for link in get_all(
+            f"{course_url}/outcome_group_links", outcome_style="full", per_page=100
+        )
     }
     unknown = [title for title in wanted if title not in by_title]
     if unknown:
@@ -113,9 +83,9 @@ def rubric_criteria(wanted):
     return criteria
 
 
-def submit(assignment_id, doc):
+def submit(course_url, assignment_id, doc):
     upload = post(
-        f"/assignments/{assignment_id}/submissions/self/files",
+        f"{course_url}/assignments/{assignment_id}/submissions/self/files",
         {"name": doc.name, "size": doc.stat().st_size},
     )
     with doc.open("rb") as f:
@@ -127,7 +97,7 @@ def submit(assignment_id, doc):
             )
         ).json()["id"]
     post(
-        f"/assignments/{assignment_id}/submissions",
+        f"{course_url}/assignments/{assignment_id}/submissions",
         {"submission": {"submission_type": "online_upload", "file_ids": [file_id]}},
     )
 
@@ -154,15 +124,18 @@ def main():
         name, desc, doc = from_editor()
     doc = Path(doc).expanduser() if doc else None
 
+    course_url = f"/courses/{personal_course()['id']}"
+    module = get_all(f"{course_url}/modules", per_page=100)[0]
+
     criteria = None
     if args.rubric:
         criteria = rubric_criteria(
-            [title.strip() for title in args.rubric.split(",")]
+            course_url, [title.strip() for title in args.rubric.split(",")]
         )
 
     print(f"Creating assignment: {name}")
     assignment_id = post(
-        "/assignments",
+        f"{course_url}/assignments",
         {
             "assignment": {
                 "name": name,
@@ -173,9 +146,12 @@ def main():
         },
     )["id"]
 
-    print(f"Assignment created (id: {assignment_id}), adding to module...")
+    print(
+        f"Assignment created (id: {assignment_id}), "
+        f"adding to module {module['name']}..."
+    )
     post(
-        f"/modules/{MODULE_ID}/items",
+        f"{course_url}/modules/{module['id']}/items",
         {"module_item": {"type": "Assignment", "content_id": assignment_id, "indent": 1}},
     )
     print(f'Done! Assignment "{name}" added to module.')
@@ -183,7 +159,7 @@ def main():
     if criteria:
         print(f"Adding rubric: {args.rubric}")
         post(
-            "/rubrics",
+            f"{course_url}/rubrics",
             {
                 "rubric": {"title": name, "criteria": criteria},
                 "rubric_association": {
@@ -198,7 +174,7 @@ def main():
 
     if doc:
         print(f"Uploading and submitting: {doc}")
-        submit(assignment_id, doc)
+        submit(course_url, assignment_id, doc)
         print("File submitted!")
 
 
