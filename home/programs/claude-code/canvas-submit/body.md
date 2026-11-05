@@ -3,7 +3,7 @@
 # Usage
 
 ```bash
-canvas assignment --name "<name>" [--desc "<html>"] [--rubric "<outcomes>"] [--doc <path>]... [--publish] [--indent N] [--after "<header>"]
+canvas assignment --name "<name>" [--desc "<html>"] [--rubric "<rubric or outcomes>"] [--doc <path>]... [--publish] [--indent N] [--after "<header>"]
 canvas hand-in [-c <course>] --name "<assignment>" (--doc <path>... | --url <url> | --text "<html>")
 canvas delete "<id or name>" --yes
 ```
@@ -11,7 +11,7 @@ canvas delete "<id or name>" --yes
 - `-c`: the course, on any command: a nickname from the settings (`personal`, `general`), a course id, or the course's full name. Without it, `assignment` and `delete` use `personal` and `hand-in` uses `general`. `canvas courses` lists the user's courses and nicknames, `canvas modules` a course's modules and headers. A warning that a course has ended means the settings point at last semester's course; tell the user.
 - `--name`: the assignment title. Always pass it. Without it the command opens `codium --wait` for an interactive form, which hangs when run from here.
 - `--desc`: the description, as HTML. On an existing assignment it replaces the description. Optional.
-- `--rubric`: comma-separated HBO-i learning outcomes, one rubric criterion each, named as Canvas titles them: `<Activity>-<Domain><Level>` such as `Analysis-S2`, `Advise-U1` or `Manage&Control-I3` (activities Analysis, Advise, Design, Realise, Manage&Control; domains S Software, U User Interaction, I Infrastructure, O Organisational processes, H Hardware), plus `PS-<Level>` and `PL-<Level>` for Professional Standard and Personal Leadership. Points, ratings and text come from the outcome. An unknown name stops the command before anything is created; when a title matches several outcomes, the error lists their ids, which `--rubric` also takes. An existing assignment that already has a rubric keeps it. Optional.
+- `--rubric`: the exact title of a rubric the course already has, which is attached as it is, or comma-separated HBO-i learning outcomes, one rubric criterion each, named as Canvas titles them: `<Activity>-<Domain><Level>` such as `Analysis-S2`, `Advise-U1` or `Manage&Control-I3` (activities Analysis, Advise, Design, Realise, Manage&Control; domains S Software, U User Interaction, I Infrastructure, O Organisational processes, H Hardware), plus `PS-<Level>` and `PL-<Level>` for Professional Standard and Personal Leadership. Points, ratings and text come from the outcome. An unknown name stops the command before anything is created; when a title matches several outcomes, the error lists their ids, which `--rubric` also takes. An existing assignment that already has a rubric keeps it. Optional.
 - `--doc`: a file to upload and submit; repeat it for several files. With it the assignment is published and the files handed in; without it a new assignment is created unpublished and nothing is submitted.
 - `--publish`: publish the assignment without handing anything in, for work that is not ready yet. Optional.
 - `--indent` and `--after`: where a new assignment lands in its module. Assignments sit at indent 1 under headers at indent 0, which is the personal course's default. `--after "<header>"` puts it at the end of that header's group instead of the end of the module, such as `--after "Group Project: InnerGames Prototyping"`; use it whenever the assignment belongs to a group that isn't the last one in the module. Both only apply when the assignment is added to a module, not to one already in it.
