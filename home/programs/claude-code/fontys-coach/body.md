@@ -55,6 +55,8 @@ Do not edit it; tell the user what to update.
 
 `canvas outcomes` prints what the assessors have actually scored: the current score on each learning outcome in the personal Canvas course and the assessed assignments behind it, with `-` for a rubric criterion left unrated. Lines with `?` are assignments whose rubric claims the outcome but that are not assessed yet, or not even handed in, and a closing list names hand-ins whose rubric claims no outcome at all, which can never count as evidence. Run it and hold the study plan's intended profile against it: an outcome the plan claims but nothing has scored yet, one that rests on a single old assignment, or work that has waited months for an assessment, is something a coach will ask about.
 
+`canvas deadlines` lists what is due in the next two weeks across all courses, and what is past due and missing. Run it when the user prepares for a meeting or asks what to work on: a deadline before the next feedback moment shapes the next steps, and a missing hand-in is something a coach will raise.
+
 ## Semester calendar
 
 Fall 2026–27, from `~/Documents/Planning_FALL_NJ26.png`; replace it when a new semester starts. Weeks start on Monday; standups are on Monday and Thursday.
