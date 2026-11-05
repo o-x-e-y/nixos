@@ -243,11 +243,9 @@
   }
 
   if show-title {
-    // accent bar
     line(length: 100%, stroke: 3pt + accent)
     v(1fr)
 
-    // title block
     align(center)[
       #text(font-size * 3, weight: "bold", fill: accent, title)
       #if subtitle != none {
@@ -262,7 +260,6 @@
       }
     ]
 
-    // cover image
     if cover != none {
       v(1.5em)
       align(center, figure(
@@ -274,7 +271,6 @@
 
     v(1fr)
 
-    // bottom info bar
     line(length: 100%, stroke: 0.5pt + accent.lighten(40%))
     v(0.5em)
     {

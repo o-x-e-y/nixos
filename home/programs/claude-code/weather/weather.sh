@@ -1,11 +1,6 @@
 # Look up local weather from Open-Meteo.
 #
-# Exists to serve one decision: rule 1 of the training plan says heat is the
-# variable and the clock is the lever, so what is needed is an *hourly* profile
-# to pick a start time from — not a daily high. Every field below is one the
-# plan's rules actually turn on.
-#
-# No API key, and therefore no secret: Open-Meteo is an unauthenticated GET.
+# Hourly, because rule 1 of the training plan picks a start time by heat.
 #
 # Past dates come from the archive endpoint (ERA5 reanalysis), not from the
 # forecast endpoint's past_days. They are not interchangeable — measured on
@@ -88,7 +83,6 @@ source_for() {
   if [[ "$1" < "$(date +%F)" ]]; then echo archive; else echo forecast; fi
 }
 
-# Fetch the hourly block for one date, from whichever endpoint owns it.
 fetch_day() {
   local d="$1" today url
   today=$(date +%F)
@@ -181,8 +175,6 @@ print_summary() {
       "",
       "  head unit will read roughly \(.t_mean + 1 | . * 10 | round / 10) C over this window."'
 }
-
-# --- argument handling -------------------------------------------------------
 
 ARGS=()
 while [ $# -gt 0 ]; do

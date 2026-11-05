@@ -7,11 +7,8 @@
 let
   cfg = config.apps.boxd;
 
-  # curl_cffi rather than requests, and the reason is not preference: Letterboxd
-  # fronts Cloudflare, which challenges plain curl's TLS handshake on roughly
-  # half of all requests. curl_cffi replays Chrome's fingerprint. Without it
-  # every other page is "Just a moment..." behind a 403, so there is no lighter
-  # dependency to fall back to -- see the module docstring in ./boxd.py.
+  # curl_cffi, not requests: Cloudflare challenges plain TLS on Letterboxd (see
+  # ./boxd.py's docstring).
   python = pkgs.python313.withPackages (ps: [ ps.curl-cffi ]);
 
   boxd =
@@ -27,19 +24,12 @@ let
         mkdir -p "$out/bin"
         install -Dm755 ${./boxd.py} "$out/bin/boxd"
 
-        # The interpreter is named outright rather than left to patchShebangs:
-        # that hook only rewrites a shebang it can resolve on the build PATH, and
-        # nothing here puts a python there, so `#!/usr/bin/env python3` would
-        # survive into $out and fail at run time on a machine without one. This
-        # also guarantees the interpreter is the curl_cffi-carrying python above
-        # rather than whichever python happens to be first on PATH.
+        # Not left to patchShebangs: nothing puts a python on the build PATH,
+        # so it would leave `#!/usr/bin/env python3` in place.
         substituteInPlace "$out/bin/boxd" \
           --replace-fail '#!/usr/bin/env python3' '#!${python}/bin/python3'
 
-        # --set-default, not --set: the declarative username is a default, not a
-        # cage. `BOXD_USER=someone boxd profile` still works, and so does --user,
-        # which is what makes looking at a friend's profile a one-off rather than
-        # a rebuild.
+        # --set-default so `BOXD_USER=someone boxd` still works.
         wrapProgram "$out/bin/boxd" \
           --set-default BOXD_USER ${lib.escapeShellArg cfg.user} \
           --set-default BOXD_TTL ${toString cfg.cacheTtl} \
@@ -49,12 +39,7 @@ let
       '';
 in
 {
-  # Shaped like ../pathe: the package lives here rather than under
-  # ../claude-code/boxd because boxd is a tool Claude also uses, not the other
-  # way round -- hanging it off `apps.claude-code.enable` would take it off the
-  # system whenever that is turned off. The document both harnesses read lives
-  # in ../claude-code/boxd, which is not a module for the same reason ../pathe
-  # is not one.
+  # Not under ../claude-code, so it stays installed with claude-code off.
   options.apps.boxd = {
     enable = lib.mkOption {
       type = lib.types.bool;

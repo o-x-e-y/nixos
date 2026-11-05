@@ -1,21 +1,6 @@
-# Single source for the coaching context, rendered once per harness.
-#
-# The Claude Code slash command and the dsh skill are the same document with
-# different harness affordances, and only two things actually differ:
-#
-#   1. Claude Code expands !`date ...` and $ARGUMENTS before the model sees the
-#      text; dsh does neither, so its copy asks for them in prose.
-#   2. The frontmatter keys are different, and dsh wants an H1.
-#
-# These were maintained as two hand-edited files until 2 Sep 2026 and had drifted
-# 41 lines apart -- including, in the direction that mattered, the harness that
-# *cannot* enforce read-only being the only one told not to write. The body now
-# lives in ./body.md with @TOKENS@ and everything harness-specific lives here, so
-# the two can no longer disagree about anything except the two points above.
-#
-# Both modules import this file directly rather than one importing the other, the
-# same way ../claude-code's weather and intervals-icu wrappers are shared with
-# ../dsh: same inputs, same text, so Nix lands on one derivation per output.
+# One document for Claude Code and dsh; as two files they had drifted 41 lines
+# apart by 2 Sep 2026. Claude Code expands !`date` and $ARGUMENTS where dsh's
+# copy asks in prose, and the frontmatter differs.
 { pkgs }:
 
 let
@@ -69,9 +54,7 @@ let
   description = "Coach the winter training block (~/Documents/winter-training) — base through spring, aimed at WVAN crits from early April 2027, on FTP 293. The plan, the tooling, and the rules two blocks earned.";
 in
 {
-  # A string, not a path: home-manager's claude-code module routes `commands`
-  # entries through `if lib.isPath content then source else text`, and a
-  # derivation is neither a path nor a string as far as that check is concerned.
+  # A string, not a path, for the reason given in ../pathe/default.nix.
   commandText = ''
     ---
     description: ${description} Optionally pulls recent rides and nutrition.

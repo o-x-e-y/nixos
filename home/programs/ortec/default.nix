@@ -15,11 +15,9 @@ in
     };
   };
 
-  # The options come from the ortec-mcp flake's home-manager module, loaded in
-  # ../../../flake.nix; this only sets the values. Same split as ../pathe: the
-  # CLI is the user's tool first and Claude's second. The module wraps the
-  # binaries with these paths, so the credentials never enter the store. The
-  # company code is not a secret, so it sits here rather than in sops.
+  # Options from the ortec-mcp flake's module, kept out of ../claude-code. The
+  # binaries are wrapped with these paths, so credentials never enter the
+  # store; the company code isn't a secret.
   config = lib.mkIf cfg.enable {
     programs.ortec = {
       enable = true;

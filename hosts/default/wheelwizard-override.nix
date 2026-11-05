@@ -157,12 +157,9 @@ in
             };
           };
 
-        # 2609a is a fix release: it rejects oversized NetPlay input buffers and
-        # Wii save banners, validates restored FIFO pointers and fixes the
-        # NetPlay GC adapter config. Nixpkgs is on 2609, and like its own
-        # earlier 2606 -> 2606a bump only version and hash change, so unlike
-        # wheelwizard above this stays a plain overrideAttrs and still builds
-        # from source; drop the pin once the flake's nixpkgs catches up.
+        # 2609a (fixes for NetPlay and save banners) ahead of nixpkgs. Only the
+        # version and hash change, so unlike wheelwizard this still builds from
+        # source; drop the pin once the flake's nixpkgs catches up.
         dolphin-emu = prev.dolphin-emu.overrideAttrs (_old: {
           version = cfg.dolphin.version;
 

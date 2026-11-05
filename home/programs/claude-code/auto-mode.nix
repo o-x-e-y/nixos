@@ -11,10 +11,9 @@
 # and port what holds up by hand. The scan reads shell history and every repo
 # under $HOME, and this file lands in a public repo: keep it to what the repo
 # already makes public -- no school hosts, student numbers, emails, or anything
-# read out of a remote URL. The first draft also needed rescoping (it was run
-# from ~/nixos, but scope=all makes it global) and lost two allow rules:
-# `Bash(nix-shell:*)` runs any command, and `rebuild` is an interactive alias
-# for sudo, which Claude's shell can neither see nor authenticate.
+# read out of a remote URL. Drafts are scoped globally (scope=all), and two
+# allow rules don't belong: `Bash(nix-shell:*)` runs any command, and `rebuild`
+# is an interactive sudo alias Claude's shell can't use.
 {
   environment = [
     "### Org-wide"

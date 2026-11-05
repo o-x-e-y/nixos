@@ -37,7 +37,7 @@
 #let med = prio("med")
 #let low = prio("low")
 
-// Returns a prio badge for the requirement with the given label, e.g. req-prio(<us1>).
+// Returns a prio badge for the requirement with the given label, e.g. prio-for(<us1>).
 // Priority is resolved at layout time, so it stays in sync if the table changes.
 #let prio-for(lbl) = context {
   let results = query(label(str(lbl) + "-p"))

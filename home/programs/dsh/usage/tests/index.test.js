@@ -42,8 +42,6 @@ describe('identity', () => {
   });
 });
 
-// ---------------------------------------------------------------- config
-
 describe('config', () => {
   it('needs no configuration at all', () => {
     const config = resolveConfig(undefined, {});
@@ -83,8 +81,6 @@ describe('config', () => {
     assert.equal(resolveConfig({ timeoutSeconds: 'soon' }, {}).timeoutMs, 10_000);
   });
 });
-
-// --------------------------------------------------------------- balance
 
 describe('balance client', () => {
   it('parses the documented response', async () => {
@@ -186,8 +182,6 @@ describe('balance client', () => {
   });
 });
 
-// ------------------------------------------------------------- rendering
-
 describe('money', () => {
   it('renders two decimals, the precision the endpoint reports', () => {
     assert.equal(money(4.65), '$4.65');
@@ -261,8 +255,6 @@ describe('status line', () => {
     assert.doesNotMatch(formatStatusLine({ balance: OK.balance, balanceAt: at }, at), /\n/);
   });
 });
-
-// ----------------------------------------------------------------- meter
 
 describe('meter', () => {
   it('keeps the last good figure when a refresh fails', async () => {
@@ -410,8 +402,6 @@ describe('the tick', () => {
     h.meter.stop();
   });
 });
-
-// ---------------------------------------------------------------- wiring
 
 function fakeTuiStatus() {
   const entries = new Map();

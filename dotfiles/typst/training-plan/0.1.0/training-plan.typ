@@ -1,7 +1,4 @@
-// training-plan.typ
 // Components: make-zones(), workout-viewer(), week-table()
-
-// ── Internals ─────────────────────────────────────────────────────────────────
 
 #let _pace-to-sec(p) = {
   let parts = p.split(":")
@@ -124,8 +121,6 @@
   }
   result
 }
-
-// ── Public API ────────────────────────────────────────────────────────────────
 
 /// Build a zones configuration dictionary to pass to workout-viewer.
 ///
@@ -311,11 +306,9 @@
 // in review/log.json. Cite a row rather than retelling it.
 //
 // Each session is two table rows: a scannable strip — date, name, conditions —
-// and beneath it, spanning the full width, the asked/delivered/verdict triple
-// the log exists to hold. Those three were columns until 13 Sep 2026, and they
-// could not be: verdicts run to paragraphs, so once date, name, target and
-// conditions had taken their natural widths the verdict column collapsed to a
-// pillar a dozen characters wide and every table read as empty space beside it.
+// and beneath it, full width, the asked/delivered/verdict triple. Those were
+// columns until 13 Sep 2026, but verdicts run to paragraphs and the column
+// collapsed to a dozen characters.
 #let session-log(data, kind: "quality") = {
   let rows = data.sessions.filter(s => s.type == kind)
   if rows.len() == 0 { return [] }

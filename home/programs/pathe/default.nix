@@ -15,11 +15,8 @@ in
     };
   };
 
-  # The options come from the pathe-cli flake's home-manager module, loaded in
-  # ../../../flake.nix; this only sets the values. The package lives here rather
-  # than in claude-code/pathe because pathe is a tool that Claude also uses, not
-  # the other way round -- hanging it off `apps.claude-code.enable` would take
-  # it off the system whenever that is turned off.
+  # Options from the pathe-cli flake's module. Not under ../claude-code, so it
+  # stays installed with claude-code off.
   config = lib.mkIf cfg.enable {
     programs.pathe = {
       enable = true;

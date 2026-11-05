@@ -15,9 +15,7 @@ in
     };
   };
 
-  # The options come from the canvas-cli flake's home-manager module, loaded in
-  # ../../../flake.nix; this only sets the values. Same split as ../pathe: the
-  # skills that drive it stay in ../claude-code.
+  # Options from the canvas-cli flake's module; the skills stay in ../claude-code.
   #
   # The course ids change when a semester gets a new course (`canvas courses`
   # lists them); the personal course stays and gets a module per semester,

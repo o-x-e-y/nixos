@@ -41,9 +41,6 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   dontConfigure = true;
   dontBuild = true;
 
-  # The suite is pure and dependency-free, so it runs in the sandbox. This is
-  # deliberate: a rebuild that would ship a broken status line fails here
-  # instead of at the next `dsh` launch.
   doCheck = true;
   checkPhase = ''
     runHook preCheck

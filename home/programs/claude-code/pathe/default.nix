@@ -1,17 +1,6 @@
-# Single source for the Pathé context, rendered once per harness.
-#
-# The Claude Code slash command and the dsh skill are the same document, and
-# only two things actually differ:
-#
-#   1. Claude Code expands !`date ...` and $ARGUMENTS before the model sees the
-#      text; dsh does neither, so its copy asks for the date and names the
-#      request in prose.
-#   2. The frontmatter keys are different, and dsh wants an H1.
-#
-# Built the way ../coach is: the body lives in ./body.md, everything
-# harness-specific is a token or a frontmatter key in this file, and both
-# modules import it directly rather than one importing the other -- same inputs,
-# same text, so Nix lands on one derivation per output.
+# One document for Claude Code and dsh, like ../coach, so the two can't drift.
+# Claude Code expands !`date` and $ARGUMENTS where dsh's copy asks in prose,
+# and the frontmatter differs.
 { pkgs }:
 
 let
@@ -30,26 +19,18 @@ let
   };
 
   dshBody = render {
-    # "the date above" below is this date: dsh expands nothing, so the model has
-    # to go and get it before the relative phrases can mean anything.
     "@TODAY@" = ''
       Run `date +"%A %-d %B %Y (%Y-%m-%d)"` first — the date rules below read
       against it, and relative phrases like "this weekend" are worked out from
       what it prints.'';
 
-    # Nothing substitutes the invocation here either. A `/pathe` gesture leaves
-    # the rest of the message in front of the model; a plain load arrives with
-    # the question that prompted it.
     "@TASK_INPUT@" = ''
       Then take the request as written — the text that came with the invocation,
       or the question this was loaded for. It may name a film, a cinema, a day,
       a strand, or none of those.'';
   };
 
-  # The one string both frontmatters share, and the summary dsh's catalog shows.
-  # Worded exactly as it was when this was a command only: it is what decides
-  # whether the document is the right one to load, so the refactor is not the
-  # place to reword it.
+  # Also the summary dsh's catalog shows, so it decides when this gets loaded.
   description = "What is playing at Pathé -- a day's programme, when a given film plays, and the arthouse (In the Picture), Pride Night and classics strands. Read-only from the public Pathé API; it cannot book a seat.";
 in
 {
@@ -66,11 +47,8 @@ in
     ${claudeCodeBody}
   '';
 
-  # A directory, as dsh's tool-skill scanner expects: one SKILL.md per
-  # subdirectory, discovered at the top level of a scanned root. Leaving both
-  # invocation keys unset is deliberate -- it keeps `pathe` in the model
-  # catalog *and* makes `/pathe` a gesture a person can type, which is the
-  # closest this harness has to the slash command above.
+  # Invocation keys left unset, so the skill is both in the model's catalog and
+  # typeable as `/pathe`.
   skills = pkgs.runCommand "dsh-skills-pathe" { } ''
     mkdir -p "$out/pathe"
     cp ${pkgs.writeText "SKILL.md" ''

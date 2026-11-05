@@ -39,15 +39,11 @@
 ) = {
   let scale_factor = 70%;
 
-  // cell background color
-
-  // convert values to display format
   let format_cell(value) = {
     if value == none or value == 0 { [] }
     else { [#value] }
   }
 
-  // format labels for black background
   let format_label(label) = {
     text(white)[#label]
   }

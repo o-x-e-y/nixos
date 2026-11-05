@@ -40,7 +40,6 @@ let
       cp -f "$src/client.realm"  "$dst/osu-client.realm"
       cp -f "$src/input.json"    "$dst/osu-input.json"
       cp -f "$src/framework.ini" "$dst/osu-framework.ini"
-      # game.ini holds the login Token -- strip it so no credential is committed.
       grep -v '^Token = ' "$src/game.ini" > "$dst/osu-game.ini" || true
       echo "Backed up osu config to $dst (game.ini Token stripped)."
     '';

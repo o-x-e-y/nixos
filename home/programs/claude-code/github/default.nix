@@ -38,10 +38,7 @@ in
       settings.git_protocol = "ssh";
     };
 
-    # Lists merge across modules, so these append to the allow/ask/deny lists in
-    # ../default.nix rather than replacing them.
     programs.claude-code.settings.permissions = {
-      # Reading issues, PRs and CI runs is how Claude finds out what to work on.
       allow = [
         "Bash(gh issue list:*)"
         "Bash(gh issue view:*)"

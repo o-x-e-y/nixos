@@ -28,12 +28,6 @@
 #                       to GameCube L/R -- so R2 drifts here instead. R1 is the
 #                       nearest shoulder-position stand-in. Drop
 #                       `,right_shoulder` for Cross only.
-#   b      brake        Square, as in the Dolphin profile.
-#   x      use item     Triangle, as in the Dolphin profile.
-#   y      use item     Circle. Dolphin's Y sat on keyboard `S`, a leftover from
-#                       its default keyboard profile rather than a pad binding,
-#                       so this one is chosen rather than translated.
-#   z      unused       Mario Kart Wii does not use it, and R1 is accelerate.
 #   l, r   drift        "unmapped" means "read the analog trigger", which is
 #                       what actually drives drift. This is the default.
 #

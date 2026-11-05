@@ -1,4 +1,3 @@
-# Fetch training data from intervals.icu.
 # The API key is read from the sops-decrypted secret at request time and is
 # passed to curl via a stdin config so it never appears in argv or output.
 

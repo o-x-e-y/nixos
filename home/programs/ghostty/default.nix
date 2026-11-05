@@ -25,7 +25,6 @@ in
         font-family = "JetBrainsMonoNL Nerd Font Mono";
         font-size = 12;
 
-        # Gruvbox palette ported from the Konsole "vim-dark-hard" scheme.
         theme = "vim-dark-hard";
 
         # Matches Konsole's RemoveWindowTitleBarAndFrame / disabled menu bar.
@@ -58,7 +57,6 @@ in
       };
     };
 
-    # Ctrl+Alt+T launches Ghostty (KDE global shortcut).
     programs.plasma.hotkeys.commands."launch-ghostty" = {
       name = "Launch Ghostty";
       key = "Ctrl+Alt+T";

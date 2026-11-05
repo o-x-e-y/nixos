@@ -41,10 +41,8 @@ in
       (pkgs.writeShellScriptBin "git-branch-diff" ''
         set -eu
 
-        # Default base branch is "main" unless user supplies one
         base_branch="''${1:-main}"
 
-        # Determine current branch
         current_branch="$(git branch --show-current)"
 
         if [ -z "$current_branch" ]; then

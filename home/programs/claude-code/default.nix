@@ -8,9 +8,7 @@ let
   cfg = config.apps.claude-code;
   status-line = import ./commands/status-line.nix { inherit pkgs; };
 
-  # Shared with ../dsh, which renders the same body as a skill. See ./coach and
-  # ./pathe -- neither is a module any more, each renders one document for both
-  # harnesses and is imported here.
+  # Each renders one document for both this and ../dsh.
   coach = import ./coach { inherit pkgs; };
   pathe = import ./pathe { inherit pkgs; };
   ortec = import ./ortec { inherit pkgs; };
@@ -37,8 +35,6 @@ in
 {
   # One directory per integration. Each owns its package, its credentials and
   # its own permission entries; the lists merge back into the ones below.
-  # ./coach and ./pathe are not modules: they render a document for both
-  # harnesses, and the settings that used to come with them live here.
   imports = [
     ./cronometer
     ./github
@@ -99,8 +95,7 @@ in
 
             # Read-only and unauthenticated: the Pathé API is an open GET and
             # the CLI cannot book a seat, so this allows rather than asks. It
-            # moved here from ./pathe when that directory became the document
-            # both harnesses read -- a document has no permissions of its own.
+            # lives here because ./pathe is only a document.
             "Bash(pathe:*)"
 
             # Same reasoning as pathe above, and the CLI enforces it rather
@@ -165,7 +160,6 @@ in
         };
       };
 
-      # global CLAUDE.md start of conversation context
       context = builtins.readFile ./context.md;
 
       commands = {

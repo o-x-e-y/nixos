@@ -91,10 +91,6 @@ class BoxdError(Exception):
     """Anything the user should see as a message rather than a traceback."""
 
 
-# --------------------------------------------------------------------------
-# fetching
-# --------------------------------------------------------------------------
-
 _session = None
 _last_request = 0.0
 
@@ -209,10 +205,6 @@ def fetch_json(path: str, ttl: int = TTL_FILM, refresh: bool = False) -> dict:
         raise BoxdError(f"{path} did not return JSON (markup change?)")
 
 
-# --------------------------------------------------------------------------
-# parsing
-# --------------------------------------------------------------------------
-
 _GRIDITEM = re.compile(r'<li class="(?:griditem|posteritem)\b.*?</li>', re.S)
 _SLUG = re.compile(r'data-item-slug="([^"]+)"')
 _NAME = re.compile(r'data-item-name="([^"]*)"')
@@ -303,13 +295,7 @@ def collect(path: str, *, ttl: int, refresh: bool, limit: int | None = None) -> 
     return films[:limit] if limit is not None else films
 
 
-# --------------------------------------------------------------------------
-# commands
-# --------------------------------------------------------------------------
-
-# Letterboxd titles a profile page "<name>’s profile"; the page is the only
-# place the display name appears, so the suffix comes off here rather than at
-# every call site.
+# Letterboxd titles a profile page "<name>’s profile".
 _NAME_SUFFIX = re.compile(r"[’']s profile\s*$")
 
 
@@ -786,11 +772,6 @@ def cmd_taste(args) -> dict:
     }
 
 
-# --------------------------------------------------------------------------
-# rendering
-# --------------------------------------------------------------------------
-
-
 def stars(rating: float | None) -> str:
     if rating is None:
         return "     "
@@ -917,11 +898,6 @@ def render(command: str, data: dict) -> str:
             )
 
     return "\n".join(out)
-
-
-# --------------------------------------------------------------------------
-# entry point
-# --------------------------------------------------------------------------
 
 
 def main(argv: list[str] | None = None) -> int:

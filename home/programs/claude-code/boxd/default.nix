@@ -1,34 +1,16 @@
-# Single source for the Letterboxd context, rendered once per harness.
-#
-# Built exactly the way ../pathe is, and for the same reason: the Claude Code
-# slash command and the dsh skill are the same document, so keeping them as two
-# hand-maintained files is how they drift. Only two things actually differ:
-#
-#   1. Claude Code expands !`date ...` and $ARGUMENTS before the model sees the
-#      text; dsh does neither, so its copy asks for the date and names the
-#      request in prose.
-#   2. The frontmatter keys are different, and dsh wants an H1.
-#
-# The body lives in ./body.md, the viewer profile in ./taste.md, everything
-# harness-specific is a token or a frontmatter key here, and both modules import
-# this directly rather than one importing the other -- same inputs, same text,
-# so Nix lands on one derivation per output.
+# One document for Claude Code and dsh, like ../pathe, so the two can't drift.
+# Claude Code expands !`date` and $ARGUMENTS where dsh's copy asks in prose,
+# and the frontmatter differs.
 {
   pkgs,
-  # The default username the document should talk about. Passed by both call
-  # sites from `config.apps.boxd.user` so the two land on one derivation; the
-  # default here only keeps this importable on its own.
+  # The default only keeps this importable on its own.
   user ? "oxey",
 }:
 
 let
-  # ./taste.md is generated, plus the user's own corrections: `/boxd
-  # refresh-taste` re-runs taste, ratings, diary and watchlist and rewrites it,
-  # carrying over the lines marked "by their own account". It
-  # is interpolated into the body rather than fetched at invocation time so that
-  # every /boxd starts already knowing this viewer at zero request cost -- which
-  # is the whole point of committing it. Regenerate it when it drifts from the
-  # diary, not on a schedule.
+  # Rewritten by `/boxd refresh-taste`, which keeps the lines marked "by their
+  # own account". Committed so every /boxd starts knowing the viewer at no
+  # request cost; regenerate it when it drifts from the diary.
   taste = builtins.readFile ./taste.md;
 
   template = builtins.readFile ./body.md;
@@ -48,24 +30,17 @@ let
   };
 
   dshBody = render {
-    # dsh expands nothing, so the model has to go and get the date before
-    # anything relative ("tonight", "this weekend") can mean anything.
     "@TODAY@" = ''
       Run `date +"%A %-d %B %Y (%Y-%m-%d)"` first if the request turns on the
       date at all — "tonight", "this weekend", "what came out this year".'';
 
-    # Nothing substitutes the invocation here either. A `/boxd` gesture leaves
-    # the rest of the message in front of the model; a plain load arrives with
-    # the question that prompted it.
     "@TASK_INPUT@" = ''
       Then take the request as written — the text that came with the
       invocation, or the question this was loaded for. It may name a film, a
       mood, a runtime, a decade, or none of those.'';
   };
 
-  # The one string both frontmatters share, and the summary dsh's catalog shows.
-  # It is what decides whether this document is the right one to load, so it
-  # names the three things it is actually for.
+  # Also the summary dsh's catalog shows, so it decides when this gets loaded.
   description = builtins.replaceStrings [ "\n" ] [ " " ] ''
     The user's Letterboxd -- their watchlist, their ratings, what they have seen, and
     recommendations built on a profile of their taste. Read-only from public pages; it
@@ -83,9 +58,7 @@ let
   ];
 in
 {
-  # A string, not a path: home-manager's claude-code module routes `commands`
-  # entries through `if lib.isPath content then source else text`, and a
-  # derivation is neither a path nor a string as far as that check is concerned.
+  # A string, not a path, for the reason given in ../pathe/default.nix.
   commandText = ''
     ---
     description: ${description}
@@ -96,11 +69,8 @@ in
     ${claudeCodeBody}
   '';
 
-  # A directory, as dsh's tool-skill scanner expects: one SKILL.md per
-  # subdirectory, discovered at the top level of a scanned root. Leaving both
-  # invocation keys unset is deliberate -- it keeps `boxd` in the model catalog
-  # *and* makes `/boxd` a gesture a person can type, which is the closest this
-  # harness has to the slash command above.
+  # Invocation keys left unset, so the skill is both in the model's catalog and
+  # typeable as `/boxd`.
   skills = pkgs.runCommand "dsh-skills-boxd" { } ''
     mkdir -p "$out/boxd"
     cp ${pkgs.writeText "SKILL.md" ''
