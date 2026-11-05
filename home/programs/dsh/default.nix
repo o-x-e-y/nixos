@@ -437,10 +437,9 @@ let
   '';
 
   # dsh refuses to load a bundle whose declared peerDependencies do not cover the
-  # running kernel, and two of the bundles below declare the previous channel:
-  # dsh-TUI 0.14.0 stops at 0.2.0-rc.2, billion-context 0.2.26 at <0.1.6-0.
-  # Neither is actually incompatible -- mk-dsh-bundle builds every one of them
-  # against this exact kernel (linkKernelNodeModules) -- but the refusal costs
+  # running kernel, and dsh-TUI 0.14.0 declares the previous channel, stopping
+  # at 0.2.0-rc.2. It is not actually incompatible -- mk-dsh-bundle builds every
+  # bundle against this exact kernel (linkKernelNodeModules) -- but the refusal costs
   # the whole TUI layer, and with it `tuiStatus`, which is why dsh-usage sat at
   # "pending (waiting for service: tuiStatus)" while the rest of the profile
   # booted, and why bare `dsh` printed only the web URL.
@@ -460,10 +459,6 @@ let
   bundleVersionExemptions = {
     nix-tui = {
       "@deepseek-harness-tui/dsh-tui" = pkgs.dsh.bundles.tui.version;
-      "billion-context-dsh" = pkgs.dsh.bundles.billion-context.version;
-    };
-    nix-web = {
-      "billion-context-dsh" = pkgs.dsh.bundles.billion-context.version;
     };
   };
 
@@ -582,7 +577,6 @@ in
             pkgs.dsh.bundles.graph-memory
             pkgs.dsh.bundles.modsearch
             pkgs.dsh.bundles.context
-            pkgs.dsh.bundles.billion-context
             dsh-usage
           ];
           patch = cordisPatch + tuiPatch;
@@ -593,7 +587,8 @@ in
             pkgs.dsh.bundles.graph-memory
             pkgs.dsh.bundles.modsearch
             pkgs.dsh.bundles.context
-            pkgs.dsh.bundles.billion-context
+            pkgs.dsh.bundles.turn-rewind
+            pkgs.dsh.bundles.experimental-forge-bundle
           ];
           patch = cordisPatch;
         };
@@ -603,10 +598,10 @@ in
         };
       };
 
-      # Bare `dsh` boots the TUI. Anything else is `dsh --profile nix-web` etc;
-      # the `dsh web` sugar is gone with the old wrapper, since it only ever
-      # existed to work around --patch's placement rules.
-      defaultProfile = config.programs.dsh.profiles.tui.materializedName;
+      # Bare `dsh` boots the web face. Anything else is `dsh --profile nix-tui`
+      # etc; the `dsh web` sugar is gone with the old wrapper, since it only
+      # ever existed to work around --patch's placement rules.
+      defaultProfile = config.programs.dsh.profiles.web.materializedName;
     };
 
     # The web face as a systemd user unit instead of a foreground `dsh
@@ -666,7 +661,7 @@ in
     # anything running as the user could always read the files directly.
     #
     # `command dsh` bypasses the function, so this covers every face -- bare
-    # `dsh` for the TUI and `dsh --profile nix-headless` are the same binary.
+    # `dsh` for the web face and `dsh --profile nix-tui` are the same binary.
     # As with the exports it replaces, this reaches interactive bash only.
     #
     # An already-set value wins, so a var exported by hand for a one-off is not

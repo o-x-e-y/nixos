@@ -24,7 +24,7 @@
     clean = {
       enable = true;
       dates = "Mon 12:00";
-      extraArgs = "--keep-since 30d --keep 5";
+      extraArgs = "--keep-since 7d --keep 5";
     };
   };
   # The profile rather than /run/current-system, so a pending `nixos-rebuild
