@@ -240,6 +240,19 @@ nutrition/fuel.py ─▶ nutrition/fuel.json ─▶ the plan's per-day Fuel badg
 - **The roster is known about two weeks out.** Week tables stop where the roster stops;
   beyond that the plan gives *targets* to be placed when the roster lands, not cells.
   Say so rather than inventing a cell.
+- **Google Calendar is the live schedule; the plan's week tables are not** *(new, 7 Nov
+  2026)*. The rider schedules from the calendar and often doesn't update the plan, so
+  shifts, swaps and moved sessions show up there first. Two calendars: **ESS Shifts**
+  (`50kjr1o1fmq6a2fcqvh9ljhd2cou3mmp@import.calendar.google.com`, read-only, times in
+  UTC), which is the roster with swaps included, and the **primary** calendar, which holds
+  the rides, lifts, fuel targets, Fontys, films and the "Working with …" shift summaries
+  in local time. **Never take a shift time or a session's day from the plan or
+  workouts.json without checking the calendar.** When they disagree, the calendar wins:
+  say what drifted, bring the plan and workouts.json in line, and push. A session that
+  places a week into the calendar updates the plan and workouts.json in the same
+  session. The trigger case: on 7 Nov the plan still had Sunday's shift at 15:30–22:00,
+  which had been swapped to 08:30–15:30 on 2 Nov. Week 3 had been re-placed in the
+  calendar on 5 Nov and never reached the plan, the watch or intervals.icu.
 
 # Pulling data
 
@@ -690,6 +703,9 @@ Orient first, always:
    and week table covering whatever day is being asked about**. The file is large;
    grep for the phase or week heading rather than reading it whole.
 2. Read `review/sessions.json` for what the block has delivered so far.
+3. **Before any advice that depends on what a day holds**, such as a shift, a session,
+   a lift or "tomorrow evening", list both Google Calendars for that window. This step
+   is mandatory: the plan's cells go stale (see *Google Calendar is the live schedule*).
 
 Where the week being asked about runs past the known roster, the plan gives targets
 rather than cells — say so, and place the week against the roster rather than
