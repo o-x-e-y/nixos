@@ -59,7 +59,7 @@ in
     ---
     description: ${description} Optionally pulls recent rides and nutrition.
     argument-hint: [notes, a question, and/or "pull the last N days"]
-    allowed-tools: Read, Grep, Glob, Bash(date:*), Bash(intervals-icu:*), Bash(weather:*), Bash(nix-shell:*), Bash(python3:*), Bash(typst:*), mcp__plugin_hm_cronometer__get_food_log, mcp__plugin_hm_cronometer__get_daily_nutrition, mcp__plugin_hm_cronometer__get_nutrition_scores, mcp__plugin_hm_cronometer__get_biometrics
+    allowed-tools: Read, Grep, Glob, Bash(date:*), Bash(intervals-icu:*), Bash(weather:*), Bash(nix-shell:*), Bash(python3:*), mcp__plugin_hm_cronometer__get_food_log, mcp__plugin_hm_cronometer__get_daily_nutrition, mcp__plugin_hm_cronometer__get_nutrition_scores, mcp__plugin_hm_cronometer__get_biometrics
     ---
 
     ${claudeCodeBody}
