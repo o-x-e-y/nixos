@@ -112,6 +112,7 @@ in
             "Bash(ortec swap-candidates:*)"
             "Bash(ortec leaves:*)"
             "Bash(ortec leave-types:*)"
+            "Bash(ortec preferences:*)"
             "Bash(ortec working-with:*)"
 
             # Only the read path into the journal. The wrapper rejects every

@@ -50,7 +50,7 @@
   soft_deny = [
     "$defaults"
     "Nix Generation Deletion: `nix-collect-garbage -d` or `--delete-older-than`, `nix-env --delete-generations`, `nix-store --delete`, or `home-manager expire-generations` delete old system or home-manager generations and store paths, which removes rollback targets for good. Block unless the user asked for it in this session."
-    "ORTEC Schedule Changes: `ortec swap-request`, `ortec swap-accept`, `ortec swap-decline` or `ortec leave` with `--yes` sends a swap request, answers a colleague's swap request, or requests time off in the user's real work schedule; an accepted swap cannot be undone. Without `--yes` these only print a preview and are not covered. Block unless the user confirmed that exact preview in this session."
+    "ORTEC Schedule Changes: `ortec swap-request`, `ortec swap-accept`, `ortec swap-decline`, `ortec swap-cancel`, `ortec leave`, `ortec leave-cancel`, `ortec preference` or `ortec preference-cancel` with `--yes` sends, answers or cancels a swap request, or requests or cancels time off or a work preference in the user's real work schedule; an accepted swap cannot be undone. Without `--yes` these only print a preview and are not covered. Block unless the user confirmed that exact preview in this session."
     "Ledger Writes: `ledger` or `jrnl` with entry text, `--edit`, `--delete`, `--change-time`, `--import`, `--encrypt` or `--decrypt` adds to or rewrites the user's personal work journal, which is their own record. `ledger --json` is read-only and not covered. Block unless the user asked for that exact change in this session."
   ];
 }

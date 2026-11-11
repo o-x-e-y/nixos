@@ -1,6 +1,6 @@
 Handle a request about the user's work schedule at Pathé (ORTEC Employee Self
 Service) with the `ortec` CLI: their shifts, swapping a shift with a colleague,
-answering a colleague's swap request, and time off.
+answering a colleague's swap request, time off, and work preferences.
 
 @TODAY@
 
@@ -23,6 +23,9 @@ you need a flag you are not sure of.
 | their leave and its status | `ortec leaves [FROM [TO]]` |
 | who they work with on a day they work | `ortec working-with [DATE [TO]]` |
 | asking for time off | `ortec leave FROM [TO] [--type T]` |
+| their work preferences and status | `ortec preferences [FROM [TO]]` |
+| when they do or don't want to work | `ortec preference FROM [TO] --off` / `--work` |
+| taking back something they sent | `ortec swap-cancel DATE [--id N]` / `ortec leave-cancel ID` / `ortec preference-cancel ID` |
 
 Dates are `YYYY-MM-DD`, the short `MM-DD` and `DD` (the next such date, today
 included), `today`/`vandaag`, `tomorrow`/`morgen`, or `+N` days. Work out
@@ -32,7 +35,8 @@ means that day only; no date means the coming weeks.
 
 ## Changing the schedule
 
-`swap-request`, `swap-accept`, `swap-decline` and `leave` change the user's real
+`swap-request`, `swap-accept`, `swap-decline`, `swap-cancel`, `leave`,
+`leave-cancel`, `preference` and `preference-cancel` change the user's real
 schedule at their job, and an accepted swap cannot be undone. They only print a
 preview unless given `--yes`.
 
@@ -65,6 +69,14 @@ by them.
 The type defaults to the first one (Vakantie); `ortec leave-types` lists them.
 A confirmed request runs the server's balance check first.
 
+**Leave or a work preference.** Leave (`verlof`) is time off from the leave
+balance. A work preference (`werkvoorkeur`) tells the planner when the user
+would rather not work (`--off`, "ik wil niet werken") or would like to
+(`--work`, "ik wil werken"). It takes the same dates and times as `leave`;
+`00:00` as the end means the end of that day, so `ortec preference
+"2026-12-26 16:00" 00:00 --off` is free from 16:00 onward. When the user says
+"free", "vrij" or "can't work" without saying leave, ask which one they mean.
+
 **Who they work with.** `ortec working-with` only answers for days the user has
 a shift, and refuses any other day. That limit is deliberate: colleagues'
 schedules are private, and the user chose to look only at days they work
@@ -78,5 +90,11 @@ refused balance check. Relay it and ask, rather than guessing a different
 command. A login error means the credentials in `/run/secrets/ortec-*` or the
 account itself; do not try to work around it.
 
-**What it cannot do:** withdraw a swap request the user sent, or edit or delete
-leave. Point the user at the ESS app for those.
+**Cancelling.** Anything the app lets the user take back can be cancelled: a
+swap request they sent while it is Open (`swap-cancel`, found like
+`swap-accept`), and leave or a work preference while it is Pending
+(`leave-cancel` / `preference-cancel` with the id from `leaves` /
+`preferences`). Once a colleague or planner has handled it, the command refuses.
+To change one, cancel it and send a new one.
+
+**What it cannot do:** edit a request in place. Cancel and resend instead.
