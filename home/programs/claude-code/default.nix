@@ -58,10 +58,11 @@ in
       settings = {
         statusLine = status-line;
 
-        model = "opus";
+        model = "fable";
         effortLevel = "xhigh";
 
         modelSettings = {
+          "claude-fable-5-2".effortLevel = "medium";
           "claude-opus-5".effortLevel = "xhigh";
           "claude-opus-5-5".effortLevel = "high";
           "claude-sonnet-5-5".effortLevel = "high";
