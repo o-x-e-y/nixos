@@ -88,8 +88,8 @@ in
             "Bash(typst compile:*)"
             "Bash(wasm-pack:*)"
             "Bash(trash-put:*)"
-            "Grep(*)"
-            "Glob(*)"
+            "Grep"
+            "Glob"
             "Bash(curl:*)"
             "Bash(intervals-icu:*)"
 
