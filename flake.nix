@@ -86,9 +86,9 @@
             };
 
             claudeCodeOverride = {
-              enable = false;
-              version = "2.1.311";
-              hash = "sha256-0MALgHYfMDDzTPCBImb2xvghD/mvckL3xsdsVgBJnK8=";
+              enable = true;
+              version = "2.1.322";
+              hash = "sha256-m7dVi9mSykV+ZFi/FoZXL3oxVrgzHdhEM5Hb/lkMHu0=";
             };
 
             wheelwizardOverride = {
