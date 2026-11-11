@@ -21,3 +21,6 @@ it shouldn't touch and the shape of the answer you want back.
 
 To delete files or directories, use `trash-put` rather than `rm`, so
 they can be restored with `trash-restore`.
+
+For weather, run the `weather` CLI (`weather --help`); it defaults to
+home, Beek en Donk.
