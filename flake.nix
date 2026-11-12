@@ -38,7 +38,7 @@
     };
 
     canvas-cli = {
-      url = "git+ssh://git@github.com/o-x-e-y/canvas-cli";
+      url = "github:o-x-e-y/canvas-cli";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
