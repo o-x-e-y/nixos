@@ -31,6 +31,36 @@ let
     ];
     text = builtins.readFile ./intervals-icu.sh;
   };
+
+  # Prints the `version` + `hash` lines to paste into flake.nix for
+  # claudeCodeOverride (hosts/default/claude-code-override.nix), which fetches
+  # from the same place. Takes a version, or resolves the newest one when given
+  # none.
+  claude-hash =
+    let
+      baseUrl = "https://downloads.claude.ai/claude-code-releases";
+    in
+    pkgs.writeShellApplication {
+      name = "claude-hash";
+      runtimeInputs = [
+        pkgs.curl
+        pkgs.jq
+        pkgs.nix # nix hash convert
+      ];
+      text = ''
+        version=''${1:-$(curl -fsSL "${baseUrl}/latest")}
+
+        # One manifest covers every platform, and states the checksum as hex.
+        checksum=$(
+          curl -fsSL "${baseUrl}/$version/manifest.zst.json" \
+            | jq -er '.platforms["linux-x64"].checksum'
+        )
+
+        printf 'version = "%s";\nhash = "%s";\n' \
+          "$version" \
+          "$(nix hash convert --hash-algo sha256 --to sri "$checksum")"
+      '';
+    };
 in
 {
   # One directory per integration. Each owns its package, its credentials and
