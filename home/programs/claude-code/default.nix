@@ -88,7 +88,7 @@ in
       settings = {
         statusLine = status-line;
 
-        model = "fable";
+        model = "haiku";
         effortLevel = "xhigh";
 
         modelSettings = {
@@ -211,6 +211,7 @@ in
       pkgs.claude-monitor
       pkgs.trash-cli
       intervals-icu
+      claude-hash
     ];
   };
 }
