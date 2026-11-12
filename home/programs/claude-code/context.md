@@ -24,3 +24,10 @@ they can be restored with `trash-restore`.
 
 For weather, run the `weather` CLI (`weather --help`); it defaults to
 home, Beek en Donk.
+
+The user plans their days in Google Calendar: shifts (the ESS Shifts
+calendar), rides, meals, films and school. When a request involves time or
+planning, such as when something is, whether it fits, or how to get
+somewhere, read the relevant days in the calendar before anything else.
+Treat what's there as the plan, but details in an event can be out of date,
+and what the user says wins.
