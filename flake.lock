@@ -136,6 +136,24 @@
         "type": "github"
       }
     },
+    "flake-utils_5": {
+      "inputs": {
+        "systems": "systems_6"
+      },
+      "locked": {
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -337,8 +355,30 @@
         "oxeylyzer": "oxeylyzer",
         "pathe-cli": "pathe-cli",
         "plasma-manager": "plasma-manager",
+        "route-cli": "route-cli",
         "sops-nix": "sops-nix",
         "zed-extensions": "zed-extensions"
+      }
+    },
+    "route-cli": {
+      "inputs": {
+        "flake-utils": "flake-utils_5",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1794490531,
+        "narHash": "sha256-OTBhma9CO1F+tbLXBuj5zk+Bgc8UCbT9G9zPzgVGWbg=",
+        "owner": "o-x-e-y",
+        "repo": "route-cli",
+        "rev": "fdb590290a3b8c1ec3ed1418a99e344d54422144",
+        "type": "github"
+      },
+      "original": {
+        "owner": "o-x-e-y",
+        "repo": "route-cli",
+        "type": "github"
       }
     },
     "rust-overlay": {
@@ -461,6 +501,21 @@
       }
     },
     "systems_5": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
+    "systems_6": {
       "locked": {
         "lastModified": 1681028828,
         "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",

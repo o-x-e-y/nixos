@@ -47,6 +47,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    route-cli = {
+      url = "github:o-x-e-y/route-cli";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     deepseek-harness = {
       url = "github:moraxyc/deepseek-harness.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -65,6 +70,7 @@
       oxeylyzer,
       pathe-cli,
       ortec-mcp,
+      route-cli,
       canvas-cli,
       deepseek-harness,
       ...
@@ -112,6 +118,7 @@
               oxeylyzer.overlays.default
               pathe-cli.overlays.default
               ortec-mcp.overlays.default
+              route-cli.overlays.default
               canvas-cli.overlays.default
               deepseek-harness.overlays.default
             ];
@@ -122,6 +129,7 @@
               deepseek-harness.homeModules.default
               pathe-cli.homeManagerModules.default
               ortec-mcp.homeManagerModules.default
+              route-cli.homeManagerModules.default
               canvas-cli.homeManagerModules.default
             ];
           }

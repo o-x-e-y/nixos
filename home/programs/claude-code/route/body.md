@@ -33,20 +33,19 @@ It plans from the timetable: no live delays, platforms or disruptions.
 
 ## Places
 
-**Home** is Beek en Donk. The user bikes to the bus stop *Beek en Donk,
-Lieshoutseweg* and takes bus 321 or 322 to and from Eindhoven Centraal. Plan
-trips from or to home from or to that stop, given as coordinates, because the
-name alone matches the street rather than the stop:
+**Home** is Beek en Donk. The user bikes to a bus stop there and takes the
+direct bus to and from Eindhoven Centraal. Plan trips from or to home from or
+to that stop's coordinates:
 
 ```
 51.526654,5.634421
 ```
 
 The bike ride isn't in the output, and its length isn't known. Write "bike to
-Lieshoutseweg" before the bus, or "bike home" after it, without a time.
+the bus stop" before the bus, or "bike home" after it, without a time.
 Cycling to Helmond station also works but is usually slower and less
-convenient. Plan via `"Station Helmond"` only when the 321/322 doesn't fit,
-e.g. late at night, and say why.
+convenient. Plan via `"Station Helmond"` only when the direct bus doesn't
+fit, e.g. late at night, and say why.
 
 **Cinemas.** These names resolve to the right building:
 
@@ -68,14 +67,44 @@ wrong match. Say so and ask again with a more specific name or coordinates.
 **Work.** When a trip starts or ends around a shift, the user says where they
 work that day. Don't guess it. `ortec shifts DATE` gives the shift's times.
 
+## What the user cares about
+
+Fast and predictable.
+
+- **Walking is never a problem.** Up to about 30 minutes is fine, and that's
+  not a hard limit. Walking to a stop beats waiting at one.
+- **Waiting at a station is what they dislike.** `wait_min` shows it per
+  ride and in total.
+- **Intercity over Sprinter** when the times are close.
+- **A tight transfer is a risk, so plan its backup.** Under 5 minutes
+  (`tightest_transfer_min`, `[tight]` in the text), one minute of delay
+  means missing it. Take the faster option anyway **if missing the
+  connection still gets them there on time**, and give the backup: the next
+  departure on that leg and the arrival it leads to. If missing it would
+  make them late, take the safe option. Be early when it works out, and
+  never late when it doesn't.
+- **Google leaves out connections it thinks are too short.** Look for them
+  across options: one option's train arrives at a station a few minutes
+  before another option's train leaves from it. Example: Intercity Helmond
+  16:01 arrives at Eindhoven 16:11, and another option's Intercity to
+  Tilburg leaves at 16:13. That gives two Intercities with a 2-minute dash,
+  and the 16:21 Sprinter as the backup. Offer such a combination under the
+  same rule, and say that it is one.
+
 ## Planning a trip
 
-1. Pin the times down first: a showtime from `pathe`, a shift end from
-   `ortec shifts`, or what the user said. Turn relative days into a concrete
-   date from today's date above.
+1. Pin the times down before the first `route` call, since every call is
+   billed. Read the day in Google Calendar: it usually
+   holds the event the trip is for (a film, a shift) and any travel already
+   planned. Then use `pathe` for a showtime, `ortec shifts` for a shift, and
+   whatever the user said, which wins over a stale event. Turn relative days
+   into a concrete date from today's date above.
 2. To **be somewhere at T**, pass T to `--arrive`. Prefer an option with
    about 10 minutes to spare, and point out the ones that arrive with less.
-3. To **leave from somewhere at T**, pass T to `--depart`.
+3. To **leave from somewhere at T**, pass T to `--depart`. A film's listed
+   end time, which is also the calendar event's end, is 10 to 15 minutes
+   after the film really ends, unless it has an intermission. Plan the trip
+   home from about 10 minutes before the listed end.
 4. A **round trip** is two calls, one per direction. For a late return, the
    last workable option home decides whether the plan works. If nothing
    reasonable runs, say so plainly.
@@ -83,10 +112,14 @@ work that day. Don't guess it. `ortec shifts DATE` gives the shift's times.
 ## Answering
 
 Keep it short. For each direction, give the option you'd pick (leave,
-arrive, lines, transfers), with one line for each alternative worth knowing:
-one that leaves later, has fewer transfers or less walking. Mention the walk
-to the first stop and the bike legs. Give the `maps_url`; it opens on
-"leave now", so the time has to be set in Maps.
+arrive, lines, transfers) and its split from `ride_min`, `wait_min` and
+`walk_min`, e.g. "73 min: 44 riding, 9 waiting, 20 walking". Cycling isn't
+in the output: when the trip has a bike leg, name it separately and don't
+add a time for it. Then give one line for each alternative worth knowing:
+one that leaves later, waits less, or has no tight transfer. Mention walks
+over 10 minutes and the bike legs. Leave walks of 10 minutes or less out
+entirely, including the last few minutes to the door. Give the
+`maps_url`; it opens on "leave now", so the time has to be set in Maps.
 
 When it doesn't fit (the shift ends at 15:30 and every option arrives after
 the film starts), say that first.
@@ -107,7 +140,7 @@ One event per trip, in the primary calendar:
   have.
 - **location:** the starting point.
 - **description:** one line per leg (`15:51 Sprinter → Tilburg Universiteit:
-  Eindhoven Centraal → Tilburg`, `bike to Lieshoutseweg`), then the
+  Eindhoven Centraal → Tilburg`, `bike to the bus stop`), then the
   `maps_url`.
 
 The film or shift is its own event. Films are Banana, per the pathe skill,

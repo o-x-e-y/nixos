@@ -23,6 +23,7 @@
     ./osu-lazer
     ./pathe
     ./plasma
+    ./route
     ./spotify-player
     ./ssh
     ./vscodium

@@ -12,6 +12,7 @@ let
   coach = import ./coach { inherit pkgs; };
   pathe = import ./pathe { inherit pkgs; };
   ortec = import ./ortec { inherit pkgs; };
+  route = import ./route { inherit pkgs; };
   boxd = import ./boxd {
     inherit pkgs;
     inherit (config.apps.boxd) user;
@@ -146,6 +147,11 @@ in
             "Bash(ortec preferences:*)"
             "Bash(ortec working-with:*)"
 
+            # Only reads, but every call is a billed Google request. The CLI
+            # caps that itself (programs.route.limit in ../route), so this
+            # allows rather than asks.
+            "Bash(route:*)"
+
             # Only the read path into the journal. The wrapper rejects every
             # flag but jrnl's filters after --json, and jrnl never writes with
             # --format set, so this cannot add, edit or delete an entry. Plain
@@ -198,6 +204,7 @@ in
         coach = coach.commandText;
         pathe = pathe.commandText;
         ortec = ortec.commandText;
+        route = route.commandText;
         boxd = boxd.commandText;
         ledger = ledger.commandText;
         fontys = fontys.commandText;
