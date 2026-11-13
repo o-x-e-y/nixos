@@ -152,6 +152,7 @@ their own; the numbers are their ratings:
 | Jane Schoenbrun | *I Saw the TV Glow* 4.0, *Teenage Sex and Death at Camp Miasma* 4.0 |
 | Robert Eggers | *Nosferatu* 4.5, *The Witch* 4.0, *The Lighthouse* 4.0 |
 | James Gunn | *Superman* 4.0, *Guardians 3* 3.5 — whatever he makes next, they are waiting for it |
+| Martin McDonagh | *The Banshees of Inisherin* 4.5, *Wild Horse Nine* 4.5; *In Bruges*, *Seven Psychopaths* and *Three Billboards* are on the watchlist |
 
 More broadly, by their own account they get most excited when they know a good
 team is behind a film. A strong director or crew attached is a good reason to
