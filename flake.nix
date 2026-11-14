@@ -56,6 +56,11 @@
       url = "github:moraxyc/deepseek-harness.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -73,74 +78,94 @@
       route-cli,
       canvas-cli,
       deepseek-harness,
+      disko,
       ...
     }@inputs:
+    let
+      mkHost =
+        modules:
+        nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs; };
+
+          modules = modules ++ [
+            ./hosts/default/main-user.nix
+            ./hosts/default/claude-code-override.nix
+
+            {
+              mainUser = {
+                enable = true;
+                username = "oxey";
+              };
+
+              claudeCodeOverride = {
+                enable = true;
+                version = "2.1.322";
+                hash = "sha256-m7dVi9mSykV+ZFi/FoZXL3oxVrgzHdhEM5Hb/lkMHu0=";
+              };
+
+              nixpkgs.overlays = [
+                pathe-cli.overlays.default
+                ortec-mcp.overlays.default
+                route-cli.overlays.default
+                canvas-cli.overlays.default
+                deepseek-harness.overlays.default
+              ];
+
+              home-manager.sharedModules = [
+                deepseek-harness.homeModules.default
+                pathe-cli.homeManagerModules.default
+                ortec-mcp.homeManagerModules.default
+                route-cli.homeManagerModules.default
+                canvas-cli.homeManagerModules.default
+              ];
+            }
+
+            sops-nix.nixosModules.sops
+
+            home-manager.nixosModules.home-manager
+          ];
+        };
+    in
     {
-      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs; };
+      nixosConfigurations.nixos = mkHost [
+        ./hosts/default/configuration.nix
+        ./hosts/default/wheelwizard-override.nix
 
-        modules = [
-          ./hosts/default/configuration.nix
-          ./hosts/default/main-user.nix
-          ./hosts/default/claude-code-override.nix
-          ./hosts/default/wheelwizard-override.nix
+        {
+          wheelwizardOverride = {
+            enable = true;
+            version = "2.6.2";
+            hash = "sha256-FAPl0ZcFYgk4VR6EUROQlc6ZcJNCH+K4xYPzvhI3k2E=";
 
-          {
-            mainUser = {
-              enable = true;
-              username = "oxey";
+            dolphin = {
+              version = "2609a";
+              hash = "sha256-0yQVW7Q3EKqfGihVA9I8Ucs0Hn/QVGVXuZ8ePbCZ5TQ=";
             };
 
-            claudeCodeOverride = {
-              enable = true;
-              version = "2.1.322";
-              hash = "sha256-m7dVi9mSykV+ZFi/FoZXL3oxVrgzHdhEM5Hb/lkMHu0=";
+            wiicompiled = {
+              version = "0.2.34";
+              hash = "sha256-fOrUVcom55bQ8xK/TGvYA3w9a2Ob/uf48GMuI52Hcmg=";
             };
+          };
 
-            wheelwizardOverride = {
-              enable = true;
-              version = "2.6.2";
-              hash = "sha256-FAPl0ZcFYgk4VR6EUROQlc6ZcJNCH+K4xYPzvhI3k2E=";
+          nixpkgs.overlays = [
+            zed-extensions.overlays.default
+            oxeylyzer.overlays.default
+          ];
 
-              dolphin = {
-                version = "2609a";
-                hash = "sha256-0yQVW7Q3EKqfGihVA9I8Ucs0Hn/QVGVXuZ8ePbCZ5TQ=";
-              };
+          home-manager.sharedModules = [
+            plasma-manager.homeModules.plasma-manager
+            zed-extensions.homeManagerModules.default
+          ];
+        }
 
-              wiicompiled = {
-                version = "0.2.34";
-                hash = "sha256-fOrUVcom55bQ8xK/TGvYA3w9a2Ob/uf48GMuI52Hcmg=";
-              };
-            };
+        nix-flatpak.nixosModules.nix-flatpak
+      ];
 
-            nixpkgs.overlays = [
-              zed-extensions.overlays.default
-              oxeylyzer.overlays.default
-              pathe-cli.overlays.default
-              ortec-mcp.overlays.default
-              route-cli.overlays.default
-              canvas-cli.overlays.default
-              deepseek-harness.overlays.default
-            ];
-
-            home-manager.sharedModules = [
-              plasma-manager.homeModules.plasma-manager
-              zed-extensions.homeManagerModules.default
-              deepseek-harness.homeModules.default
-              pathe-cli.homeManagerModules.default
-              ortec-mcp.homeManagerModules.default
-              route-cli.homeManagerModules.default
-              canvas-cli.homeManagerModules.default
-            ];
-          }
-
-          nix-flatpak.nixosModules.nix-flatpak
-
-          sops-nix.nixosModules.sops
-
-          home-manager.nixosModules.home-manager
-        ];
-      };
+      nixosConfigurations.vps = mkHost [
+        ./hosts/vps
+        disko.nixosModules.disko
+      ];
 
       templates = {
         rust = {
