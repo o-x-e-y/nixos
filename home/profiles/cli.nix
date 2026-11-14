@@ -28,6 +28,7 @@ in
     ../programs/dsh
     ../programs/fastfetch
     ../programs/git
+    ../programs/intervals-icu
     ../programs/ledger
     ../programs/ortec
     ../programs/pathe

@@ -57,7 +57,7 @@ in
       ];
 
       # Everything here is visible to other people on the repo, so it is gated
-      # rather than allowed, as with ../intervals-icu's upload. `gh api` sits
+      # rather than allowed. `gh api` sits
       # here too: it can reach any endpoint the token can, reads and writes
       # alike, so a prefix rule cannot tell the two apart.
       ask = [

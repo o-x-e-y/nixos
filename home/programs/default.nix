@@ -10,6 +10,7 @@
     ./direnv
     ./dsh
     ./fastfetch
+    ./intervals-icu
     ./foot
     ./ghostty
     ./git

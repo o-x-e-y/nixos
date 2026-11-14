@@ -23,16 +23,6 @@ let
   typst-writer = import ./typst-writer { inherit pkgs; };
   canvas-submit = import ./canvas-submit { inherit pkgs; };
 
-  intervals-icu = pkgs.writeShellApplication {
-    name = "intervals-icu";
-    runtimeInputs = with pkgs; [
-      curl
-      jq
-      coreutils
-    ];
-    text = builtins.readFile ./intervals-icu.sh;
-  };
-
   # Prints the `version` + `hash` lines to paste into flake.nix for
   # claudeCodeOverride (hosts/default/claude-code-override.nix), which fetches
   # from the same place. Takes a version, or resolves the newest one when given
@@ -69,7 +59,6 @@ in
   imports = [
     ./cronometer
     ./github
-    ./intervals-icu
     ./weather
   ];
 
@@ -217,7 +206,6 @@ in
     home.packages = [
       pkgs.claude-monitor
       pkgs.trash-cli
-      intervals-icu
       claude-hash
     ];
   };

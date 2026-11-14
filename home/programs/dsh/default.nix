@@ -34,18 +34,6 @@ let
     text = builtins.readFile ./../claude-code/weather/weather.sh;
   };
 
-  intervals-icu = pkgs.writeShellApplication {
-    name = "intervals-icu";
-    runtimeInputs = with pkgs; [
-      curl
-      jq
-      coreutils
-    ];
-    text = builtins.readFile ./../claude-code/intervals-icu.sh;
-  };
-
-  intervals-icu-mcp = pkgs.callPackage ./../claude-code/intervals-icu/package.nix { };
-
   coachSkills = (import ./../claude-code/coach { inherit pkgs; }).skills;
   patheSkills = (import ./../claude-code/pathe { inherit pkgs; }).skills;
   routeSkills = (import ./../claude-code/route { inherit pkgs; }).skills;
@@ -190,18 +178,6 @@ let
               CRONOMETER_PASSWORD: !!js process.env.CRONOMETER_PASSWORD ?? '''
               CRONOMETER_ACCOUNT_TZ: Europe/Amsterdam
               UV_PYTHON_DOWNLOADS: never
-
-        # No per-tool prompts here, so `upload_week_plan` (and its `clear`,
-        # which deletes the existing calendar range) runs unasked.
-        - id: mcp-intervals-icu
-          name: '@deepseek-ai/dsh-mcp-client'
-          config:
-            serverName: intervals-icu
-            transport: stdio
-            command: ${lib.getExe intervals-icu-mcp}
-            env:
-              INTERVALS_API_KEY: !!js process.env.INTERVALS_API_KEY ?? '''
-              ATHLETE_ID: i563199
   '';
   # The TUI profile always carries a web host. `port: 0` keeps a second TUI or
   # the dsh-web unit from hitting EADDRINUSE on 3080. Not in cordisPatch
@@ -346,7 +322,6 @@ in
           "DASHSCOPE_API_KEY=/run/secrets/dashscope-api-key" \
           "CRONOMETER_USERNAME=/run/secrets/cronometer-email" \
           "CRONOMETER_PASSWORD=/run/secrets/cronometer-password" \
-          "INTERVALS_API_KEY=/run/secrets/intervals_icu_key" \
           "ANTHROPIC_API_KEY=/run/secrets/anthropic-api-key"
         do
           var=''${pair%%=*}
@@ -393,10 +368,9 @@ in
       )
     );
 
-    # The coach skill calls these through the bash tool.
+    # The coach skill calls this through the bash tool.
     home.packages = [
       weather
-      intervals-icu
     ];
   };
 }
