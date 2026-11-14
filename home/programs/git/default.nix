@@ -37,6 +37,16 @@ in
       signing.format = null;
     };
 
+    programs.delta = {
+      enable = true;
+      enableGitIntegration = true;
+      options = {
+        side-by-side = true;
+        line-numbers = true;
+        pager = "less --mouse --wheel-lines=3";
+      };
+    };
+
     home.packages = [
       (pkgs.writeShellScriptBin "git-branch-diff" ''
         set -eu

@@ -48,6 +48,7 @@ let
 
   coachSkills = (import ./../claude-code/coach { inherit pkgs; }).skills;
   patheSkills = (import ./../claude-code/pathe { inherit pkgs; }).skills;
+  routeSkills = (import ./../claude-code/route { inherit pkgs; }).skills;
   boxdSkills =
     (import ./../claude-code/boxd {
       inherit pkgs;
@@ -113,6 +114,7 @@ let
         customSkillDirs:
           - ${coachSkills}
           - ${patheSkills}
+          - ${routeSkills}
           - ${boxdSkills}
           - ${ledgerSkills}
           - ${fontysSkills}

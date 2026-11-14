@@ -1,6 +1,6 @@
 {
   config,
-  pkgs,
+  osConfig,
   lib,
   ...
 }:
@@ -26,12 +26,9 @@ in
         "grep" = "grep --color=auto";
         "hgrep" = "history | grep";
         ".." = "cd ..";
-        "zed" = "${pkgs.zed-editor}/bin/zeditor";
-        "code" = "${pkgs.vscodium}/bin/codium";
-        "rebuild" = "sudo nixos-rebuild switch --flake ~/nixos#nixos";
+        "rebuild" = "sudo nixos-rebuild switch --flake ~/nixos#${osConfig.networking.hostName}";
         "update" = "nix flake update --flake ~/nixos --commit-lock-file && rebuild";
         "rebuild-boot" = "sudo /nix/var/nix/profiles/system/bin/switch-to-configuration boot";
-        "edit-sops" = "EDITOR=\"codium --wait\" sops ~/nixos/secrets/secrets.yaml";
       };
     };
   };

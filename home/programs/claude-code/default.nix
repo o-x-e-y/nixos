@@ -12,6 +12,7 @@ let
   coach = import ./coach { inherit pkgs; };
   pathe = import ./pathe { inherit pkgs; };
   ortec = import ./ortec { inherit pkgs; };
+  route = import ./route { inherit pkgs; };
   boxd = import ./boxd {
     inherit pkgs;
     inherit (config.apps.boxd) user;
@@ -31,6 +32,36 @@ let
     ];
     text = builtins.readFile ./intervals-icu.sh;
   };
+
+  # Prints the `version` + `hash` lines to paste into flake.nix for
+  # claudeCodeOverride (hosts/default/claude-code-override.nix), which fetches
+  # from the same place. Takes a version, or resolves the newest one when given
+  # none.
+  claude-hash =
+    let
+      baseUrl = "https://downloads.claude.ai/claude-code-releases";
+    in
+    pkgs.writeShellApplication {
+      name = "claude-hash";
+      runtimeInputs = [
+        pkgs.curl
+        pkgs.jq
+        pkgs.nix # nix hash convert
+      ];
+      text = ''
+        version=''${1:-$(curl -fsSL "${baseUrl}/latest")}
+
+        # One manifest covers every platform, and states the checksum as hex.
+        checksum=$(
+          curl -fsSL "${baseUrl}/$version/manifest.zst.json" \
+            | jq -er '.platforms["linux-x64"].checksum'
+        )
+
+        printf 'version = "%s";\nhash = "%s";\n' \
+          "$version" \
+          "$(nix hash convert --hash-algo sha256 --to sri "$checksum")"
+      '';
+    };
 in
 {
   # One directory per integration. Each owns its package, its credentials and
@@ -58,7 +89,7 @@ in
       settings = {
         statusLine = status-line;
 
-        model = "fable";
+        model = "haiku";
         effortLevel = "xhigh";
 
         modelSettings = {
@@ -116,6 +147,11 @@ in
             "Bash(ortec preferences:*)"
             "Bash(ortec working-with:*)"
 
+            # Only reads, but every call is a billed Google request. The CLI
+            # caps that itself (programs.route.limit in ../route), so this
+            # allows rather than asks.
+            "Bash(route:*)"
+
             # Only the read path into the journal. The wrapper rejects every
             # flag but jrnl's filters after --json, and jrnl never writes with
             # --format set, so this cannot add, edit or delete an entry. Plain
@@ -168,6 +204,7 @@ in
         coach = coach.commandText;
         pathe = pathe.commandText;
         ortec = ortec.commandText;
+        route = route.commandText;
         boxd = boxd.commandText;
         ledger = ledger.commandText;
         fontys = fontys.commandText;
@@ -181,6 +218,7 @@ in
       pkgs.claude-monitor
       pkgs.trash-cli
       intervals-icu
+      claude-hash
     ];
   };
 }

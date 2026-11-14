@@ -35,6 +35,8 @@ in
           # fine-grained PAT for gh, scoped to the repos Claude may touch
           "github_token"
           "github_innergames_token"
+          "ns-api-key"
+          "routes-api-key"
         ]
         (_: {
           owner = user;
