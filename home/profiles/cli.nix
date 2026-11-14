@@ -42,18 +42,11 @@ in
     typst
     typstyle
     plantuml
-    tinymist
-    package-version-server
-    zig
-    clang-tools
     mold
     sqlite
     glow
     bat
-    git-fame
-    git-filter-repo
     speedtest-cli
-    claude-monitor
     fend
   ];
 

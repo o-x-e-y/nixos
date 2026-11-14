@@ -37,6 +37,7 @@
     oxeylyzer
     wheelwizard
     google-chrome
+    git-fame
 
     # (pkgs.writeShellScriptBin "cc" "${pkgs.gcc}/bin/gcc")
   ];
