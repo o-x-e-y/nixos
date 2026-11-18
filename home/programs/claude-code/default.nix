@@ -105,7 +105,8 @@ in
         };
 
         tui = "fullscreen";
-        remoteControlAtStartup = true;
+        remoteControlAtStartup = false;
+        env.CLAUDE_CODE_EXPERIMENTAL_CODE_MODE = "1";
         cleanupPeriodDays = 180;
         autoContinueAtUsageLimit = true;
 
