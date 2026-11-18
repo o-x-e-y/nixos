@@ -27,6 +27,7 @@
     ./route
     ./spotify-player
     ./ssh
+    ./teams-for-linux
     ./vscodium
     ./wiicompiled
     ./zed-editor
