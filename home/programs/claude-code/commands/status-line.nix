@@ -7,6 +7,8 @@
     five=$(echo "$input" | ${pkgs.jq}/bin/jq -r '.rate_limits.five_hour.used_percentage // empty')
     week=$(echo "$input" | ${pkgs.jq}/bin/jq -r '.rate_limits.seven_day.used_percentage // empty')
     resets_at=$(echo "$input" | ${pkgs.jq}/bin/jq -r '.rate_limits.five_hour.resets_at // empty')
+    rate=$(echo "$input" | ${pkgs.jq}/bin/jq -c 'select(.rate_limits) | .rate_limits')
+    [ -n "$rate" ] && printf '%s\n' "$rate" > "$HOME/.claude/rate-limits.json"
     model=$(echo "$input" | ${pkgs.jq}/bin/jq -r '.model.display_name // empty')
     out=""
     [ -n "$used" ] && out="ctx:$(printf '%.0f' "$used")%"

@@ -7,6 +7,11 @@
 let
   cfg = config.apps.claude-code;
   status-line = import ./commands/status-line.nix { inherit pkgs; };
+  usage-guard = import ./usage-guard { inherit pkgs; };
+  usageGuardHook = {
+    type = "command";
+    command = "${usage-guard}/bin/claude-usage-guard";
+  };
 
   # Each renders one document for both this and ../dsh.
   coach = import ./coach { inherit pkgs; };
@@ -77,6 +82,16 @@ in
 
       settings = {
         statusLine = status-line;
+
+        hooks = {
+          PreToolUse = [
+            {
+              matcher = "*";
+              hooks = [ usageGuardHook ];
+            }
+          ];
+          UserPromptSubmit = [ { hooks = [ usageGuardHook ]; } ];
+        };
 
         model = "haiku";
         effortLevel = "xhigh";
@@ -202,6 +217,8 @@ in
         canvas-submit = canvas-submit.commandText;
       };
     };
+
+    programs.bash.shellAliases."claude-guarded" = "CLAUDE_USAGE_GUARD=1 claude";
 
     home.packages = [
       pkgs.claude-monitor
