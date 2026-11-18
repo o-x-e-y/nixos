@@ -28,6 +28,7 @@ in
         ".." = "cd ..";
         "rebuild" = "sudo nixos-rebuild switch --flake ~/nixos#${osConfig.networking.hostName}";
         "update" = "nix flake update --flake ~/nixos --commit-lock-file && rebuild";
+        "trash-size" = "du -sb ~/.local/share/Trash | cut -f1 | numfmt --to=iec-i --suffix=B";
         "rebuild-boot" = "sudo /nix/var/nix/profiles/system/bin/switch-to-configuration boot";
       };
     };
