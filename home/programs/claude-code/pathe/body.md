@@ -11,11 +11,20 @@ account, or book a seat — if the request wants tickets, say so and hand over t
 booking URL the output carries, or point at pathe.nl.
 
 It already prints finished Markdown, and that output is deterministic by design.
-**Print what it returns verbatim.** Do not re-sort it, re-table it, translate it,
-trim the metadata line, or fold several runs into a summary of your own. The
-whole reason formatting lives in the tool is so the same question twice gives
-the same bytes, ready to paste somewhere. Adding a sentence of your own before
-or after is fine; rewriting the block is not.
+Keep the times, titles, venues and formats exactly as it returns them. Do not
+paste the CLI output itself, and never a whole `pathe film` block: ingest it and
+answer in your own compact Markdown.
+
+## Answering
+
+Read the calendar before the listings, not after: the primary calendar, plus the
+ESS Shifts calendar for shifts. When the question is about what to watch, also
+check the Letterboxd diary (`boxd films`). Drop films already seen or already in
+the calendar. If the diary conflicts with what the user says, write "not logged"
+rather than "not seen", and trust the user.
+
+Answer day by day: what is already planned, then the one or two showings per
+film that actually fit.
 
 Run `pathe --help` whenever the request needs a flag, tag or cinema slug you are
 not sure of. It documents the full strand vocabulary, the filter rules, the date
