@@ -273,8 +273,7 @@ in
         tui = {
           bundles = [
             pkgs.dsh.bundles.tui
-            pkgs.dsh.bundles.graph-memory
-            pkgs.dsh.bundles.modsearch
+            pkgs.dsh.bundles.mneme
             pkgs.dsh.bundles.context
             dsh-usage
           ];
@@ -283,8 +282,7 @@ in
         web = {
           bundles = [
             pkgs.dsh.bundles.web-app
-            pkgs.dsh.bundles.graph-memory
-            pkgs.dsh.bundles.modsearch
+            pkgs.dsh.bundles.mneme
             pkgs.dsh.bundles.context
             pkgs.dsh.bundles.turn-rewind
             pkgs.dsh.bundles.experimental-forge-bundle
