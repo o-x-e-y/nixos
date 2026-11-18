@@ -99,8 +99,8 @@
 
               claudeCodeOverride = {
                 enable = true;
-                version = "2.1.322";
-                hash = "sha256-m7dVi9mSykV+ZFi/FoZXL3oxVrgzHdhEM5Hb/lkMHu0=";
+                version = "2.1.325";
+                hash = "sha256-ALG5d7zD8y62kSnwrDJ3qvsa7L+4fBfAr1OAaDLtQ2o=";
               };
 
               nixpkgs.overlays = [
