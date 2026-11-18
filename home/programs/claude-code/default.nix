@@ -160,11 +160,11 @@ in
             "Bash(git reset --hard:*)"
             "Bash(git clean -f:*)"
 
-            # All of rm, since a pattern per recursive flag spelling (-rf, -fr,
-            # -vrf, a trailing -r) either leaks or also catches `rm -f file`,
-            # and trash-put covers every deletion. find is allowed above, so
-            # its deleting forms are denied here.
-            "Bash(rm *)"
+            # rm is not denied here: a deny cannot carve out an exception, and a
+            # prefix allow cannot tell `rm /tmp/claude-1000/x ~/y` from a safe
+            # one. It goes to the auto mode classifier instead; see
+            # ./auto-mode.nix. find is allowed above, so its deleting forms are
+            # denied here.
             "Bash(find * -delete*)"
             "Bash(find * -exec rm *)"
             "Bash(find * -execdir rm *)"
