@@ -14,6 +14,7 @@ in
       extraPackages = with pkgs; [
         nixd
         nixfmt
+        tinymist
         package-version-server
         zig
         ruff

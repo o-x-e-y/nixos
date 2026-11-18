@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -33,6 +34,7 @@ in
           "explorer.confirmPasteNative" = false;
           "[nix]"."editor.tabSize" = 2;
           "database-client.autoSync" = true;
+          "tinymist.serverPath" = lib.getExe pkgs.tinymist;
         };
       };
     };
