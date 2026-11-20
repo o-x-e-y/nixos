@@ -1,3 +1,14 @@
+#let raw-color(fill: rgb("#e8e8e8"), data) = box(
+  block(
+    fill: fill,
+    stroke: 0.4pt + fill.darken(25%),
+    inset: 1.7pt,
+    radius: 2pt,
+    text(fill: rgb("#000000"), size: 1.125em, data),
+  ),
+  inset: (y: -1.7pt, x: 0pt),
+)
+
 #let template-config(
   theme-name: "Gruvbox-N",
   heading-pagebreak: true,
@@ -172,16 +183,7 @@
     #it
   ]
 
-  show raw.where(block: false): data => box(
-    block(
-      fill: rgb("#e8e8e8"),
-      stroke: 0.4pt + rgb("#acacac"),
-      inset: 1.7pt,
-      radius: 2pt,
-      text(fill: rgb("#000000"), size: 1.125em, data),
-    ),
-    inset: (y: -1.7pt, x: 0pt),
-  )
+  show raw.where(block: false): raw-color
 
   doc
 }
