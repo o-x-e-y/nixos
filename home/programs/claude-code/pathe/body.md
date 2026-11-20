@@ -103,3 +103,10 @@ that window rather than reasoning about what is likely showing.
 
 **Calendar entries.** When a screening goes into the calendar, colour the event
 Banana. Google Calendar takes the number, not the name: `colorId: "5"`.
+
+**Release reminders.** A film the user wants to remember gets an all-day event
+on its Pathé release date: summary `Release: <title>`, description
+`<director> · in Pathé vanaf vandaag`, Banana, marked free, and no reminders
+(`useDefaultReminders: false`). `boxd search "<title>"` gives the director.
+Pathé moves release dates, so when one changes, move the existing event rather
+than adding a second.
